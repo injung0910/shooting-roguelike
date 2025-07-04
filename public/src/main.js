@@ -13,7 +13,7 @@ const config = {
   physics: {
     default: 'arcade',
     arcade: {
-      debug: false, // 디버그 모드 비활성화
+      debug: false, // 디버그 모드 활성화
     }
   },
   scene: {
@@ -26,7 +26,12 @@ const config = {
 const game = new Phaser.Game(config);
 
 function preload() {
-  this.load.image('player', '/assets/player.png');
+  // mainScene.js 또는 preload() 안에서
+  this.load.spritesheet('jet', '/assets/player_t1.png', {
+    frameWidth: 512, // 프레임 하나의 너비
+    frameHeight: 512 // 프레임 하나의 높이
+  });
+
   this.load.image("background", "/assets/background.png");
   this.load.image('bullet', '/assets/bullet.png');  // 🔫 총알 이미지 추가
 }
@@ -53,12 +58,21 @@ function create() {
 
   background.setScale(scaleX, scaleY); // 화면에 맞도록 비율 조정
 
+  this.anims.create({
+    key: 'jetBoost',
+    frames: this.anims.generateFrameNumbers('jet', { start: 0, end: 2 }),
+    frameRate: 6,
+    repeat: -1 // 무한 반복
+  });
+
   // 플레이어 추가
-  player = this.physics.add.sprite(backgroundWidth / 2, backgroundHeight - 100, 'player');
+  player = this.physics.add.sprite(backgroundWidth / 2, backgroundHeight - 100, 'jet');
   player.setScale(0.15);
-  player.setSize(154, 230);
-  player.setOffset((1024 - 154) / 2, (1536 - 230) / 2);
+  player.setOrigin(0.5, 0.5);  // ← 정중앙 기준으로 설정
+  player.setSize(120, 160);
+  player.setOffset((512 - 120) / 2, (512 - 160) / 2);
   player.setCollideWorldBounds(true);
+  player.anims.play('jetBoost'); // 애니메이션 재생
 
   //this.cameras.main.startFollow(player);
   cursors = this.input.keyboard.createCursorKeys();

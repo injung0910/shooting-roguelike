@@ -67,7 +67,7 @@ function preload() {
 let tiles = [];
 let tileIndex = 0;
 const tileHeight = 800;
-const scrollSpeed = 10;
+const scrollSpeed = 7;
 let totalTilesCreated = 0;
 const maxTiles = 12;
 

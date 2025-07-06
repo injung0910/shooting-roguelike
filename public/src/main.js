@@ -198,6 +198,22 @@ function create() {
     maxSize: 100
   });
 
+  // 모바일 터치로 플레이어 이동
+  // 터치 입력 감지
+  this.input.on('pointermove', (pointer) => {
+    if (pointer.isDown) {
+      player.x = pointer.x;
+      player.y = pointer.y;
+      isTouching = true;
+    }
+  });
+
+  this.input.on('pointerup', () => {
+    isTouching = false;
+  });
+
+  lastFired = 0;
+
   cursors = this.input.keyboard.createCursorKeys();
 
   // 적 애니메이션 생성
@@ -231,6 +247,7 @@ function create() {
   });
 }
 
+let isTouching = false;
 
 function update(time, delta) {
   const { width, height } = this.sys.game.config;
@@ -292,6 +309,13 @@ function update(time, delta) {
   if (this.input.keyboard.checkDown(cursors.space, 200)) {
     fireBullet.call(this);
   }
+
+    // 터치 중이면 자동 발사
+  if (isTouching && time > lastFired + 200) {
+    fireBullet.call(this);  // this 유지 위해 call
+    lastFired = time;
+  }
+
 }
 
 function fireBullet() {

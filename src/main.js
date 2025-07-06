@@ -58,9 +58,46 @@ function preload() {
   });
 
   // 총알 이미지 로드
-  this.load.spritesheet('bullet', '/assets/bullets/Projectiles/projectile-01.png', {
+  this.load.spritesheet('bullets', '/assets/bullets/Projectiles/projectile-01.png', {
     frameWidth: 12,  // 한 프레임 너비 (이미지 반쪽)
     frameHeight: 20 // 전체 이미지 높이
+  });
+
+  // 적 스프라이트 시트 로드
+  this.load.spritesheet('enemy1', '/assets/enemies/01 Bug (Animation)/Bug 1/bug_1.png', {
+    frameWidth: 64,
+    frameHeight: 64
+  });
+
+  this.load.spritesheet('enemy2', '/assets/enemies/01 Bug (Animation)/Bug 2/bug_2.png', {
+    frameWidth: 64,
+    frameHeight: 64
+  });
+
+  this.load.spritesheet('enemy3', '/assets/enemies/01 Bug (Animation)/Bug 3/bug_3.png', {
+    frameWidth: 64,
+    frameHeight: 64
+  });
+
+  this.load.spritesheet('enemy4', '/assets/enemies/01 Bug (Animation)/Bug 4/bug_4.png', {
+    frameWidth: 64,
+    frameHeight: 64
+  });
+
+  this.load.spritesheet('enemy5', '/assets/enemies/01 Bug (Animation)/Bug 5/bug_5.png', {
+    frameWidth: 64,
+    frameHeight: 64
+  });
+
+  this.load.spritesheet('enemy6', '/assets/enemies/01 Bug (Animation)/Bug 6/bug_6.png', {
+    frameWidth: 64,
+    frameHeight: 64
+  });
+
+  // 이펙트 스프라이트 시트 로드
+  this.load.spritesheet('explosion1', '/assets/effects/Explosion/Small/explosion.png', {
+    frameWidth: 100,
+    frameHeight: 100
   });
 }
 
@@ -150,18 +187,48 @@ function create() {
   //총알
   this.physics.world.on('worldbounds', function (body) {
     const sprite = body.gameObject;
-    if (sprite.texture.key === 'bullet') {
+    if (sprite.texture.key === 'bullets') {
       sprite.destroy(); // 화면 밖으로 나간 총알 제거
     }
   });
 
   // 총알
-  bullets = this.physics.add.group({
+  this.bullets = this.physics.add.group({
     classType: Phaser.Physics.Arcade.Sprite, // Sprite로 바꿔야 함
     maxSize: 100
   });
 
   cursors = this.input.keyboard.createCursorKeys();
+
+  // 적 애니메이션 생성
+  this.anims.create({
+    key: 'enemy1',
+    frames: this.anims.generateFrameNumbers('enemy1', { start: 0, end: 5 }),
+    frameRate: 8,
+    repeat: -1
+  });
+
+  // 적 그룹 생성
+  this.enemies = this.physics.add.group();
+
+  // 왼쪽 적 먼저 생성
+  spawnLeftEnemies(this);
+
+  // 5초 뒤 오른쪽 적 생성
+  this.time.delayedCall(5000, () => {
+    spawnRightEnemies(this);
+  });
+
+  // 총알과 적이 충돌하면 둘 다 제거
+  this.physics.add.overlap(this.bullets, this.enemies, handleBulletHitsEnemy, null, this);
+
+
+  this.anims.create({
+    key: 'explosion1',
+    frames: this.anims.generateFrameNumbers('explosion1', { start: 0, end: 15 }),
+    frameRate: 16,
+    hideOnComplete: true
+  });
 }
 
 
@@ -228,7 +295,7 @@ function update(time, delta) {
 }
 
 function fireBullet() {
-  const bullet = bullets.get(player.x, player.y - 20, 'bullet', 1);
+  const bullet = this.bullets.get(player.x, player.y - 20, 'bullets', 1);
   if (bullet) {
     bullet.setActive(true);
     bullet.setVisible(true);
@@ -237,4 +304,43 @@ function fireBullet() {
     bullet.setCollideWorldBounds(true);  // 화면 경계 감지 활성화
     bullet.body.onWorldBounds = true;    // worldbounds 이벤트 사용
   }
+
+  // 적 제거
+  this.enemies.children.iterate(enemy => {
+    if (enemy && enemy.y > 900) {
+      enemy.destroy();
+    }
+  });
+}
+
+
+function spawnLeftEnemies(scene) {
+  const leftPositions = [100, 150, 200];
+  leftPositions.forEach(x => {
+    const enemy = scene.enemies.create(x, -64, 'enemy1');
+    enemy.play('enemy1');
+    enemy.setVelocityY(50);
+  });
+}
+
+function spawnRightEnemies(scene) {
+  const rightPositions = [400, 450, 500];
+  rightPositions.forEach(x => {
+    const enemy = scene.enemies.create(x, -64, 'enemy1');
+    enemy.play('enemy1');
+    enemy.setVelocityY(50);
+  });
+}
+
+function handleBulletHitsEnemy(bullet, enemy) {
+  bullet.destroy();
+  enemy.disableBody(true, true);
+
+  const explosion = enemy.scene.add.sprite(enemy.x, enemy.y, 'explosion1');
+  explosion.setScale(0.5); // 필요시 크기 조정
+  explosion.play('explosion1');
+
+  explosion.on('animationcomplete', () => {
+    explosion.destroy();
+  });
 }

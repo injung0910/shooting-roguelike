@@ -1,5 +1,3 @@
-import Phaser from 'phaser';
-
 let player;
 let cursors;
 let bullets;       // 전역에 선언
@@ -26,104 +24,217 @@ const config = {
 const game = new Phaser.Game(config);
 
 function preload() {
-  // mainScene.js 또는 preload() 안에서
-  this.load.spritesheet('jet', '/assets/player_t1.png', {
-    frameWidth: 512, // 프레임 하나의 너비
-    frameHeight: 512 // 프레임 하나의 높이
+  //this.load.image('tile1', '/assets/backgrounds/normal-city-1.png');
+  //this.load.image('tile2', '/assets/backgrounds/normal-city-2.png');
+  //this.load.image('tile3', '/assets/backgrounds/normal-city-3.png');
+  //this.load.image('tile4', '/assets/backgrounds/normal-city-4.png');
+  //this.load.image('tile5', '/assets/backgrounds/normal-forest-1.png');
+  //this.load.image('tile6', '/assets/backgrounds/normal-forest-2.png');
+  //this.load.image('cross', '/assets/backgrounds/normal-road.png');
+
+  //this.load.image('cloud-1', '/assets/backgrounds/cloud-1.png');
+  //this.load.image('cloud-2', '/assets/backgrounds/cloud-2.png');
+  //this.load.image('cloud-3', '/assets/backgrounds/cloud-3.png');
+
+  // 배경 이미지 로드
+  this.load.image('background', '/assets/backgrounds/purple_background.png');
+
+  this.load.image('tile1', '/assets/backgrounds/sample_01.png');
+  this.load.image('tile2', '/assets/backgrounds/sample_02.png');
+  this.load.image('tile3', '/assets/backgrounds/sample_03.png');
+  this.load.image('tile4', '/assets/backgrounds/sample_04.png');
+
+  this.load.image('stars1', '/assets/backgrounds/stars_1.png');
+  this.load.image('stars2', '/assets/backgrounds/stars_2.png');
+
+  this.load.image('planet_green', '/assets/backgrounds/planet_green.png');
+  this.load.image('planet_grey', '/assets/backgrounds/planet_grey.png');
+  this.load.image('planet_blue', '/assets/backgrounds/planet_blue.png');
+
+  // 플레이어 스프라이트 시트 로드
+  this.load.spritesheet('player', '/assets/player/Plane 01/Normal/planes_01A.png', {
+    frameWidth: 96,
+    frameHeight: 96
   });
 
-  this.load.image("background", "/assets/background.png");
-  this.load.image('bullet', '/assets/bullet.png');  // 🔫 총알 이미지 추가
+  // 총알 이미지 로드
+  this.load.spritesheet('bullet', '/assets/bullets/Projectiles/projectile-01.png', {
+    frameWidth: 12,  // 한 프레임 너비 (이미지 반쪽)
+    frameHeight: 20 // 전체 이미지 높이
+  });
 }
 
-let background;
+let tiles = [];
+let tileIndex = 0;
+const tileHeight = 800;
+const scrollSpeed = 10;
+let totalTilesCreated = 0;
+const maxTiles = 12;
+
+const tileOrder = [
+  'tile1', 'tile1', 'tile1',
+  'tile2', 'tile2', 'tile2',
+  'tile3', 'tile3', 'tile3',
+  'tile4', 'tile4', 'tile4',
+];
+
+let planetGroup;
+let planetTimer = 0;
+let planetInterval = 1000; // 1초마다 행성 생성
+const planetKeys = ['planet_green', 'planet_grey', 'planet_blue'];
 
 function create() {
-  const backgroundWidth = this.scale.width; // 600
-  const backgroundHeight = this.scale.height; // 800
+  const { width, height } = this.sys.game.config;
 
-  // 배경 이미지 추가 (1배 크기로 조정)
-  background = this.add.tileSprite(0, 0, 1024, 1536, "background")
-  .setOrigin(0);
+  // 1. 배경
+  this.add.image(0, 0, 'background')
+    .setOrigin(0)
+    .setDisplaySize(width, height);
 
-  // 월드와 카메라 경계 설정
-  this.physics.world.setBounds(0, 0, 600, 800);
-  this.cameras.main.setBounds(0, 0, 600, 800);
+      // 배경 위에 별 레이어
+  this.add.image(0, 0, 'stars1')
+    .setOrigin(0)
+    .setDisplaySize(width, height); // 같은 크기로 맞춰줌
 
-  // 배경 원본 크기 기준으로 스케일 계산
-  const bgOriginalWidth = 1024;
-  const bgOriginalHeight = 1536;
-  const scaleX = backgroundWidth / bgOriginalWidth;
-  const scaleY = backgroundHeight / bgOriginalHeight;
+  
+  // 최초 타일 생성 (tileOrder 순서대로)
+  let currentY = -tileHeight * (maxTiles - 1); // 가장 위에서 시작
 
-  background.setScale(scaleX, scaleY); // 화면에 맞도록 비율 조정
-
-  this.anims.create({
-    key: 'jetBoost',
-    frames: this.anims.generateFrameNumbers('jet', { start: 0, end: 2 }),
-    frameRate: 6,
-    repeat: -1 // 무한 반복
-  });
-
-  // 플레이어 추가
-  player = this.physics.add.sprite(backgroundWidth / 2, backgroundHeight - 100, 'jet');
-  player.setScale(0.15);
-  player.setOrigin(0.5, 0.5);  // ← 정중앙 기준으로 설정
-  player.setSize(120, 160);
-  player.setOffset((512 - 120) / 2, (512 - 160) / 2);
-  player.setCollideWorldBounds(true);
-  player.anims.play('jetBoost'); // 애니메이션 재생
-
-  //this.cameras.main.startFollow(player);
-  cursors = this.input.keyboard.createCursorKeys();
-
-    // 총알 그룹 생성
-  bullets = this.physics.add.group({
-    classType: Phaser.Physics.Arcade.Image,
-    maxSize: 30,
-    runChildUpdate: true
-  });
-
-}
-
-function update(time) {
-  // 배경을 아래로 스크롤 (y값 증가)
-  background.tilePositionY -= 2;
-
-  if (cursors.left.isDown) {
-    player.setVelocityX(-200);
-  } else if (cursors.right.isDown) {
-    player.setVelocityX(200);
-  } else {
-    player.setVelocityX(0);
+  // 타일 생성
+  for (let i = 0; i < tileOrder.length; i++) {
+    const key = tileOrder[i];
+    const tile = this.add.image(0, -tileHeight * i, key)
+      .setOrigin(0)
+      .setDisplaySize(width, tileHeight);
+    tiles.push(tile);
+    currentY += tileHeight;
+    totalTilesCreated++;
   }
 
+    // 행성 그룹 생성
+  planetGroup = this.add.group();
+
+  // 플레이어
+  this.anims.create({
+    key: 'fly',
+    frames: this.anims.generateFrameNumbers('player', { start: 0, end: 3}),
+    frameRate: 10,
+    repeat: -1
+  });  
+
+  // 왼쪽 기울기
+  this.anims.create({
+    key: 'left',
+    frames: this.anims.generateFrameNumbers('player', { start: 4, end: 11 }),
+    frameRate: 10,
+    repeat: -1
+  });
+
+  // 오른쪽 기울기
+  this.anims.create({
+    key: 'right',
+    frames: this.anims.generateFrameNumbers('player', { start: 12, end: 19 }),
+    frameRate: 10,
+    repeat: -1
+  });
+
+  player = this.physics.add.sprite(config.width / 2, config.height - 100, 'player');
+  player.setScale(1); // 필요 시 크기 조정
+  player.setCollideWorldBounds(true);
+  player.play('fly');
+
+  // 피격 판정 hitbox 축소 (폭, 높이, 오프셋X, 오프셋Y)
+  player.body.setSize(20, 30);
+  player.body.setOffset(39, 40);
+
+  //총알
+  this.physics.world.on('worldbounds', function (body) {
+    const sprite = body.gameObject;
+    if (sprite.texture.key === 'bullet') {
+      sprite.destroy(); // 화면 밖으로 나간 총알 제거
+    }
+  });
+
+  // 총알
+  bullets = this.physics.add.group({
+    classType: Phaser.Physics.Arcade.Sprite, // Sprite로 바꿔야 함
+    maxSize: 100
+  });
+
+  cursors = this.input.keyboard.createCursorKeys();
+}
+
+
+function update(time, delta) {
+  const { width, height } = this.sys.game.config;
+
+  for (let tile of tiles) {
+    tile.y += scrollSpeed;
+  }
+
+  // 행성 생성 타이머
+  planetTimer += delta;
+  if (planetTimer >= planetInterval) {
+    planetTimer = 0;
+
+    // 랜덤 행성 생성
+    const key = Phaser.Utils.Array.GetRandom(planetKeys);
+    const x = Phaser.Math.Between(50, width - 50);
+    const y = -50;
+    const planet = game.scene.scenes[0].add.image(x, y, key)
+      .setScale(0.3)
+      .setAlpha(0.7);
+
+    planetGroup.add(planet);
+  }
+
+  // 행성 이동 및 제거
+  planetGroup.getChildren().forEach((planet) => {
+    planet.y += scrollSpeed;
+    if (planet.y > height + 50) {
+      planet.destroy();
+    }
+  });
+
+  if (cursors.left.isDown) {
+    player.setVelocityX(-300);
+    if (player.anims.currentAnim?.key !== 'left') {
+      player.play('left');
+    }
+  } else if (cursors.right.isDown) {
+    player.setVelocityX(300);
+    if (player.anims.currentAnim?.key !== 'right') {
+      player.play('right');
+    }
+  } else {
+    player.setVelocityX(0);
+    if (player.anims.currentAnim?.key !== 'fly') {
+      player.play('fly');
+    }
+  }
+
+  // 위아래 이동
   if (cursors.up.isDown) {
-    player.setVelocityY(-200);
+    player.setVelocityY(-300);
   } else if (cursors.down.isDown) {
-    player.setVelocityY(200);
+    player.setVelocityY(300);
   } else {
     player.setVelocityY(0);
   }
-  
-  // 총알 발사 (스페이스바)
-  if (cursors.space.isDown && time > lastFired + 300) {
+
+  if (this.input.keyboard.checkDown(cursors.space, 200)) {
     fireBullet.call(this);
-    lastFired = time;
   }
 }
 
 function fireBullet() {
-  const bullet = bullets.get();
-
+  const bullet = bullets.get(player.x, player.y - 20, 'bullet', 1);
   if (bullet) {
-    bullet
-      .enableBody(true, player.x, player.y - 20, true, true)
-      .setVelocityY(-400)
-      .setDisplaySize(13, 20)
-      .setCollideWorldBounds(true)
-      .on('worldbounds', () => bullet.disableBody(true, true)); // 화면 밖으로 나가면 제거
-
-    bullet.body.onWorldBounds = true;
+    bullet.setActive(true);
+    bullet.setVisible(true);
+    bullet.setVelocityY(-500);
+    bullet.setScale(1.5);
+    bullet.setCollideWorldBounds(true);  // 화면 경계 감지 활성화
+    bullet.body.onWorldBounds = true;    // worldbounds 이벤트 사용
   }
 }

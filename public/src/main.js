@@ -2,6 +2,7 @@ let player;
 let cursors;
 let bullets;       // 전역에 선언
 let lastFired = 0; // 연속 발사를 위한 시간 체크
+let powerLevel = 1;
 
 const config = {
   type: Phaser.AUTO,
@@ -237,9 +238,6 @@ function create() {
     repeat: -1
   });
 
-  // 왼쪽 적 그룹 생성
-  this.leftEnemies = this.physics.add.group();
-
   // 적 그룹 생성
   this.enemies = this.physics.add.group();
 
@@ -298,6 +296,7 @@ function create() {
     repeat: -1
   });
 
+  this.physics.add.overlap(player, this.powerups, collectPowerup, null, this);
 }
 
 let isTouching = false;
@@ -381,14 +380,15 @@ function update(time, delta) {
 // 총알 발사 함수
 // this: 현재 씬, player: 플레이어 객체
 function fireBullet() {
-  const bullet = this.bullets.get(player.x, player.y - 20, 'bullets', 1);
-  if (bullet) {
-    bullet.setActive(true);
-    bullet.setVisible(true);
-    bullet.setVelocityY(-500);
-    bullet.setScale(1.5);
-    bullet.setCollideWorldBounds(true);  // 화면 경계 감지 활성화
-    bullet.body.onWorldBounds = true;    // worldbounds 이벤트 사용
+  if (powerLevel === 1) {
+    fireSingleBullet.call(this, player.x, player.y - 20);
+  } else if (powerLevel === 2) {
+    fireSingleBullet.call(this, player.x - 10, player.y - 20);
+    fireSingleBullet.call(this, player.x + 10, player.y - 20);
+  } else if (powerLevel >= 3) {
+    fireSingleBullet.call(this, player.x - 15, player.y - 20);
+    fireSingleBullet.call(this, player.x, player.y - 20);
+    fireSingleBullet.call(this, player.x + 15, player.y - 20);
   }
 
   // 적 제거
@@ -399,6 +399,18 @@ function fireBullet() {
   });
 }
 
+function fireSingleBullet(x, y) {
+  const bullet = this.bullets.get(x, y, 'bullets', 1);
+  if (bullet) {
+    bullet.setActive(true);
+    bullet.setVisible(true);
+    bullet.setVelocityY(-500);
+    bullet.setScale(1.5);
+    bullet.setCollideWorldBounds(true);
+    bullet.body.onWorldBounds = true;
+  }
+}
+
 // 적 생성 함수
 // 왼쪽에서 적 생성
 function spawnLeftEnemies(scene) {
@@ -407,9 +419,6 @@ function spawnLeftEnemies(scene) {
     const enemy = scene.enemies.create(x, -64, 'enemy1');
     enemy.play('enemy1');
     enemy.setVelocityY(50);
-
-    // 왼쪽 그룹에도 추가
-    //scene.leftEnemies.add(enemy);
   });
 }
 
@@ -429,39 +438,18 @@ function handleBulletHitsEnemy(bullet, enemy) {
   bullet.destroy();
   enemy.disableBody(true, true);
 
-  const powerup = this.powerups.create(enemy.x, enemy.y, 'powerup');
-  powerup.play('powerup_anim');
-  powerup.setVelocityY(100);
-
+  // 폭발 이펙트
   const explosion = enemy.scene.add.sprite(enemy.x, enemy.y, 'explosion1');
   explosion.setScale(0.5);
   explosion.play('explosion1');
   explosion.on('animationcomplete', () => explosion.destroy());
 
-  const scene = enemy.scene;
-
-  // 왼쪽 적 그룹 마지막 적이면 파워업 확정 드롭
-  if (
-    scene.leftGroup?.contains(enemy) &&
-    scene.leftGroup.countActive(true) === 1
-  ) {
-    const powerup = scene.powerup.create(enemy.x, enemy.y, 'powerup');
+  // 지금 죽은 enemy가 가장 왼쪽이었는지 확인
+  if (enemy.x == 100 || enemy.x == 500) { // 마지막 적이면서 x == 100 조건
+    // 파워업 아이템 생성
+    const powerup = enemy.scene.powerups.create(enemy.x, enemy.y, 'powerup');
+    powerup.play('powerup_anim');
     powerup.setVelocityY(100);
-  }
-
-  // 💡 왼쪽 그룹 전멸 체크
-  if (
-    scene.leftGroup &&
-    scene.leftGroup.countActive(true) === 0 &&
-    !leftEnemiesCleared
-  ) {
-    leftEnemiesCleared = true;
-
-    // 다음 그룹 등장
-    scene.time.delayedCall(2000, () => {
-      spawnRightEnemies(scene);
-      rightEnemiesSpawned = true;
-    });
   }
 }
 
@@ -519,4 +507,16 @@ function handlePlayerHitsEnemy(player, enemy) {
 
   // 적도 함께 제거하려면 아래도 활성화
   enemy.disableBody(true, true);
+}
+
+// 플레이어가 파워업 아이템을 먹었을 때 처리
+// player: 플레이어 객체, powerup: 파워업 아이템
+function collectPowerup(player, powerup) {
+  powerup.destroy();
+
+  if (powerLevel < 3) {
+    powerLevel++;
+  }
+
+  // 효과음이나 이펙트도 여기에 추가 가능
 }

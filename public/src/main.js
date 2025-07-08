@@ -498,19 +498,24 @@ function handlePlayerHitByEnemyBullet(bullet, player) {
 
 // 플레이어가 적과 충돌했을 때 처리
 function handlePlayerHitsEnemy(player, enemy) {
-  // 플레이어 죽이기 (숨기거나 제거)
-  player.disableBody(true, true);
-
-  // 폭발 이펙트
-  const explosion = player.scene.add.sprite(player.x, player.y, 'explosion1');
-  explosion.setScale(0.5);
-  explosion.play('explosion1');
-
-  explosion.on('animationcomplete', () => {
-    explosion.destroy();
+  // 플레이어 폭발
+  const explosion1 = player.scene.add.sprite(player.x, player.y, 'explosion1');
+  explosion1.setScale(0.5);
+  explosion1.play('explosion1');
+  explosion1.on('animationcomplete', () => {
+    explosion1.destroy();
   });
 
-  // 적도 함께 제거하려면 아래도 활성화
+  // 적 유닛 폭발
+  const explosion2 = player.scene.add.sprite(enemy.x, enemy.y, 'explosion1');
+  explosion2.setScale(0.5);
+  explosion2.play('explosion1');
+  explosion2.on('animationcomplete', () => {
+    explosion2.destroy();
+  });
+
+  // 둘 다 제거
+  player.disableBody(true, true);
   enemy.disableBody(true, true);
 }
 

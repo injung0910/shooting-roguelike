@@ -3,10 +3,10 @@ export default class EnemyManager {
     this.scene = scene;
 
     // 적 애니메이션
-    if (!scene.anims.exists('bug1')) {
+    if (!scene.anims.exists('bug2')) {
       scene.anims.create({
-        key: 'bug1',
-        frames: scene.anims.generateFrameNumbers('bug1', { start: 0, end: 5 }),
+        key: 'bug2',
+        frames: scene.anims.generateFrameNumbers('bug2', { start: 0, end: 5 }),
         frameRate: 8,
         repeat: -1
       });
@@ -29,8 +29,8 @@ export default class EnemyManager {
   spawnLeftEnemies() {
     const positions = [100, 150, 200];
     positions.forEach(x => {
-      const enemy = this.enemies.create(x, -64, 'bug1');
-      enemy.play('bug1');
+      const enemy = this.enemies.create(x, -64, 'bug2');
+      enemy.play('bug2');
       enemy.setVelocityY(50);
     });
   }
@@ -38,8 +38,8 @@ export default class EnemyManager {
   spawnRightEnemies() {
     const positions = [400, 450, 500];
     positions.forEach(x => {
-      const enemy = this.enemies.create(x, -64, 'bug1');
-      enemy.play('bug1');
+      const enemy = this.enemies.create(x, -64, 'bug2');
+      enemy.play('bug2');
       enemy.setVelocityY(50);
     });
   }

@@ -10,10 +10,23 @@
   },
   "devDependencies": {
     "typescript": "~5.8.3",
-    "vite": "^7.0.0"
+    "vite": "^7.0.2"
   },
   "dependencies": {
     "pg": "^8.16.2",
     "phaser": "^3.90.0"
-  }
+  },
+  "description": "",
+  "main": "vite.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/injung0910/shooting-roguelike.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/injung0910/shooting-roguelike/issues"
+  },
+  "homepage": "https://github.com/injung0910/shooting-roguelike#readme"
 }

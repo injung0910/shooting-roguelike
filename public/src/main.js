@@ -8,6 +8,11 @@ const config = {
   type: Phaser.AUTO,
   width: 600,
   height: 800,
+  parent: 'game-container',
+  scale: {
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH
+  },
   backgroundColor: '#1d1d1d',
   physics: {
     default: 'arcade',
@@ -124,9 +129,9 @@ const maxTiles = 12;
 
 const tileOrder = [
   'tile1', 'tile1', 'tile1',
+  'tile1', 'tile1', 'tile1',
   'tile2', 'tile2', 'tile2',
-  'tile3', 'tile3', 'tile3',
-  'tile4', 'tile4', 'tile4',
+  'tile2', 'tile2', 'tile2',
 ];
 
 let planetGroup;

@@ -2,11 +2,17 @@ let player;
 let cursors;
 let bullets;       // 전역에 선언
 let lastFired = 0; // 연속 발사를 위한 시간 체크
+let powerLevel = 1;
 
 const config = {
   type: Phaser.AUTO,
   width: 600,
   height: 800,
+  parent: 'game-container',
+  scale: {
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH
+  },
   backgroundColor: '#1d1d1d',
   physics: {
     default: 'arcade',
@@ -49,7 +55,7 @@ function preload() {
 
   this.load.image('planet_green', '/assets/backgrounds/planet_green.png');
   this.load.image('planet_grey', '/assets/backgrounds/planet_grey.png');
-  this.load.image('planet_blue', '/assets/backgrounds/planet_blue.png');
+  this.load.image('planet_orange', '/assets/backgrounds/planet_orange.png');
 
   // 플레이어 스프라이트 시트 로드
   this.load.spritesheet('player', '/assets/player/Plane 01/Normal/planes_01A.png', {
@@ -99,6 +105,19 @@ function preload() {
     frameWidth: 100,
     frameHeight: 100
   });
+
+  // 총알 이미지 로드
+  this.load.spritesheet('enemyBullet', '/assets/bullets/Projectiles/projectile-04.png', {
+    frameWidth: 12,  // 한 프레임 너비 (이미지 반쪽)
+    frameHeight: 12 // 전체 이미지 높이
+  });
+
+  // 파워업 아이콘 로드
+  this.load.spritesheet('powerup', '/assets/Icons/Power-Ups/icon-a-power.png', {
+    frameWidth: 32,
+    frameHeight: 32
+  });
+
 }
 
 let tiles = [];
@@ -110,15 +129,15 @@ const maxTiles = 12;
 
 const tileOrder = [
   'tile1', 'tile1', 'tile1',
+  'tile1', 'tile1', 'tile1',
   'tile2', 'tile2', 'tile2',
-  'tile3', 'tile3', 'tile3',
-  'tile4', 'tile4', 'tile4',
+  'tile2', 'tile2', 'tile2',
 ];
 
 let planetGroup;
 let planetTimer = 0;
 let planetInterval = 1000; // 1초마다 행성 생성
-const planetKeys = ['planet_green', 'planet_grey', 'planet_blue'];
+const planetKeys = ['planet_green', 'planet_grey', 'planet_orange'];
 
 function create() {
   const { width, height } = this.sys.game.config;
@@ -238,18 +257,63 @@ function create() {
   // 총알과 적이 충돌하면 둘 다 제거
   this.physics.add.overlap(this.bullets, this.enemies, handleBulletHitsEnemy, null, this);
 
-
   this.anims.create({
     key: 'explosion1',
-    frames: this.anims.generateFrameNumbers('explosion1', { start: 0, end: 15 }),
-    frameRate: 16,
+    frames: this.anims.generateFrameNumbers('explosion1', { start: 0, end: 11 }),
+    frameRate: 11,
     hideOnComplete: true
   });
+
+
+  this.enemyBullets = this.physics.add.group({
+    classType: Phaser.Physics.Arcade.Image,
+    runChildUpdate: true,
+    maxSize: 100
+  });
+
+  // 플레이어와 적 충돌 처리
+  this.physics.add.overlap(this.enemyBullets, player, handlePlayerHitByEnemyBullet, null, this);
+
+  this.time.addEvent({
+    delay: 2000, // 2초마다
+    callback: () => {
+      this.enemies.children.iterate((enemy) => {
+        if (enemy.active) {
+          fireEnemyBullet.call(this, enemy.x, enemy.y);
+        }
+      });
+    },
+    callbackScope: this,
+    loop: true
+  });
+
+  // 플레이어와 적 충돌 처리
+  this.physics.add.overlap(player, this.enemies, handlePlayerHitsEnemy, null, this);
+
+  // 파워업 그룹 생성
+  // 파워업은 플레이어가 먹을 수 있는 아이템
+  this.powerups = this.physics.add.group();
+
+  this.anims.create({
+    key: 'powerup_anim',
+    frames: this.anims.generateFrameNumbers('powerup', { start: 0, end: 4 }),
+    frameRate: 8,
+    repeat: -1
+  });
+
+  this.physics.add.overlap(player, this.powerups, collectPowerup, null, this);
 }
 
 let isTouching = false;
 
+/// 게임 업데이트 루프
+/// 매 프레임마다 호출됨
 function update(time, delta) {
+  // player가 없거나 죽었으면 업데이트 스킵
+  if (!player || !player.active) {
+    return;
+  }
+
   const { width, height } = this.sys.game.config;
 
   for (let tile of tiles) {
@@ -264,7 +328,7 @@ function update(time, delta) {
     // 랜덤 행성 생성
     const key = Phaser.Utils.Array.GetRandom(planetKeys);
     const x = Phaser.Math.Between(50, width - 50);
-    const y = -50;
+    const y = -50  ;
     const planet = game.scene.scenes[0].add.image(x, y, key)
       .setScale(0.3)
       .setAlpha(0.7);
@@ -318,15 +382,18 @@ function update(time, delta) {
 
 }
 
+// 총알 발사 함수
+// this: 현재 씬, player: 플레이어 객체
 function fireBullet() {
-  const bullet = this.bullets.get(player.x, player.y - 20, 'bullets', 1);
-  if (bullet) {
-    bullet.setActive(true);
-    bullet.setVisible(true);
-    bullet.setVelocityY(-500);
-    bullet.setScale(1.5);
-    bullet.setCollideWorldBounds(true);  // 화면 경계 감지 활성화
-    bullet.body.onWorldBounds = true;    // worldbounds 이벤트 사용
+  if (powerLevel === 1) {
+    fireSingleBullet.call(this, player.x, player.y - 20);
+  } else if (powerLevel === 2) {
+    fireSingleBullet.call(this, player.x - 10, player.y - 20);
+    fireSingleBullet.call(this, player.x + 10, player.y - 20);
+  } else if (powerLevel >= 3) {
+    fireSingleBullet.call(this, player.x - 15, player.y - 20);
+    fireSingleBullet.call(this, player.x, player.y - 20);
+    fireSingleBullet.call(this, player.x + 15, player.y - 20);
   }
 
   // 적 제거
@@ -337,7 +404,20 @@ function fireBullet() {
   });
 }
 
+function fireSingleBullet(x, y) {
+  const bullet = this.bullets.get(x, y, 'bullets', 1);
+  if (bullet) {
+    bullet.setActive(true);
+    bullet.setVisible(true);
+    bullet.setVelocityY(-500);
+    bullet.setScale(1.5);
+    bullet.setCollideWorldBounds(true);
+    bullet.body.onWorldBounds = true;
+  }
+}
 
+// 적 생성 함수
+// 왼쪽에서 적 생성
 function spawnLeftEnemies(scene) {
   const leftPositions = [100, 150, 200];
   leftPositions.forEach(x => {
@@ -347,6 +427,7 @@ function spawnLeftEnemies(scene) {
   });
 }
 
+// 오른쪽에서 적 생성
 function spawnRightEnemies(scene) {
   const rightPositions = [400, 450, 500];
   rightPositions.forEach(x => {
@@ -356,15 +437,91 @@ function spawnRightEnemies(scene) {
   });
 }
 
+// 총알이 적을 맞췄을 때 처리
+// bullet: 총알, enemy: 적
 function handleBulletHitsEnemy(bullet, enemy) {
   bullet.destroy();
   enemy.disableBody(true, true);
 
+  // 폭발 이펙트
   const explosion = enemy.scene.add.sprite(enemy.x, enemy.y, 'explosion1');
-  explosion.setScale(0.5); // 필요시 크기 조정
+  explosion.setScale(0.5);
+  explosion.play('explosion1');
+  explosion.on('animationcomplete', () => explosion.destroy());
+
+  // 지금 죽은 enemy가 가장 왼쪽이었는지 확인
+  if (enemy.x == 100 || enemy.x == 500) { // 마지막 적이면서 x == 100 조건
+    // 파워업 아이템 생성
+    const powerup = enemy.scene.powerups.create(enemy.x, enemy.y, 'powerup');
+    powerup.play('powerup_anim');
+    powerup.setVelocityY(100);
+  }
+}
+
+// 적이 플레이어에게 총알을 발사하는 함수
+// x, y: 적의 위치
+function fireEnemyBullet(x, y) {
+  const bullet = this.enemyBullets.get(x, y + 10, 'enemyBullet', 1);
+  if (bullet) {
+    bullet.setActive(true);
+    bullet.setVisible(true);
+    bullet.enableBody(true, x, y + 10, true, true); // 위치와 상태 초기화
+    bullet.setVelocityY(200); // 아래로
+    bullet.setScale(1);
+    bullet.setCollideWorldBounds(true);
+
+    // 화면 벗어나면 제거
+    bullet.body.onWorldBounds = true;
+    bullet.body.world.on('worldbounds', function(body) {
+      if (body.gameObject === bullet) {
+        bullet.destroy();
+      }
+    });
+  }
+}
+
+// 플레이어가 적의 총알에 맞았을 때 처리
+// bullet: 적의 총알, player: 플레이어
+function handlePlayerHitByEnemyBullet(bullet, player) {
+  bullet.destroy();      // 적 미사일 제거
+  player.disableBody(true, true); // 플레이어 제거
+
+  const explosion = player.scene.add.sprite(player.x, player.y, 'explosion1');
+  explosion.setScale(0.5);
+  explosion.play('explosion1');
+  explosion.on('animationcomplete', () => {
+    explosion.destroy();
+  });
+
+  // TODO: 게임 오버 처리 등 추가
+}
+
+// 플레이어가 적과 충돌했을 때 처리
+function handlePlayerHitsEnemy(player, enemy) {
+  // 플레이어 죽이기 (숨기거나 제거)
+  player.disableBody(true, true);
+
+  // 폭발 이펙트
+  const explosion = player.scene.add.sprite(player.x, player.y, 'explosion1');
+  explosion.setScale(0.5);
   explosion.play('explosion1');
 
   explosion.on('animationcomplete', () => {
     explosion.destroy();
   });
+
+  // 적도 함께 제거하려면 아래도 활성화
+  enemy.disableBody(true, true);
+}
+
+// 플레이어가 파워업 아이템을 먹었을 때 처리
+// player: 플레이어 객체, powerup: 파워업 아이템
+function collectPowerup(player, powerup) {
+  powerup.destroy();
+
+  if (powerLevel < 3) {
+    powerLevel++;
+  }
+
+  // 효과음이나 이펙트도 여기에 추가 가능
 }

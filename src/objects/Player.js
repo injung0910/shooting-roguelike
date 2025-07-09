@@ -1,53 +1,46 @@
 export default class Player {
-  constructor(scene) {
+  constructor(scene, selectedKey = 'player1') {
     this.scene = scene;
+    this.selectedKey = selectedKey;
 
-    // 애니메이션 미리 정의
     this.createAnimations();
 
-    // 플레이어 스프라이트 생성
     this.sprite = scene.physics.add.sprite(
       scene.scale.width / 2,
       scene.scale.height - 100,
-      'player1'
+      selectedKey
     );
 
     this.sprite.setCollideWorldBounds(true);
-    this.sprite.play('fly');
+    this.sprite.play(`${selectedKey}_fly`);
 
-    // 키보드 입력
     this.cursors = scene.input.keyboard.createCursorKeys();
   }
 
   createAnimations() {
     const anims = this.scene.anims;
 
-    if (!anims.exists('fly')) {
-      anims.create({
-        key: 'fly',
-        frames: anims.generateFrameNumbers('player1', { start: 0, end: 3 }),
-        frameRate: 10,
-        repeat: -1
-      });
-    }
+    const keys = ['fly', 'left', 'right'];
+    const frameRanges = {
+      fly: [0, 3],
+      left: [4, 11],
+      right: [12, 19],
+    };
 
-    if (!anims.exists('left')) {
-      anims.create({
-        key: 'left',
-        frames: anims.generateFrameNumbers('player1', { start: 4, end: 11 }),
-        frameRate: 10,
-        repeat: -1
-      });
-    }
-
-    if (!anims.exists('right')) {
-      anims.create({
-        key: 'right',
-        frames: anims.generateFrameNumbers('player1', { start: 12, end: 19 }),
-        frameRate: 10,
-        repeat: -1
-      });
-    }
+    keys.forEach(key => {
+      const animKey = `${this.selectedKey}_${key}`;
+      if (!anims.exists(animKey)) {
+        anims.create({
+          key: animKey,
+          frames: anims.generateFrameNumbers(this.selectedKey, {
+            start: frameRanges[key][0],
+            end: frameRanges[key][1]
+          }),
+          frameRate: 10,
+          repeat: -1
+        });
+      }
+    });
   }
 
   update() {
@@ -57,19 +50,23 @@ export default class Player {
 
     if (!sprite || !sprite.active) return;
 
-    // 좌우 이동
     if (left.isDown) {
       sprite.setVelocityX(-speed);
-      if (sprite.anims.currentAnim?.key !== 'left') sprite.play('left');
+      if (sprite.anims.currentAnim?.key !== `${this.selectedKey}_left`) {
+        sprite.play(`${this.selectedKey}_left`);
+      }
     } else if (right.isDown) {
       sprite.setVelocityX(speed);
-      if (sprite.anims.currentAnim?.key !== 'right') sprite.play('right');
+      if (sprite.anims.currentAnim?.key !== `${this.selectedKey}_right`) {
+        sprite.play(`${this.selectedKey}_right`);
+      }
     } else {
       sprite.setVelocityX(0);
-      if (sprite.anims.currentAnim?.key !== 'fly') sprite.play('fly');
+      if (sprite.anims.currentAnim?.key !== `${this.selectedKey}_fly`) {
+        sprite.play(`${this.selectedKey}_fly`);
+      }
     }
 
-    // 위아래 이동
     if (up.isDown) {
       sprite.setVelocityY(-speed);
     } else if (down.isDown) {
@@ -77,5 +74,9 @@ export default class Player {
     } else {
       sprite.setVelocityY(0);
     }
+  }
+
+  getSprite() {
+    return this.sprite;
   }
 }

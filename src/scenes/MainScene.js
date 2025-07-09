@@ -6,6 +6,7 @@ import Powerup from '../objects/Powerup';
 import Stage1 from '../stages/Stage1';
 import Boss1 from '../bosses/Boss1';
 import { loadAllAssets } from '../loaders/AssetLoader.js';
+import TextStyles from '../utils/TextStyle.js'
 
 
 export default class MainScene extends Phaser.Scene {
@@ -24,7 +25,8 @@ export default class MainScene extends Phaser.Scene {
     this.bulletManager = new BulletManager(this, this.player); // 총알 발사 등
     this.powerupManager = new Powerup(this, this.player);      // 파워업 충돌 처리 등
 
-    // 충돌 처리도 여기서 등록
+    this.add.text(180, 450, 'START GAME', TextStyles.title);
+
   }
 
   update(time, delta) {

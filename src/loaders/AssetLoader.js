@@ -229,6 +229,13 @@ function loadEnemies(scene) {
   // tankcannon_3b
   scene.load.image('tankcannon_3b', '/assets/enemies/08 tank/tankcannon-03B.png');
 
+
+  // enemy1 3프레임
+  scene.load.spritesheet('enemy1', '/assets/enemies/09 enemy/spritesheet_enemy_1.png', {frameWidth: 48,frameHeight: 48,});
+  // enemy2 3프레임
+  scene.load.spritesheet('enemy2', '/assets/enemies/09 enemy/spritesheet_enemy_2.png', {frameWidth: 48,frameHeight: 48,});
+  // large_enemy
+  scene.load.image('enemy3', '/assets/enemies/09 enemy/large_enemy.png');
 }
 
 // 4. 총알
@@ -324,26 +331,30 @@ function loadIcons(scene) {
 
 // 7. UI 관련 이미지 (있다면)
 function loadUI(scene) {
-  // scene.load.image('ui_healthbar', '/assets/ui/healthbar.png');
+  scene.load.image('health_bar', '/assets/ui/health_bar.png');
+  scene.load.image('health', '/assets/ui/health.png');
+
+  scene.load.image('icon-health', '/assets/ui/icon-health.png');
+  scene.load.image('icon-powerup', '/assets/ui/powerup.png');
 }
 
 // 8. support unit
 function loadSupportUnits(scene) {
   
   // support_blue 스프라이트 시트 로드 2프레임
-  scene.load.spritesheet('support_blue', '/assets/Support Units/support_units-blue.png', {frameWidth: 48,frameHeight: 48,});
+  scene.load.spritesheet('support_blue', '/assets/support Units/support_units-blue.png', {frameWidth: 48,frameHeight: 48,});
 
   // support_green 스프라이트 시트 로드 2프레임
-  scene.load.spritesheet('support_green', '/assets/Support Units/support_units-green.png', {frameWidth: 48,frameHeight: 48,});
+  scene.load.spritesheet('support_green', '/assets/support Units/support_units-green.png', {frameWidth: 48,frameHeight: 48,});
 
   // support_grey 스프라이트 시트 로드 2프레임
-  scene.load.spritesheet('support_grey', '/assets/Support Units/support_units-grey.png', {frameWidth: 48,frameHeight: 48,});
+  scene.load.spritesheet('support_grey', '/assets/support Units/support_units-grey.png', {frameWidth: 48,frameHeight: 48,});
 
   // support_purple 스프라이트 시트 로드 2프레임
-  scene.load.spritesheet('support_purple', '/assets/Support Units/support_units-purple.png', {frameWidth: 48,frameHeight: 48,});
+  scene.load.spritesheet('support_purple', '/assets/support Units/support_units-purple.png', {frameWidth: 48,frameHeight: 48,});
 
   // support_red 스프라이트 시트 로드 2프레임
-  scene.load.spritesheet('support_red', '/assets/Support Units/support_units-red.png', {frameWidth: 48,frameHeight: 48,});
+  scene.load.spritesheet('support_red', '/assets/support Units/support_units-red.png', {frameWidth: 48,frameHeight: 48,});
 }
 
 // 9. bosses

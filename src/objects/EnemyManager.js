@@ -15,7 +15,7 @@ export default class EnemyManager {
     // 적 그룹 생성
     this.enemies = scene.physics.add.group();
 
-    this.spawnInitialEnemies();
+    //this.spawnInitialEnemies();
   }
 
   spawnInitialEnemies() {

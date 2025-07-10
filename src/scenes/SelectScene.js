@@ -1,10 +1,18 @@
+import AudioManager from '../audio/AudioManager.js';
+
 export default class SelectScene extends Phaser.Scene {
   constructor() {
     super({ key: 'SelectScene' });
   }
 
- create() {
-      // 1. 배경
+  create() {
+    
+    // bgm 설정
+    this.sound.stopAll();
+    this.audioManager = new AudioManager(this);
+    this.audioManager.playBGM('bgm_shipselect');
+
+    // 1. 배경
     this.add.image(0, 0, 'purple_background')
       .setOrigin(0)
       .setDisplaySize(600, 800);
@@ -74,9 +82,9 @@ export default class SelectScene extends Phaser.Scene {
     });
 
     // 하단 안내
-    this.add.text(centerX, this.scale.height - 50, '← → SELECT | ENTER : START | SPACE : POWERUP', {
+    this.add.text(centerX, this.scale.height - 50, '← → SELECT | ENTER : START | SPACE : POWERUP PREVIEW', {
       fontFamily: 'ThaleahFat',
-      fontSize: '28px',
+      fontSize: '24px',
       color: '#cccccc'
     }).setOrigin(0.5);
 
@@ -167,20 +175,31 @@ export default class SelectScene extends Phaser.Scene {
     this.updateSelection();
     this.updateSelectedPlane('player1');
 
+    let audio;
+
+    audio = new AudioManager(this);
+
     // 조작설정
     this.input.keyboard.on('keydown-LEFT', () => {
+      audio.playSFX('sfx_ship_select');
       this.selectedIndex = (this.selectedIndex - 1 + this.planeData.length) % this.planeData.length;
       this.updateSelection();
       this.updateSelectedPlane(this.planeData[this.selectedIndex].key);
     });
 
     this.input.keyboard.on('keydown-RIGHT', () => {
+      audio.playSFX('sfx_ship_select');
       this.selectedIndex = (this.selectedIndex + 1) % this.planeData.length;
       this.updateSelection();
       this.updateSelectedPlane(this.planeData[this.selectedIndex].key);
     });
 
     this.input.keyboard.on('keydown-ENTER', () => {
+      if(this.selectedIndex == 0){
+        audio.playSFX('sfx_falcon_select', { volume: 1.5 });
+      }else {
+        audio.playSFX('sfx_cryphix_select', { volume: 1.5 });
+      }
       const selected = this.planeData[this.selectedIndex];
       this.registry.set('selectedPlane', selected.key);
 
@@ -206,6 +225,7 @@ export default class SelectScene extends Phaser.Scene {
 
     // 스페이스바로 파워업 상태 전환
     this.input.keyboard.on('keydown-SPACE', () => {
+      audio.playSFX('sfx_ship_select');
       this.poweredUp = !this.poweredUp;
       const selectedKey = this.planeData[this.selectedIndex].key;
       this.updateSelectedPlane(selectedKey);

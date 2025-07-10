@@ -9,7 +9,9 @@ export function loadAllAssets(scene) {
   loadIcons(scene);
   loadUI(scene);
   loadSupportUnits(scene);
-  loadBosses(scene)
+  loadBosses(scene);
+  loadAllBGM(scene);
+  loadAllSFX(scene);
 }
 
 
@@ -341,19 +343,19 @@ function loadUI(scene) {
 function loadSupportUnits(scene) {
   
   // support_blue 스프라이트 시트 로드 2프레임
-  scene.load.spritesheet('support_blue', '/assets/Support Units/support_units-blue.png', {frameWidth: 48,frameHeight: 48,});
+  scene.load.spritesheet('support_blue', '/assets/support Units/support_units-blue.png', {frameWidth: 48,frameHeight: 48,});
 
   // support_green 스프라이트 시트 로드 2프레임
-  scene.load.spritesheet('support_green', '/assets/Support Units/support_units-green.png', {frameWidth: 48,frameHeight: 48,});
+  scene.load.spritesheet('support_green', '/assets/support Units/support_units-green.png', {frameWidth: 48,frameHeight: 48,});
 
   // support_grey 스프라이트 시트 로드 2프레임
-  scene.load.spritesheet('support_grey', '/assets/Support Units/support_units-grey.png', {frameWidth: 48,frameHeight: 48,});
+  scene.load.spritesheet('support_grey', '/assets/support Units/support_units-grey.png', {frameWidth: 48,frameHeight: 48,});
 
   // support_purple 스프라이트 시트 로드 2프레임
-  scene.load.spritesheet('support_purple', '/assets/Support Units/support_units-purple.png', {frameWidth: 48,frameHeight: 48,});
+  scene.load.spritesheet('support_purple', '/assets/support Units/support_units-purple.png', {frameWidth: 48,frameHeight: 48,});
 
   // support_red 스프라이트 시트 로드 2프레임
-  scene.load.spritesheet('support_red', '/assets/Support Units/support_units-red.png', {frameWidth: 48,frameHeight: 48,});
+  scene.load.spritesheet('support_red', '/assets/support Units/support_units-red.png', {frameWidth: 48,frameHeight: 48,});
 }
 
 // 9. bosses
@@ -372,4 +374,32 @@ function loadBosses(scene) {
   scene.load.spritesheet('boss02_cannon_double', '/assets/enemies/Boss Enemies/Boss 02/cannon_double.png', {frameWidth: 42,frameHeight: 42,});
   // boss02_cannon_single 스프라이트 시트 로드 3프레임
   scene.load.spritesheet('boss02_cannon_single', '/assets/enemies/Boss Enemies/Boss 02/cannon_single.png', {frameWidth: 32,frameHeight: 32,});
+}
+
+// 10. bgm
+function loadAllBGM(scene) {
+  scene.load.audio('bgm_boss01', '/assets/audio/bgm/bgm_boss01.ogg');
+  scene.load.audio('bgm_clear', '/assets/audio/bgm/bgm_clear.ogg');
+  scene.load.audio('bgm_continue', '/assets/audio/bgm/bgm_continue.ogg');
+  scene.load.audio('bgm_credit', '/assets/audio/bgm/bgm_credit.ogg');
+  scene.load.audio('bgm_gameover', '/assets/audio/bgm/bgm_gameover.ogg');
+  scene.load.audio('bgm_score', '/assets/audio/bgm/bgm_score.ogg');
+  scene.load.audio('bgm_shipselect', '/assets/audio/bgm/bgm_shipselect.ogg');
+  scene.load.audio('bgm_stage01', '/assets/audio/bgm/bgm_stage01.ogg');
+  scene.load.audio('bgm_title', '/assets/audio/bgm/bgm_title.ogg');
+}
+
+// sfx
+function loadAllSFX(scene) {
+  scene.load.audio('sfx_bullet3', '/assets/audio/sfx/sfx_bullet3.wav');
+  scene.load.audio('sfx_bullet5', '/assets/audio/sfx/sfx_bullet5.wav');
+  scene.load.audio('sfx_enemy_explosion', '/assets/audio/sfx/sfx_enemy_explosion.wav');
+  scene.load.audio('sfx_ship_select', '/assets/audio/sfx/sfx_ship_select.wav');
+  scene.load.audio('sfx_player_explosion', '/assets/audio/sfx/sfx_player_explosion.wav');
+  scene.load.audio('sfx_powerup', '/assets/audio/sfx/sfx_powerup.wav');
+  scene.load.audio('sfx_support_powerup', '/assets/audio/sfx/sfx_support_powerup.wav');
+  scene.load.audio('sfx_ui_select', '/assets/audio/sfx/sfx_ui_select.wav');
+  scene.load.audio('sfx_ui_success', '/assets/audio/sfx/sfx_ui_success.wav');
+  scene.load.audio('sfx_falcon_select', '/assets/audio/sfx/sfx_falcon_select.wav');
+  scene.load.audio('sfx_cryphix_select', '/assets/audio/sfx/sfx_cryphix_select.wav');
 }

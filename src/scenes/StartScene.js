@@ -1,3 +1,5 @@
+import AudioManager from '../audio/AudioManager.js';
+
 export default class StartScene extends Phaser.Scene {
   constructor() {
     super({ key: 'StartScene' });
@@ -5,6 +7,12 @@ export default class StartScene extends Phaser.Scene {
   }
 
   create() {
+    
+    // bgm 설정
+    this.sound.stopAll(); // 일단 전부 끄고
+    this.audioManager = new AudioManager(this);
+    this.audioManager.playBGM('bgm_title');
+    
     console.log(this.textures.exists('start-bg'));
 
     this.cameras.main.fadeIn(500, 0, 0, 0);
@@ -43,19 +51,28 @@ export default class StartScene extends Phaser.Scene {
       repeat: -1
     });
 
+    const centerX = this.scale.width / 2;
+    const startText = this.add.text(centerX, 600, 'START GAME', { fontFamily: 'ThaleahFat',fontSize: '48px', color: '#ffffff' }).setOrigin(0.5).setInteractive();
+    const aboutText = this.add.text(centerX, 640, 'OPTION', { fontFamily: 'ThaleahFat',fontSize: '48px', color: '#ffffff' }).setOrigin(0.5).setInteractive();
+    const exitText = this.add.text(centerX, 680, 'ABOUT', { fontFamily: 'ThaleahFat',fontSize: '48px', color: '#ffffff' }).setOrigin(0.5).setInteractive();
+
     // 메뉴 항목 생성
-    const menuOptions = ['START', 'OPTION', 'ABOUT'];
+    const menuOptions = [startText, aboutText, exitText];
     const baseY = 600;
     const gap = 40;
 
-    menuOptions.forEach((text, i) => {
-      const item = this.add.text(this.scale.width / 2, baseY + i * gap, text, {
-        fontFamily: 'ThaleahFat',
-        fontSize: '48px',
-        color: '#ffffff',
-      }).setOrigin(0.5);
+    menuOptions.forEach((item, i) => {
       this.menuItems.push(item);
+
+      item.on('pointerdown', () => {
+        this.audioManager.playSFX('sfx_ui_success');
+        this.handleMenuSelection(item.text);
+      });
     });
+
+    // 터치/클릭 이벤트 등록
+
+
 
     this.add.text(this.scale.width / 2, this.scale.height - 30, '© 2025 injung0910. All rights reserved.', {
       fontFamily: 'Arial',
@@ -64,31 +81,40 @@ export default class StartScene extends Phaser.Scene {
     }).setOrigin(0.5);
 
     this.updateSelection();
+    
+    let audio;
+
+    audio = new AudioManager(this);
 
     // 키 입력 처리
     this.input.keyboard.on('keydown-UP', () => {
+      audio.playSFX('sfx_ui_select');
       this.selectedIndex = (this.selectedIndex - 1 + this.menuItems.length) % this.menuItems.length;
       this.updateSelection();
     });
 
     this.input.keyboard.on('keydown-DOWN', () => {
+      audio.playSFX('sfx_ui_select');
       this.selectedIndex = (this.selectedIndex + 1) % this.menuItems.length;
       this.updateSelection();
     });
 
     this.input.keyboard.on('keydown-ENTER', () => {
+      audio.playSFX('sfx_ui_success');
       const selected = this.menuItems[this.selectedIndex].text;
       
       this.cameras.main.fadeOut(500, 0, 0, 0);
       this.cameras.main.once('camerafadeoutcomplete', () => {
-        if (selected === 'START') {
+        if (selected === 'START GAME') {
           this.scene.start('SelectScene');
         } else if (selected === 'ABOUT') {
           this.scene.start('AboutScene');
+        } else {
+
         }
       });
-
     });
+
   }
 
   updateSelection() {
@@ -110,6 +136,19 @@ export default class StartScene extends Phaser.Scene {
       } else {
         item.setColor('#ffffff');
         item.setAlpha(1);
+      }
+    });
+  }
+
+  handleMenuSelection(selected) {
+    this.cameras.main.fadeOut(500, 0, 0, 0);
+    this.cameras.main.once('camerafadeoutcomplete', () => {
+      if (selected === 'START GAME') {
+        this.scene.start('SelectScene');
+      } else if (selected === 'ABOUT') {
+        this.scene.start('AboutScene');
+      } else {
+        alert('Thanks for playing!');
       }
     });
   }

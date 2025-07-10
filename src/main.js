@@ -2,13 +2,15 @@
 import Phaser from 'phaser';
 import StartScene from './scenes/StartScene.js';
 import SelectScene from './scenes/SelectScene.js';
-import MainScene from './scenes/MainScene'; // 예시로 함께 불러옴
+import MainScene from './scenes/MainScene';
+import AboutScene from './scenes/AboutScene.js';
+import BootScene from './scenes/BootScene.js';
 
 const config = {
   type: Phaser.AUTO,
   width: 600,
   height: 800,
-  scene: [StartScene, SelectScene, MainScene], // 순서 중요: StartScene이 첫 진입
+  scene: [BootScene, StartScene, SelectScene, AboutScene, MainScene], // 순서 중요: StartScene이 첫 진입
   parent: 'game-container',
   scale: {
     mode: Phaser.Scale.FIT,
@@ -20,6 +22,9 @@ const config = {
     arcade: {
       debug: false
     }
+  },
+  dom: {
+    createContainer: true
   }
 };
 

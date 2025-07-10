@@ -1,32 +1,33 @@
 export default class StartScene extends Phaser.Scene {
   constructor() {
     super({ key: 'StartScene' });
-    this.menuItems = [];
-    this.selectedIndex = 0;
-    this.tweensList = [];
-  }
 
-  preload() {
-    // 배경 이미지 로드 (생성한 이미지 파일 경로로 바꿔주세요)
-    this.load.image('start-bg', '/img/start-bg.jpg');
   }
 
   create() {
+    console.log(this.textures.exists('start-bg'));
+
+    this.cameras.main.fadeIn(500, 0, 0, 0);
+
+    this.menuItems = [];
+    this.selectedIndex = 0;
+    this.tweensList = [];
+
     // 배경 이미지 출력
     this.add.image(0, 0, 'start-bg')
       .setOrigin(0)
       .setDisplaySize(this.scale.width, this.scale.height);
 
-    this.titleShadow = this.add.text(this.scale.width / 2 + 4, 104, 'SHOOTING GAME', {
+    this.titleShadow = this.add.text(this.scale.width / 2 + 4, 104, 'The Invaders', {
       fontFamily: 'ThaleahFat',
       fontSize: '64px',
       color: '#000000'
     }).setOrigin(0.5);
 
     // === 메인 타이틀 - 본 텍스트 (노란색) ===
-    this.titleText = this.add.text(this.scale.width / 2, 100, 'SHOOTING GAME', {
+    this.titleText = this.add.text(this.scale.width / 2, 100, 'The Invaders', {
       fontFamily: 'ThaleahFat',
-      fontSize: '64px',
+      fontSize: '86px',
       color: '#ffe066', // 밝은 노란색
       stroke: '#3b1f00', // 어두운 갈색 테두리
       strokeThickness: 4
@@ -43,18 +44,24 @@ export default class StartScene extends Phaser.Scene {
     });
 
     // 메뉴 항목 생성
-    const menuOptions = ['START', 'ABOUT'];
-    const baseY = 650;
-    const gap = 30;
+    const menuOptions = ['START', 'OPTION', 'ABOUT'];
+    const baseY = 600;
+    const gap = 40;
 
     menuOptions.forEach((text, i) => {
       const item = this.add.text(this.scale.width / 2, baseY + i * gap, text, {
         fontFamily: 'ThaleahFat',
-        fontSize: '32px',
+        fontSize: '48px',
         color: '#ffffff',
       }).setOrigin(0.5);
       this.menuItems.push(item);
     });
+
+    this.add.text(this.scale.width / 2, this.scale.height - 30, '© 2025 injung0910. All rights reserved.', {
+      fontFamily: 'Arial',
+      fontSize: '14px',
+      color: '#999999'
+    }).setOrigin(0.5);
 
     this.updateSelection();
 
@@ -71,11 +78,16 @@ export default class StartScene extends Phaser.Scene {
 
     this.input.keyboard.on('keydown-ENTER', () => {
       const selected = this.menuItems[this.selectedIndex].text;
-      if (selected === 'START') {
-        this.scene.start('SelectScene');
-      } else if (selected === 'ABOUT') {
-        window.open('/about.html', '_blank');
-      }
+      
+      this.cameras.main.fadeOut(500, 0, 0, 0);
+      this.cameras.main.once('camerafadeoutcomplete', () => {
+        if (selected === 'START') {
+          this.scene.start('SelectScene');
+        } else if (selected === 'ABOUT') {
+          this.scene.start('AboutScene');
+        }
+      });
+
     });
   }
 

@@ -1,6 +1,5 @@
 // public/src/loaders/AssetLoader.js
 
-
 export function loadAllAssets(scene) {
   loadBackgrounds(scene);
   loadPlayer(scene);
@@ -102,10 +101,14 @@ function loadPlayer(scene) {
     // 플레이어1 파워업 스프라이트 시트 로드 8프레임 (스핀)
     scene.load.spritesheet('player1_powerup_spin', '/assets/player/Plane 01/Powered Up/planes_01B_Spin.png', { frameWidth: 96, frameHeight: 96 });
     
-    // 플레이어2 스프라이트 시트 로드 20프레임
-    scene.load.spritesheet('player2', '/assets/player/Plane 02/planes_02A.png', { frameWidth: 96, frameHeight: 96 });
-    // 플레이어2 파워업 스프라이트 시트 로드 20프레임
-    scene.load.spritesheet('player2_powerup', '/assets/player/Plane 02/planes_02B.png', { frameWidth: 96, frameHeight: 96 });
+  // 플레이어9 스프라이트 시트 로드 20프레임
+    scene.load.spritesheet('player2', '/assets/player/Plane 09/Normal/planes_09A.png', { frameWidth: 96, frameHeight: 96 });
+    // 플레이어9 스프라이트 시트 로드 8프레임 (스핀)
+    scene.load.spritesheet('player2_spin', '/assets/player/Plane 09/Normal/planes_09A_Spin.png', { frameWidth: 96, frameHeight: 96 });
+    // 플레이어9 파워업 스프라이트 시트 로드 20프레임
+    scene.load.spritesheet('player2_powerup', '/assets/player/Plane 09/Powered Up/planes_09B.png', { frameWidth: 96, frameHeight: 96 });
+    // 플레이어9 파워업 스프라이트 시트 로드 8프레임 (스핀)    
+    scene.load.spritesheet('player2_powerup_spin', '/assets/player/Plane 09/Powered Up/planes_09B_Spin.png', { frameWidth: 96, frameHeight: 96 });
 
     // 플레이어3 스프라이트 시트 로드 20프레임
     scene.load.spritesheet('player3', '/assets/player/Plane 03/planes_03A.png', { frameWidth: 96, frameHeight: 96 });
@@ -136,15 +139,11 @@ function loadPlayer(scene) {
     scene.load.spritesheet('player8', '/assets/player/Plane 08/planes_08A.png', { frameWidth: 96, frameHeight: 96 });
     // 플레이어8 파워업 스프라이트 시트 로드 20프레임
     scene.load.spritesheet('player8_powerup', '/assets/player/Plane 08/planes_08B.png', { frameWidth: 96, frameHeight: 96 });
-
-    // 플레이어9 스프라이트 시트 로드 20프레임
-    scene.load.spritesheet('player9', '/assets/player/Plane 09/Normal/planes_09A.png', { frameWidth: 96, frameHeight: 96 });
-    // 플레이어9 스프라이트 시트 로드 8프레임 (스핀)
-    scene.load.spritesheet('player9_spin', '/assets/player/Plane 09/Normal/planes_09A_Spin.png', { frameWidth: 96, frameHeight: 96 });
-    // 플레이어9 파워업 스프라이트 시트 로드 20프레임
-    scene.load.spritesheet('player9_powerup', '/assets/player/Plane 09/Powered Up/planes_09B.png', { frameWidth: 96, frameHeight: 96 });
-    // 플레이어9 파워업 스프라이트 시트 로드 8프레임 (스핀)    
-    scene.load.spritesheet('player9_powerup_spin', '/assets/player/Plane 09/Powered Up/planes_09B_Spin.png', { frameWidth: 96, frameHeight: 96 });
+    
+    // 플레이어2 스프라이트 시트 로드 20프레임
+    scene.load.spritesheet('player9', '/assets/player/Plane 02/planes_02A.png', { frameWidth: 96, frameHeight: 96 });
+    // 플레이어2 파워업 스프라이트 시트 로드 20프레임
+    scene.load.spritesheet('player9_powerup', '/assets/player/Plane 02/planes_02B.png', { frameWidth: 96, frameHeight: 96 });
 }
 
 // 3. 적
@@ -192,9 +191,9 @@ function loadEnemies(scene) {
   scene.load.spritesheet('rotating_flame_sheet', '/assets/enemies/05 Mini/Fire/rotating_flame_sheet.png', {frameWidth: 24,frameHeight: 24,});
 
   // mini_2
-  scene.load.image('mini_2', '/assets/enemies/05 Mini/Bomb Mine/mini_2.png');
+  scene.load.image('mini_2', '/assets/enemies/05 Mini/Lightning/mini_2.png');
   // lightningShield 3프레임
-  scene.load.spritesheet('lightningShield', '/assets/enemies/05 Mini/Bomb Mine/lightning_shield.png', {frameWidth: 64,frameHeight: 64,});
+  scene.load.spritesheet('lightningShield', '/assets/enemies/05 Mini/Lightning/lightning_shield.png', {frameWidth: 64,frameHeight: 64,});
 
   // mini_4
   scene.load.image('mini_4', '/assets/enemies/05 Mini/Projectile/mini_4.png');
@@ -211,7 +210,7 @@ function loadEnemies(scene) {
   scene.load.image('mini_6_p1', '/assets/enemies/05 Mini/Ice/projectile_ice.png');
 
   // tankbase 1~6까지 등록
-  for (let i = 1; i <= 6; i++) {
+  for (let i = 1; i <= 5; i++) {
     const index = i.toString().padStart(2, '0'); // 01, 02, ..., 06
     scene.load.image(`tankbase_${i}`, `/assets/enemies/08 tank/tankbase_${index}.png`);
   }
@@ -294,7 +293,7 @@ function loadEffects(scene) {
   scene.load.spritesheet('shield', '/assets/effects/Shield/shield.png', {frameWidth: 96,frameHeight: 96,});
 
   // large-thrusters 스프라이트 시트 로드 3프레임
-  scene.load.spritesheet('large-thrusters', '/assets/effects/Thrusters/large-thrusters1-sheet.png', {frameWidth: 48,frameHeight: 32,});
+  scene.load.spritesheet('large-thrusters', '/assets/effects/Large Thrusters/large-thrusters1-sheet.png', {frameWidth: 48,frameHeight: 32,});
 
 }
 
@@ -335,26 +334,26 @@ function loadUI(scene) {
   scene.load.image('health', '/assets/ui/health.png');
 
   scene.load.image('icon-health', '/assets/ui/icon-health.png');
-  scene.load.image('icon-powerup', '/assets/ui/powerup.png');
+  scene.load.image('icon-powerup', '/assets/ui/icon-powerup.png');
 }
 
 // 8. support unit
 function loadSupportUnits(scene) {
   
   // support_blue 스프라이트 시트 로드 2프레임
-  scene.load.spritesheet('support_blue', '/assets/support Units/support_units-blue.png', {frameWidth: 48,frameHeight: 48,});
+  scene.load.spritesheet('support_blue', '/assets/Support Units/support_units-blue.png', {frameWidth: 48,frameHeight: 48,});
 
   // support_green 스프라이트 시트 로드 2프레임
-  scene.load.spritesheet('support_green', '/assets/support Units/support_units-green.png', {frameWidth: 48,frameHeight: 48,});
+  scene.load.spritesheet('support_green', '/assets/Support Units/support_units-green.png', {frameWidth: 48,frameHeight: 48,});
 
   // support_grey 스프라이트 시트 로드 2프레임
-  scene.load.spritesheet('support_grey', '/assets/support Units/support_units-grey.png', {frameWidth: 48,frameHeight: 48,});
+  scene.load.spritesheet('support_grey', '/assets/Support Units/support_units-grey.png', {frameWidth: 48,frameHeight: 48,});
 
   // support_purple 스프라이트 시트 로드 2프레임
-  scene.load.spritesheet('support_purple', '/assets/support Units/support_units-purple.png', {frameWidth: 48,frameHeight: 48,});
+  scene.load.spritesheet('support_purple', '/assets/Support Units/support_units-purple.png', {frameWidth: 48,frameHeight: 48,});
 
   // support_red 스프라이트 시트 로드 2프레임
-  scene.load.spritesheet('support_red', '/assets/support Units/support_units-red.png', {frameWidth: 48,frameHeight: 48,});
+  scene.load.spritesheet('support_red', '/assets/Support Units/support_units-red.png', {frameWidth: 48,frameHeight: 48,});
 }
 
 // 9. bosses

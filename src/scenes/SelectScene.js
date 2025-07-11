@@ -8,9 +8,8 @@ export default class SelectScene extends Phaser.Scene {
   create() {
     
     // bgm 설정
-    this.sound.stopAll();
     this.audioManager = new AudioManager(this);
-    this.audioManager.playBGM('bgm_shipselect');
+    this.audioManager.playBGM('bgm_shipselect', { loop: true, volume: this.audioManager.bgmVolume }, true);
 
     // 1. 배경
     this.add.image(0, 0, 'purple_background')

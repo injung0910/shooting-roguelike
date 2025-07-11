@@ -5,12 +5,14 @@ import SelectScene from './scenes/SelectScene.js';
 import MainScene from './scenes/MainScene';
 import AboutScene from './scenes/AboutScene.js';
 import BootScene from './scenes/BootScene.js';
+import LoadingScene from './scenes/LoadingScene.js';
+import OptionScene from './scenes/OptionScene.js';
 
 const config = {
   type: Phaser.AUTO,
   width: 600,
   height: 800,
-  scene: [BootScene, StartScene, SelectScene, AboutScene, MainScene], // 순서 중요: StartScene이 첫 진입
+  scene: [LoadingScene, BootScene, StartScene, SelectScene, OptionScene, AboutScene, MainScene], // 순서 중요: StartScene이 첫 진입
   parent: 'game-container',
   scale: {
     mode: Phaser.Scale.FIT,

@@ -88,7 +88,8 @@ function loadBackgrounds(scene) {
     scene.load.image(key, `/assets/backgrounds/${filename}`);
   });
 
-
+  scene.load.atlas('tile1', '/assets/backgrounds/normal-spritesheet.png', '/assets/backgrounds/normal-spritesheet.json');
+  scene.load.atlas('tile2', '/assets/backgrounds/dark-spritesheet.png', '/assets/backgrounds/dark-spritesheet.json');
 }
 
 // 2. 플레이어

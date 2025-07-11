@@ -9,11 +9,11 @@ export default class StartScene extends Phaser.Scene {
   create() {
     
     // bgm 설정
-    this.sound.stopAll(); // 일단 전부 끄고
+    if (!this.sys.settings.data?.fromOption) {
+      this.sound.stopAll();
+    }
     this.audioManager = new AudioManager(this);
     this.audioManager.playBGM('bgm_title');
-    
-    console.log(this.textures.exists('start-bg'));
 
     this.cameras.main.fadeIn(500, 0, 0, 0);
 
@@ -109,8 +109,8 @@ export default class StartScene extends Phaser.Scene {
           this.scene.start('SelectScene');
         } else if (selected === 'ABOUT') {
           this.scene.start('AboutScene');
-        } else {
-
+        } else if (selected === 'OPTION') {
+          this.scene.start('OptionScene');
         }
       });
     });
@@ -147,8 +147,8 @@ export default class StartScene extends Phaser.Scene {
         this.scene.start('SelectScene');
       } else if (selected === 'ABOUT') {
         this.scene.start('AboutScene');
-      } else {
-        alert('Thanks for playing!');
+      } else if (selected === 'OPTION'){
+        this.scene.start('OptionScene');
       }
     });
   }

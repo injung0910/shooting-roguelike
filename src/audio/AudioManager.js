@@ -62,4 +62,8 @@ export default class AudioManager {
     this.sfxVolume = volume;
     localStorage.setItem('sfxVolume', volume);
   }
+
+  setScene(scene) {
+    this.scene = scene;
+  }  
 }

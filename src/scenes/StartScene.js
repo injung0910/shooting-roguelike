@@ -1,5 +1,3 @@
-import AudioManager from '../audio/AudioManager.js';
-
 export default class StartScene extends Phaser.Scene {
   constructor() {
     super({ key: 'StartScene' });
@@ -12,8 +10,8 @@ export default class StartScene extends Phaser.Scene {
     if (!this.sys.settings.data?.fromOption) {
       this.sound.stopAll();
     }
-    this.audioManager = new AudioManager(this);
-    this.audioManager.playBGM('bgm_title');
+    this.game.audioManager.scene = this;
+    this.game.audioManager.playBGM('bgm_title');
 
     this.cameras.main.fadeIn(500, 0, 0, 0);
 
@@ -65,7 +63,7 @@ export default class StartScene extends Phaser.Scene {
       this.menuItems.push(item);
 
       item.on('pointerdown', () => {
-        this.audioManager.playSFX('sfx_ui_success');
+        this.game.audioManager.playSFX('sfx_ui_success');
         this.handleMenuSelection(item.text);
       });
     });
@@ -81,26 +79,22 @@ export default class StartScene extends Phaser.Scene {
     }).setOrigin(0.5);
 
     this.updateSelection();
-    
-    let audio;
-
-    audio = new AudioManager(this);
 
     // 키 입력 처리
     this.input.keyboard.on('keydown-UP', () => {
-      audio.playSFX('sfx_ui_select');
+      this.game.audioManager.playSFX('sfx_ui_select');
       this.selectedIndex = (this.selectedIndex - 1 + this.menuItems.length) % this.menuItems.length;
       this.updateSelection();
     });
 
     this.input.keyboard.on('keydown-DOWN', () => {
-      audio.playSFX('sfx_ui_select');
+      this.game.audioManager.playSFX('sfx_ui_select');
       this.selectedIndex = (this.selectedIndex + 1) % this.menuItems.length;
       this.updateSelection();
     });
 
     this.input.keyboard.on('keydown-ENTER', () => {
-      audio.playSFX('sfx_ui_success');
+      this.game.audioManager.playSFX('sfx_ui_success');
       const selected = this.menuItems[this.selectedIndex].text;
       
       this.cameras.main.fadeOut(500, 0, 0, 0);

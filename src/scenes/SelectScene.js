@@ -1,5 +1,3 @@
-import AudioManager from '../audio/AudioManager.js';
-
 export default class SelectScene extends Phaser.Scene {
   constructor() {
     super({ key: 'SelectScene' });
@@ -8,8 +6,8 @@ export default class SelectScene extends Phaser.Scene {
   create() {
     
     // bgm 설정
-    this.audioManager = new AudioManager(this);
-    this.audioManager.playBGM('bgm_shipselect', { loop: true, volume: this.audioManager.bgmVolume }, true);
+    this.game.audioManager.scene = this;
+    this.game.audioManager.playBGM('bgm_shipselect', { loop: true, volume: this.game.audioManager.bgmVolume }, true);
 
     // 1. 배경
     this.add.image(0, 0, 'purple_background')
@@ -68,8 +66,13 @@ export default class SelectScene extends Phaser.Scene {
       // 스프라이트에 애니메이션 적용
       const sprite = this.add.sprite(x, centerY, data.key)
         .setScale(2)
-        .play(`${data.key}_idle`);
-      this.planes.push(sprite);
+        .play(`${data.key}_idle`).setInteractive();
+
+      sprite.on('pointerdown', () => {
+        this.selectShip(i); // 🔸 해당 기체 선택 처리 함수 호출
+      });
+      
+        this.planes.push(sprite);
 
       // 텍스트 추가 (기본 흰색)
       const name = this.add.text(x, centerY + 120, data.name, {
@@ -174,20 +177,17 @@ export default class SelectScene extends Phaser.Scene {
     this.updateSelection();
     this.updateSelectedPlane('player1');
 
-    let audio;
-
-    audio = new AudioManager(this);
 
     // 조작설정
     this.input.keyboard.on('keydown-LEFT', () => {
-      audio.playSFX('sfx_ship_select');
+      this.game.audioManager.playSFX('sfx_ship_select');
       this.selectedIndex = (this.selectedIndex - 1 + this.planeData.length) % this.planeData.length;
       this.updateSelection();
       this.updateSelectedPlane(this.planeData[this.selectedIndex].key);
     });
 
     this.input.keyboard.on('keydown-RIGHT', () => {
-      audio.playSFX('sfx_ship_select');
+      this.game.audioManager.playSFX('sfx_ship_select');
       this.selectedIndex = (this.selectedIndex + 1) % this.planeData.length;
       this.updateSelection();
       this.updateSelectedPlane(this.planeData[this.selectedIndex].key);
@@ -195,16 +195,18 @@ export default class SelectScene extends Phaser.Scene {
 
     this.input.keyboard.on('keydown-ENTER', () => {
       if(this.selectedIndex == 0){
-        audio.playSFX('sfx_falcon_select', { volume: 1.5 });
+        this.game.audioManager.playSFX('sfx_falcon_select', { volume: 1.5 });
       }else {
-        audio.playSFX('sfx_cryphix_select', { volume: 1.5 });
+        this.game.audioManager.playSFX('sfx_cryphix_select', { volume: 1.5 });
       }
       const selected = this.planeData[this.selectedIndex];
       this.registry.set('selectedPlane', selected.key);
 
       this.cameras.main.fadeOut(500, 0, 0, 0);
       this.cameras.main.once('camerafadeoutcomplete', () => {
-        this.scene.start('GameScene');
+        this.scene.start('StageIntroScene', { ship: this.planeData[this.selectedIndex],
+                                              stageKey: 'Stage1'
+        });
       });
     });
 
@@ -224,11 +226,12 @@ export default class SelectScene extends Phaser.Scene {
 
     // 스페이스바로 파워업 상태 전환
     this.input.keyboard.on('keydown-SPACE', () => {
-      audio.playSFX('sfx_ship_select');
+      this.game.audioManager.playSFX('sfx_ship_select');
       this.poweredUp = !this.poweredUp;
       const selectedKey = this.planeData[this.selectedIndex].key;
       this.updateSelectedPlane(selectedKey);
     });
+
   }
 
   updateSelection() {
@@ -351,6 +354,16 @@ export default class SelectScene extends Phaser.Scene {
       duration: 600,
       yoyo: true,
       repeat: -1
+    });
+  }
+
+  selectShip(index) {
+    const selectedShip = this.planeData[index];
+    this.game.audioManager.playSFX('sfx_ship_select');   
+
+    this.cameras.main.fadeOut(500, 0, 0, 0);
+    this.cameras.main.once('camerafadeoutcomplete', () => {
+      this.scene.start('StageIntroScene', { ship: selectedShip,stageKey: 'Stage1'});
     });
   }
 }

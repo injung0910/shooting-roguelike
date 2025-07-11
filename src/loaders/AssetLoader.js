@@ -386,8 +386,9 @@ function loadAllBGM(scene) {
   scene.load.audio('bgm_gameover', '/assets/audio/bgm/bgm_gameover.ogg');
   scene.load.audio('bgm_score', '/assets/audio/bgm/bgm_score.ogg');
   scene.load.audio('bgm_shipselect', '/assets/audio/bgm/bgm_shipselect.ogg');
-  scene.load.audio('bgm_stage01', '/assets/audio/bgm/bgm_stage01.ogg');
   scene.load.audio('bgm_title', '/assets/audio/bgm/bgm_title.ogg');
+
+  scene.load.audio('bgm_Stage1', '/assets/audio/bgm/bgm_stage01.ogg');
 }
 
 // sfx

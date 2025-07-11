@@ -1,5 +1,3 @@
-import AudioManager from '../audio/AudioManager.js';
-
 export default class OptionScene extends Phaser.Scene {
   constructor() {
     super({ key: 'OptionScene' });
@@ -8,7 +6,7 @@ export default class OptionScene extends Phaser.Scene {
   create() {
     const centerX = this.scale.width / 2;
 
-    this.audioManager = new AudioManager(this);
+    this.game.audioManager.scene = this;
 
     // --- 기본 설정
     this.menuTargets = ['bgm', 'sfx', 'mute', 'reset', 'back'];
@@ -108,26 +106,26 @@ export default class OptionScene extends Phaser.Scene {
 
     // --- 키보드 입력 처리
     this.input.keyboard.on('keydown-UP', () => {
-      this.audioManager.playSFX('sfx_ui_select');
+      this.game.audioManager.playSFX('sfx_ui_select');
       this.selectedIndex = (this.selectedIndex - 1 + this.menuTargets.length) % this.menuTargets.length;
       this.updateSelection();
     });
 
     this.input.keyboard.on('keydown-DOWN', () => {
-      this.audioManager.playSFX('sfx_ui_select');
+      this.game.audioManager.playSFX('sfx_ui_select');
       this.selectedIndex = (this.selectedIndex + 1) % this.menuTargets.length;
       this.updateSelection();
     });
 
     this.input.keyboard.on('keydown-LEFT', () => {
-      this.audioManager.playSFX('sfx_ui_select');
+      this.game.audioManager.playSFX('sfx_ui_select');
       const target = this.menuTargets[this.selectedIndex];
       if (target === 'bgm') this.adjustVolume('bgm', -0.1);
       if (target === 'sfx') this.adjustVolume('sfx', -0.1);
     });
 
     this.input.keyboard.on('keydown-RIGHT', () => {
-      this.audioManager.playSFX('sfx_ui_select');
+      this.game.audioManager.playSFX('sfx_ui_select');
       const target = this.menuTargets[this.selectedIndex];
       if (target === 'bgm') this.adjustVolume('bgm', 0.1);
       if (target === 'sfx') this.adjustVolume('sfx', 0.1);
@@ -187,21 +185,19 @@ export default class OptionScene extends Phaser.Scene {
     if (type === 'bgm') {
       this.currentBgmVolume = Phaser.Math.Clamp(this.currentBgmVolume + delta, 0, 1);
       this.bgmVolume.setText(`${Math.round(this.currentBgmVolume * 100)}%`);
-        console.log('this.audioManager.currentBGM : ' + this.audioManager.currentBGM);
-        console.log('this.currentBgmVolume  : ' + this.currentBgmVolume);
         // AudioManager가 있으면
-        if (this.audioManager) {
-        if (!this.audioManager.currentBGM || !this.audioManager.currentBGM.isPlaying) {
+        if (this.game.audioManager) {
+        if (!this.game.audioManager.currentBGM || !this.game.audioManager.currentBGM.isPlaying) {
             // BGM이 꺼져 있거나 없으면 다시 재생
-            this.audioManager.playBGM('bgm_title', { volume: this.currentBgmVolume });
+            this.game.audioManager.playBGM('bgm_title', { volume: this.currentBgmVolume });
         } else {
-            this.audioManager.currentBGM.setVolume(this.currentBgmVolume);
+            this.game.audioManager.currentBGM.setVolume(this.currentBgmVolume);
         }
         }
     } else if (type === 'sfx') {
       this.currentSfxVolume = Phaser.Math.Clamp(this.currentSfxVolume + delta, 0, 1);
       this.sfxVolume.setText(`${Math.round(this.currentSfxVolume * 100)}%`);
-      this.audioManager.setSFXVolume(this.currentSfxVolume); 
+      this.game.audioManager.setSFXVolume(this.currentSfxVolume); 
     }
   }
 
@@ -238,7 +234,7 @@ export default class OptionScene extends Phaser.Scene {
   }  
 
   saveVolumeSettings() {
-    this.audioManager.setBGMVolume(this.currentBgmVolume);
-    this.audioManager.setSFXVolume(this.currentSfxVolume); 
+    this.game.audioManager.setBGMVolume(this.currentBgmVolume);
+    this.game.audioManager.setSFXVolume(this.currentSfxVolume); 
   }
 }

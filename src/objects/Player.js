@@ -1,82 +1,108 @@
-export default class Player {
-  constructor(scene, selectedKey = 'player1') {
+export default class Player extends Phaser.Physics.Arcade.Sprite {
+  constructor(scene, x, y, data) {
+    super(scene, 300, 700, data.key);
+    
     this.scene = scene;
-    this.selectedKey = selectedKey;
+    this.data = data; // key, name 등 전체 저장
 
-    this.createAnimations();
+    scene.add.existing(this);
+    scene.physics.add.existing(this);
+    this.setDepth(999); // 다른 오브젝트보다 위로
 
-    this.sprite = scene.physics.add.sprite(
-      scene.scale.width / 2,
-      scene.scale.height - 100,
-      selectedKey
-    );
+    // 기체별 피격사이즈 설정
+    if(this.data.ship.name === 'Falcon'){
+      this.setSize(96 * 0.2, 96 * 0.4).setOffset(96 * 0.4, 96 * 0.4);
+    }else{
+      this.setSize(96 * 0.48, 96 * 0.25).setOffset(96 * 0.25, 96 * 0.45);
+    }
 
-    this.sprite.setCollideWorldBounds(true);
-    this.sprite.play(`${selectedKey}_fly`);
+    // 충돌 범위 설정 등
+    this.setCollideWorldBounds(true);
 
+    // 입력 처리
     this.cursors = scene.input.keyboard.createCursorKeys();
+
+    // 터치 관련 변수
+    this.touchTarget = null;
+    this.speed = 200;
+
+    this.registerTouchControls();
+    this.createAnimations();
+    this.play('idle');
   }
 
   createAnimations() {
-    const anims = this.scene.anims;
+    this.scene.anims.create({
+      key: 'idle',
+      frames: this.scene.anims.generateFrameNumbers(this.data.ship.key, { start: 0, end: 3 }),
+      frameRate: 10,
+      repeat: -1
+    });
 
-    const keys = ['fly', 'left', 'right'];
-    const frameRanges = {
-      fly: [0, 3],
-      left: [4, 11],
-      right: [12, 19],
-    };
+    this.scene.anims.create({
+      key: 'left',
+      frames: this.scene.anims.generateFrameNumbers(this.data.ship.key, { start: 4, end: 11 }),
+      frameRate: 15,
+      repeat: -1
+    });
 
-    keys.forEach(key => {
-      const animKey = `${this.selectedKey}_${key}`;
-      if (!anims.exists(animKey)) {
-        anims.create({
-          key: animKey,
-          frames: anims.generateFrameNumbers(this.selectedKey, {
-            start: frameRanges[key][0],
-            end: frameRanges[key][1]
-          }),
-          frameRate: 10,
-          repeat: -1
-        });
+    this.scene.anims.create({
+      key: 'right',
+      frames: this.scene.anims.generateFrameNumbers(this.data.ship.key, { start: 12, end: 19 }),
+      frameRate: 15,
+      repeat: -1
+    });
+  }
+
+  registerTouchControls() {
+    this.scene.input.on('pointerdown', (pointer) => {
+      this.touchTarget = { x: pointer.x, y: pointer.y };
+    });
+
+    this.scene.input.on('pointermove', (pointer) => {
+      if (pointer.isDown) {
+        this.touchTarget = { x: pointer.x, y: pointer.y };
       }
     });
   }
 
   update() {
-    const speed = 300;
-    const sprite = this.sprite;
-    const { left, right, up, down } = this.cursors;
-
-    if (!sprite || !sprite.active) return;
-
-    if (left.isDown) {
-      sprite.setVelocityX(-speed);
-      if (sprite.anims.currentAnim?.key !== `${this.selectedKey}_left`) {
-        sprite.play(`${this.selectedKey}_left`);
-      }
-    } else if (right.isDown) {
-      sprite.setVelocityX(speed);
-      if (sprite.anims.currentAnim?.key !== `${this.selectedKey}_right`) {
-        sprite.play(`${this.selectedKey}_right`);
-      }
+    // 키보드 입력 우선
+    if (this.cursors.left.isDown) {
+      this.setVelocityX(-this.speed);
+      this.play('left', true);
+    } else if (this.cursors.right.isDown) {
+      this.setVelocityX(this.speed);
+      this.play('right', true);
     } else {
-      sprite.setVelocityX(0);
-      if (sprite.anims.currentAnim?.key !== `${this.selectedKey}_fly`) {
-        sprite.play(`${this.selectedKey}_fly`);
+      this.setVelocityX(0);
+    }
+
+    if (this.cursors.up.isDown) {
+      this.setVelocityY(-this.speed);
+    } else if (this.cursors.down.isDown) {
+      this.setVelocityY(this.speed);
+    } else {
+      this.setVelocityY(0);
+    }
+
+    // 터치 입력 처리
+    if (this.touchTarget) {
+      const angle = Phaser.Math.Angle.Between(this.x, this.y, this.touchTarget.x, this.touchTarget.y);
+      const distance = Phaser.Math.Distance.Between(this.x, this.y, this.touchTarget.x, this.touchTarget.y);
+
+      if (distance > 5) {
+        this.scene.physics.velocityFromRotation(angle, this.speed, this.body.velocity);
+        if (this.touchTarget.x < this.x - 10) this.play('left', true);
+        else if (this.touchTarget.x > this.x + 10) this.play('right', true);
+        else this.play('idle', true);
+      } else {
+        this.setVelocity(0);
       }
     }
 
-    if (up.isDown) {
-      sprite.setVelocityY(-speed);
-    } else if (down.isDown) {
-      sprite.setVelocityY(speed);
-    } else {
-      sprite.setVelocityY(0);
-    }
-  }
-
-  getSprite() {
-    return this.sprite;
+    // 화면 경계 제한
+    this.x = Phaser.Math.Clamp(this.x, 0, this.scene.scale.width);
+    this.y = Phaser.Math.Clamp(this.y, 0, this.scene.scale.height);
   }
 }

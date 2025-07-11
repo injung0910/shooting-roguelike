@@ -1,60 +1,53 @@
 export default class BulletManager {
-  constructor(scene, player) {
+  constructor(scene, playerData) {
     this.scene = scene;
-    this.player = player;
-    this.powerLevel = 1;
+    this.playerData = playerData; // ship 정보 포함됨
+
+    this.bullets = this.scene.physics.add.group({
+      classType: Phaser.Physics.Arcade.Image,
+      maxSize: 50,
+      runChildUpdate: true
+    });
+
+    this.fireRate = 200;
     this.lastFired = 0;
-
-    this.bullets = scene.physics.add.group({
-      classType: Phaser.Physics.Arcade.Sprite,
-      maxSize: 100
-    });
-
-    // 화면 밖 총알 제거
-    scene.physics.world.on('worldbounds', (body) => {
-      const sprite = body.gameObject;
-      if (sprite.texture.key === 'bullets') {
-        sprite.destroy();
-      }
-    });
   }
 
-  fireBullet() {
-    const x = this.player.x;
-    const y = this.player.y - 20;
+  fire(x, y) {
+    const time = this.scene.time.now;
+    if (time < this.lastFired + this.fireRate) return;
 
-    if (this.powerLevel === 1) {
-      this.fireSingleBullet(x, y);
-    } else if (this.powerLevel === 2) {
-      this.fireSingleBullet(x - 10, y);
-      this.fireSingleBullet(x + 10, y);
-    } else if (this.powerLevel >= 3) {
-      this.fireSingleBullet(x - 15, y);
-      this.fireSingleBullet(x, y);
-      this.fireSingleBullet(x + 15, y);
-    }
-  }
+    const bulletKey = this.getBulletKeyByShip(); // 기체에 따라 bullet 키 다르게
 
-  fireSingleBullet(x, y) {
-    const bullet = this.bullets.get(x, y, 'bullets', 1);
+    const bullet = this.bullets.get(x, y, bulletKey);
     if (bullet) {
       bullet.setActive(true);
       bullet.setVisible(true);
-      bullet.setVelocityY(-500);
-      bullet.setScale(1.5);
-      bullet.setCollideWorldBounds(true);
-      bullet.body.onWorldBounds = true;
+      bullet.body.enable = true;
+      bullet.setVelocityY(-400);
+    }
+
+    this.lastFired = time;
+  }
+
+  getBulletKeyByShip() {
+    const shipName = this.playerData.ship.name;
+    switch (shipName) {
+      case 'Falcon':
+        return 'bullets3';
+      case 'Cryphix':
+        return 'bullets5';
+      default:
+        return 'bullets3';
     }
   }
 
-  increasePower() {
-    if (this.powerLevel < 3) this.powerLevel++;
-  }
-
-  update(time) {
-    if (this.scene.input.activePointer.isDown && time > this.lastFired + 200) {
-      this.fireBullet();
-      this.lastFired = time;
-    }
+  update() {
+    this.bullets.children.iterate(bullet => {
+      if (bullet && bullet.active && bullet.y < -50) {
+        this.bullets.killAndHide(bullet);
+        bullet.body.enable = false;
+      }
+    });
   }
 }

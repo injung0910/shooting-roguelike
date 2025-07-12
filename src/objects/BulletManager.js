@@ -20,7 +20,7 @@ export default class BulletManager {
 
     const bulletKey = this.getBulletKeyByShip(); // 기체에 따라 bullet 키 다르게
 
-    console.log('bulletKey : ' + bulletKey);
+    //console.log('bulletKey : ' + bulletKey);
 
     const bullet = this.bullets.get(x, y, bulletKey);
     if (bullet) {

@@ -1,20 +1,45 @@
+import BulletManager from '../objects/BulletManager.js';
+
+const SHIP_STATS = {
+  Falcon: {
+    key: 'plane2',
+    name : 'Falcon',
+    speed: 200,
+    fireRate : 250,
+    hitbox: { width: 19.2, height: 38.4, offsetX: 38.4, offsetY: 38.4 }
+  },
+  Cryphix: {
+    key: 'plane9',
+    name : 'Cryphix',
+    speed: 250,
+    fireRate : 200,
+    hitbox: { width: 46.08, height: 24, offsetX: 24, offsetY: 43.2 }
+  },
+  Hawk: {
+    key: 'plane6',
+    name : 'Hawk',
+    speed: 180,
+    fireRate : 150,
+    hitbox: { width: 19.2, height: 38.4, offsetX: 38.4, offsetY: 38.4 }
+  }
+};
+
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, data) {
-    super(scene, 300, 700, data.key);
+    super(scene, 300, 700, data);
     
     this.scene = scene;
     this.data = data; // key, name 등 전체 저장
 
+    const stats = SHIP_STATS[this.data.ship.name];
+
     scene.add.existing(this);
     scene.physics.add.existing(this);
     this.setDepth(999); // 다른 오브젝트보다 위로
-
-    // 기체별 피격사이즈 설정
-    if(this.data.ship.name === 'Falcon'){
-      this.setSize(96 * 0.2, 96 * 0.4).setOffset(96 * 0.4, 96 * 0.4);
-    }else{
-      this.setSize(96 * 0.48, 96 * 0.25).setOffset(96 * 0.25, 96 * 0.45);
-    }
+    
+    // 히트박스 설정
+    this.setSize(stats.hitbox.width, stats.hitbox.height);
+    this.setOffset(stats.hitbox.offsetX, stats.hitbox.offsetY);
 
     // 충돌 범위 설정 등
     this.setCollideWorldBounds(true);
@@ -24,11 +49,17 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     // 터치 관련 변수
     this.touchTarget = null;
-    this.speed = 200;
+    // 속도, 데미지 등 설정
+    this.speed = stats.speed;
 
     this.registerTouchControls();
     this.createAnimations();
     this.play('idle');
+
+    //this.game.audioManager.scene = this;
+
+    // 발사
+    this.bulletManager = new BulletManager(scene, stats, this.scene.game.audioManager);
   }
 
   createAnimations() {
@@ -76,6 +107,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.play('right', true);
     } else {
       this.setVelocityX(0);
+      this.play('idle', true);
     }
 
     if (this.cursors.up.isDown) {
@@ -104,5 +136,15 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     // 화면 경계 제한
     this.x = Phaser.Math.Clamp(this.x, 0, this.scene.scale.width);
     this.y = Phaser.Math.Clamp(this.y, 0, this.scene.scale.height);
+
+    if (this.cursors.space.isDown) {
+      this.bulletManager.fire(this.x, this.y - 30);
+    }
+
+    if (this.touchTarget) {
+      this.bulletManager.fire(this.x, this.y - 30);
+    }
+
+    this.bulletManager.update();
   }
 }

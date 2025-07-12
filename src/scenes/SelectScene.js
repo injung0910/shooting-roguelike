@@ -39,8 +39,9 @@ export default class SelectScene extends Phaser.Scene {
 
     // 기체 목록
     this.planeData = [
-      { key: 'player1', name: 'Falcon' },
-      { key: 'player2', name: 'Cryphix' }
+      { key: 'plane2', name: 'Falcon' },
+      { key: 'plane9', name: 'Cryphix' },
+      { key: 'plane6', name: 'Hawk' }
     ];
 
     this.selectedIndex = 0;
@@ -53,7 +54,7 @@ export default class SelectScene extends Phaser.Scene {
       if (!this.anims.exists(animKey)) {
         this.anims.create({
           key: animKey,
-          frames: this.anims.generateFrameNumbers(`${data.key}_spin`, { start: 0, end: 7 }),
+          frames: this.anims.generateFrameNumbers(`${data.key}`, { start: 0, end: 3 }),
           frameRate: 6,
           repeat: -1
         });
@@ -61,7 +62,7 @@ export default class SelectScene extends Phaser.Scene {
     });
 
     this.planeData.forEach((data, i) => {
-      const x = centerX + (i - 0.5) * 300;
+      const x = 150 + (i * 150);
 
       // 스프라이트에 애니메이션 적용
       const sprite = this.add.sprite(x, centerY, data.key)
@@ -92,44 +93,64 @@ export default class SelectScene extends Phaser.Scene {
 
 
     // preview용 player 생성
-    if (!this.anims.exists('player1_anim')) {
+    if (!this.anims.exists('plane2_anim')) {
       this.anims.create({
-        key: 'player1_anim',
-        frames: this.anims.generateFrameNumbers('player1', { start: 0, end: 3 }),
+        key: 'plane2_anim',
+        frames: this.anims.generateFrameNumbers('plane2', { start: 0, end: 3 }),
         frameRate: 6,
         repeat: -1
       });
     }
 
         // preview용 player 생성
-    if (!this.anims.exists('player1_powerup_anim')) {
+    if (!this.anims.exists('plane2_powerup_anim')) {
       this.anims.create({
-        key: 'player1_powerup_anim',
-        frames: this.anims.generateFrameNumbers('player1_powerup', { start: 0, end: 3 }),
+        key: 'plane2_powerup_anim',
+        frames: this.anims.generateFrameNumbers('plane2_powerup', { start: 0, end: 3 }),
         frameRate: 6,
         repeat: -1
       });
     }
 
     // preview용 player 생성
-    if (!this.anims.exists('player2_anim')) {
+    if (!this.anims.exists('plane9_anim')) {
       this.anims.create({
-        key: 'player2_anim',
-        frames: this.anims.generateFrameNumbers('player2', { start: 0, end: 3 }),
+        key: 'plane9_anim',
+        frames: this.anims.generateFrameNumbers('plane9', { start: 0, end: 3 }),
         frameRate: 6,
         repeat: -1
       });
     }
 
     // preview용 player 생성
-    if (!this.anims.exists('player2_powerup_anim')) {
+    if (!this.anims.exists('plane9_powerup_anim')) {
       this.anims.create({
-        key: 'player2_powerup_anim',
-        frames: this.anims.generateFrameNumbers('player2_powerup', { start: 0, end: 3 }),
+        key: 'plane9_powerup_anim',
+        frames: this.anims.generateFrameNumbers('plane9_powerup', { start: 0, end: 3 }),
         frameRate: 6,
         repeat: -1
       });
     }    
+
+    // preview용 player 생성
+    if (!this.anims.exists('plane6_anim')) {
+      this.anims.create({
+        key: 'plane6_anim',
+        frames: this.anims.generateFrameNumbers('plane6', { start: 0, end: 3 }),
+        frameRate: 6,
+        repeat: -1
+      });
+    }
+
+    // preview용 player 생성
+    if (!this.anims.exists('plane6_powerup_anim')) {
+      this.anims.create({
+        key: 'plane6_powerup_anim',
+        frames: this.anims.generateFrameNumbers('plane6_powerup', { start: 0, end: 3 }),
+        frameRate: 6,
+        repeat: -1
+      });
+    }        
 
     // preview용 bullet 생성
     if (!this.anims.exists('bullets3_anim')) {
@@ -146,6 +167,16 @@ export default class SelectScene extends Phaser.Scene {
       this.anims.create({
         key: 'bullets5_anim',
         frames: this.anims.generateFrameNumbers('bullets5', { start: 0, end: 1 }),
+        frameRate: 8,
+        repeat: -1
+      });
+    }
+
+    // preview용 bullet 생성
+    if (!this.anims.exists('bullets1_anim')) {    
+      this.anims.create({
+        key: 'bullets1_anim',
+        frames: this.anims.generateFrameNumbers('bullets1', { start: 0, end: 1 }),
         frameRate: 8,
         repeat: -1
       });
@@ -168,14 +199,16 @@ export default class SelectScene extends Phaser.Scene {
     // 기체 스탯 (예: 공격력, 속도)
     this.attackBar = this.add.rectangle(450, 340, 100, 10, 0xff3333);
     this.speedBar = this.add.rectangle(450, 360, 100, 10, 0x3333ff);
-    this.attackLabel = this.add.text(400, 310, 'Status', { fontSize: '18px', color: '#ffffff' });
+    this.fireBar = this.add.rectangle(450, 380, 100, 10, 0xff33ff);
+    this.statusLabel = this.add.text(400, 310, 'Status', { fontSize: '18px', color: '#ffffff' });
     this.attackLabel = this.add.text(400, 330, 'Attack', { fontSize: '14px', color: '#ffffff' });
     this.speedLabel = this.add.text(400, 350, 'Speed', { fontSize: '14px', color: '#ffffff' });
+    this.fireLabel = this.add.text(400, 370, 'FireRate', { fontSize: '14px', color: '#ffffff' });
 
 
     // player1 기본선택
     this.updateSelection();
-    this.updateSelectedPlane('player1');
+    this.updateSelectedPlane('plane2');
 
 
     // 조작설정
@@ -195,9 +228,11 @@ export default class SelectScene extends Phaser.Scene {
 
     this.input.keyboard.on('keydown-ENTER', () => {
       if(this.selectedIndex == 0){
-        this.game.audioManager.playSFX('sfx_falcon_select', { volume: 1.5 });
+        this.game.audioManager.playSFX('sfx_falcon_select');
+      }else if(this.selectedIndex == 1){
+        this.game.audioManager.playSFX('sfx_cryphix_select');
       }else {
-        this.game.audioManager.playSFX('sfx_cryphix_select', { volume: 1.5 });
+        this.game.audioManager.playSFX('sfx_hawk_select');
       }
       const selected = this.planeData[this.selectedIndex];
       this.registry.set('selectedPlane', selected.key);
@@ -301,18 +336,21 @@ export default class SelectScene extends Phaser.Scene {
 
     // 스탯 바 길이 (가상의 값)
     const stats = {
-      player1: { atk: 100, spd: 80 },
-      player2: { atk: 80, spd: 120 }
+      plane2: { atk: 100, spd: 200, rate : 200 },
+      plane9: { atk: 80, spd: 250, rate : 250  },
+      plane6: { atk: 50, spd: 180, rate : 150  }
     };
-    const { atk, spd } = stats[planeKey];
+    const { atk, spd, rate } = stats[planeKey];
     this.attackBar.width = atk;
-    this.speedBar.width = spd;   
+    this.speedBar.width = spd/2;
+    this.fireBar.width = (400 - rate)/2;
   }
 
   getBulletKeyByPlane(planeKey) {
     const bulletMap = {
-      player1: 'bullets3',
-      player2: 'bullets5',
+      plane2: 'bullets3',
+      plane9: 'bullets5',
+      plane6: 'bullets1',
       // 추가 기체도 여기에 등록
     };
     return bulletMap[planeKey] || 'bullets3';
@@ -320,8 +358,9 @@ export default class SelectScene extends Phaser.Scene {
 
   getBulletAnimByPlane(planeKey) {
     const animMap = {
-      player1: 'bullets3_anim',
-      player2: 'bullets5_anim',
+      plane2: 'bullets3_anim',
+      plane9: 'bullets5_anim',
+      plane6: 'bullets1_anim',
     };
     return animMap[planeKey] || 'bullets3_anim';
   }  

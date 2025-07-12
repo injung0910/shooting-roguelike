@@ -11,8 +11,8 @@ export default class OptionScene extends Phaser.Scene {
     // --- 기본 설정
     this.menuTargets = ['bgm', 'sfx', 'mute', 'reset', 'back'];
     this.selectedIndex = 0;
-    this.currentBgmVolume = parseFloat(localStorage.getItem('bgmVolume') ?? '1');
-    this.currentSfxVolume = parseFloat(localStorage.getItem('sfxVolume') ?? '1');
+    this.currentBgmVolume = parseFloat(localStorage.getItem('bgmVolume') ?? '0.5');
+    this.currentSfxVolume = parseFloat(localStorage.getItem('sfxVolume') ?? '0.5');
 
     // --- 배경
     this.add.image(0, 0, 'purple_background').setOrigin(0).setDisplaySize(600, 800);
@@ -31,7 +31,7 @@ export default class OptionScene extends Phaser.Scene {
       fontSize: '48px',
       color: '#ffffff'
     }).setOrigin(0.5);
-    this.bgmVolume = this.add.text(centerX + 150, 200, `${Math.round(this.currentBgmVolume * 100)}%`, {
+    this.bgmVolume = this.add.text(centerX + 150, 200, `${Math.round(this.currentBgmVolume * 200)}%`, {
       fontFamily: 'ThaleahFat',
       fontSize: '48px',
       color: '#ffffff'
@@ -44,7 +44,7 @@ export default class OptionScene extends Phaser.Scene {
       fontSize: '48px',
       color: '#ffffff'
     }).setOrigin(0.5);
-    this.sfxVolume = this.add.text(centerX + 150, 250, `${Math.round(this.currentSfxVolume * 100)}%`, {
+    this.sfxVolume = this.add.text(centerX + 150, 250, `${Math.round(this.currentSfxVolume * 200)}%`, {
       fontFamily: 'ThaleahFat',
       fontSize: '48px',
       color: '#ffffff'
@@ -120,15 +120,15 @@ export default class OptionScene extends Phaser.Scene {
     this.input.keyboard.on('keydown-LEFT', () => {
       this.game.audioManager.playSFX('sfx_ui_select');
       const target = this.menuTargets[this.selectedIndex];
-      if (target === 'bgm') this.adjustVolume('bgm', -0.1);
-      if (target === 'sfx') this.adjustVolume('sfx', -0.1);
+      if (target === 'bgm') this.adjustVolume('bgm', -0.05);
+      if (target === 'sfx') this.adjustVolume('sfx', -0.05);
     });
 
     this.input.keyboard.on('keydown-RIGHT', () => {
       this.game.audioManager.playSFX('sfx_ui_select');
       const target = this.menuTargets[this.selectedIndex];
-      if (target === 'bgm') this.adjustVolume('bgm', 0.1);
-      if (target === 'sfx') this.adjustVolume('sfx', 0.1);
+      if (target === 'bgm') this.adjustVolume('bgm', 0.05);
+      if (target === 'sfx') this.adjustVolume('sfx', 0.05);
     });
 
     this.input.keyboard.on('keydown-ENTER', () => {
@@ -183,8 +183,8 @@ export default class OptionScene extends Phaser.Scene {
   // 볼륨 저장
   adjustVolume(type, delta) {
     if (type === 'bgm') {
-      this.currentBgmVolume = Phaser.Math.Clamp(this.currentBgmVolume + delta, 0, 1);
-      this.bgmVolume.setText(`${Math.round(this.currentBgmVolume * 100)}%`);
+      this.currentBgmVolume = Phaser.Math.Clamp(this.currentBgmVolume + delta, 0, 0.5);
+      this.bgmVolume.setText(`${Math.round(this.currentBgmVolume * 200)}%`);
         // AudioManager가 있으면
         if (this.game.audioManager) {
         if (!this.game.audioManager.currentBGM || !this.game.audioManager.currentBGM.isPlaying) {
@@ -195,8 +195,8 @@ export default class OptionScene extends Phaser.Scene {
         }
         }
     } else if (type === 'sfx') {
-      this.currentSfxVolume = Phaser.Math.Clamp(this.currentSfxVolume + delta, 0, 1);
-      this.sfxVolume.setText(`${Math.round(this.currentSfxVolume * 100)}%`);
+      this.currentSfxVolume = Phaser.Math.Clamp(this.currentSfxVolume + delta, 0, 0.5);
+      this.sfxVolume.setText(`${Math.round(this.currentSfxVolume * 200)}%`);
       this.game.audioManager.setSFXVolume(this.currentSfxVolume); 
     }
   }
@@ -225,8 +225,8 @@ export default class OptionScene extends Phaser.Scene {
 
   // 초기화
   resetVolume() {
-    this.currentBgmVolume = 1;
-    this.currentSfxVolume = 1;
+    this.currentBgmVolume = 0.5;
+    this.currentSfxVolume = 0.5;
     this.bgmVolume.setText('100%');
     this.sfxVolume.setText('100%');
 

@@ -41,8 +41,11 @@ export default class StageIntroScene extends Phaser.Scene {
       ease: 'Sine.easeOut',
       onComplete: () => {
         // 잠깐 보여준 후 Stage1으로 전환
-        this.time.delayedCall(1500, () => {
-            this.scene.start(this.stageKey, this.ship);
+        this.time.delayedCall(1500, () => {           
+            this.cameras.main.fadeOut(500, 0, 0, 0);
+            this.cameras.main.once('camerafadeoutcomplete', () => {
+                this.scene.start(this.stageKey, this.ship);
+            });
         });
       }
     });

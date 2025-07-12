@@ -95,7 +95,7 @@ export default class Stage1 extends Phaser.Scene {
   }
 
   update(time, delta){
-    const scrollSpeed = 1.5;
+    const scrollSpeed = 2;
 
     this.bgTiles.forEach(tile => {
       tile.y += scrollSpeed;
@@ -125,17 +125,5 @@ export default class Stage1 extends Phaser.Scene {
       this.player.update();
     }
     
-    const now = this.time.now;
-
-    if (Phaser.Input.Keyboard.JustDown(this.fireKey)) {
-      this.bulletManager.fire(this.player.x, this.player.y - 20);
-    }
-
-    if (this.isTouching && now - this.lastFired > this.fireInterval) {
-      this.bulletManager.fire(this.player.x, this.player.y - 20);
-      this.lastFired = now;
-    }
-
-    this.bulletManager.update();
-      }
+  }
 }

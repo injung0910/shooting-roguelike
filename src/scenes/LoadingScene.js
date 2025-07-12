@@ -48,7 +48,7 @@ export default class LoadingScene extends Phaser.Scene {
     this.load.on('complete', () => {
       percentText.setText('Complete!');
       this.time.delayedCall(400, () => {
-        this.scene.start('StartScene');
+        this.scene.start('BootScene');
       });
     });
     

@@ -96,57 +96,57 @@ function loadBackgrounds(scene) {
 function loadPlayer(scene) {
     // 플레이어 생성
     // 플레이어1 스프라이트 시트 로드 20프레임
-    scene.load.spritesheet('player1', '/assets/player/Plane 01/Normal/planes_01A.png', { frameWidth: 96, frameHeight: 96 });
+    scene.load.spritesheet('plane1', '/assets/player/Plane 01/Normal/planes_01A.png', { frameWidth: 96, frameHeight: 96 });
     // 플레이어1 스프라이트 시트 로드 8프레임 (스핀)
-    scene.load.spritesheet('player1_spin', '/assets/player/Plane 01/Normal/planes_01A_Spin.png', { frameWidth: 96, frameHeight: 96 });
+    scene.load.spritesheet('plane1_spin', '/assets/player/Plane 01/Normal/planes_01A_Spin.png', { frameWidth: 96, frameHeight: 96 });
     // 플레이어1 파워업 스프라이트 시트 로드 20프레임
-    scene.load.spritesheet('player1_powerup', '/assets/player/Plane 01/Powered Up/planes_01B.png', { frameWidth: 96, frameHeight: 96 });
+    scene.load.spritesheet('plane1_powerup', '/assets/player/Plane 01/Powered Up/planes_01B.png', { frameWidth: 96, frameHeight: 96 });
     // 플레이어1 파워업 스프라이트 시트 로드 8프레임 (스핀)
-    scene.load.spritesheet('player1_powerup_spin', '/assets/player/Plane 01/Powered Up/planes_01B_Spin.png', { frameWidth: 96, frameHeight: 96 });
-    
-  // 플레이어9 스프라이트 시트 로드 20프레임
-    scene.load.spritesheet('player2', '/assets/player/Plane 09/Normal/planes_09A.png', { frameWidth: 96, frameHeight: 96 });
-    // 플레이어9 스프라이트 시트 로드 8프레임 (스핀)
-    scene.load.spritesheet('player2_spin', '/assets/player/Plane 09/Normal/planes_09A_Spin.png', { frameWidth: 96, frameHeight: 96 });
-    // 플레이어9 파워업 스프라이트 시트 로드 20프레임
-    scene.load.spritesheet('player2_powerup', '/assets/player/Plane 09/Powered Up/planes_09B.png', { frameWidth: 96, frameHeight: 96 });
-    // 플레이어9 파워업 스프라이트 시트 로드 8프레임 (스핀)    
-    scene.load.spritesheet('player2_powerup_spin', '/assets/player/Plane 09/Powered Up/planes_09B_Spin.png', { frameWidth: 96, frameHeight: 96 });
-
-    // 플레이어3 스프라이트 시트 로드 20프레임
-    scene.load.spritesheet('player3', '/assets/player/Plane 03/planes_03A.png', { frameWidth: 96, frameHeight: 96 });
-    // 플레이어3 파워업 스프라이트 시트 로드 20프레임
-    scene.load.spritesheet('player3_powerup', '/assets/player/Plane 03/planes_03B.png', { frameWidth: 96, frameHeight: 96 });
-
-    // 플레이어4 스프라이트 시트 로드 20프레임
-    scene.load.spritesheet('player4', '/assets/player/Plane 04/planes_04A.png', { frameWidth: 96, frameHeight: 96 });
-    // 플레이어4 파워업 스프라이트 시트 로드 20프레임
-    scene.load.spritesheet('player4_powerup', '/assets/player/Plane 04/planes_04B.png', { frameWidth: 96, frameHeight: 96 });
-    
-    // 플레이어5 스프라이트 시트 로드 20프레임
-    scene.load.spritesheet('player5', '/assets/player/Plane 05/planes_05A.png', { frameWidth: 96, frameHeight: 96 });
-    // 플레이어2 파워업 스프라이트 시트 로드 20프레임
-    scene.load.spritesheet('player5_powerup', '/assets/player/Plane 05/planes_05B.png', { frameWidth: 96, frameHeight: 96 });
-
-    // 플레이어6 스프라이트 시트 로드 20프레임
-    scene.load.spritesheet('player6', '/assets/player/Plane 06/planes_06A.png', { frameWidth: 96, frameHeight: 96 });
-    // 플레이어6 파워업 스프라이트 시트 로드 20프레임
-    scene.load.spritesheet('player6_powerup', '/assets/player/Plane 06/planes_06B.png', { frameWidth: 96, frameHeight: 96 });
-
-    // 플레이어7 스프라이트 시트 로드 20프레임
-    scene.load.spritesheet('player7', '/assets/player/Plane 07/planes_07A.png', { frameWidth: 96, frameHeight: 96 });
-    // 플레이어7 파워업 스프라이트 시트 로드 20프레임
-    scene.load.spritesheet('player7_powerup', '/assets/player/Plane 07/planes_07B.png', { frameWidth: 96, frameHeight: 96 });
-
-    // 플레이어8 스프라이트 시트 로드 20프레임
-    scene.load.spritesheet('player8', '/assets/player/Plane 08/planes_08A.png', { frameWidth: 96, frameHeight: 96 });
-    // 플레이어8 파워업 스프라이트 시트 로드 20프레임
-    scene.load.spritesheet('player8_powerup', '/assets/player/Plane 08/planes_08B.png', { frameWidth: 96, frameHeight: 96 });
+    scene.load.spritesheet('plane1_powerup_spin', '/assets/player/Plane 01/Powered Up/planes_01B_Spin.png', { frameWidth: 96, frameHeight: 96 });
     
     // 플레이어2 스프라이트 시트 로드 20프레임
-    scene.load.spritesheet('player9', '/assets/player/Plane 02/planes_02A.png', { frameWidth: 96, frameHeight: 96 });
+    scene.load.spritesheet('plane2', '/assets/player/Plane 02/planes_02A.png', { frameWidth: 96, frameHeight: 96 });
     // 플레이어2 파워업 스프라이트 시트 로드 20프레임
-    scene.load.spritesheet('player9_powerup', '/assets/player/Plane 02/planes_02B.png', { frameWidth: 96, frameHeight: 96 });
+    scene.load.spritesheet('plane2_powerup', '/assets/player/Plane 02/planes_02B.png', { frameWidth: 96, frameHeight: 96 });
+
+    // 플레이어3 스프라이트 시트 로드 20프레임
+    scene.load.spritesheet('plane3', '/assets/player/Plane 03/planes_03A.png', { frameWidth: 96, frameHeight: 96 });
+    // 플레이어3 파워업 스프라이트 시트 로드 20프레임
+    scene.load.spritesheet('plane3_powerup', '/assets/player/Plane 03/planes_03B.png', { frameWidth: 96, frameHeight: 96 });
+
+    // 플레이어4 스프라이트 시트 로드 20프레임
+    scene.load.spritesheet('plane4', '/assets/player/Plane 04/planes_04A.png', { frameWidth: 96, frameHeight: 96 });
+    // 플레이어4 파워업 스프라이트 시트 로드 20프레임
+    scene.load.spritesheet('plane4_powerup', '/assets/player/Plane 04/planes_04B.png', { frameWidth: 96, frameHeight: 96 });
+    
+    // 플레이어5 스프라이트 시트 로드 20프레임
+    scene.load.spritesheet('plane5', '/assets/player/Plane 05/planes_05A.png', { frameWidth: 96, frameHeight: 96 });
+    // 플레이어2 파워업 스프라이트 시트 로드 20프레임
+    scene.load.spritesheet('plane5_powerup', '/assets/player/Plane 05/planes_05B.png', { frameWidth: 96, frameHeight: 96 });
+
+    // 플레이어6 스프라이트 시트 로드 20프레임
+    scene.load.spritesheet('plane6', '/assets/player/Plane 06/planes_06A.png', { frameWidth: 96, frameHeight: 96 });
+    // 플레이어6 파워업 스프라이트 시트 로드 20프레임
+    scene.load.spritesheet('plane6_powerup', '/assets/player/Plane 06/planes_06B.png', { frameWidth: 96, frameHeight: 96 });
+
+    // 플레이어7 스프라이트 시트 로드 20프레임
+    scene.load.spritesheet('plane7', '/assets/player/Plane 07/planes_07A.png', { frameWidth: 96, frameHeight: 96 });
+    // 플레이어7 파워업 스프라이트 시트 로드 20프레임
+    scene.load.spritesheet('plane7_powerup', '/assets/player/Plane 07/planes_07B.png', { frameWidth: 96, frameHeight: 96 });
+
+    // 플레이어8 스프라이트 시트 로드 20프레임
+    scene.load.spritesheet('plane8', '/assets/player/Plane 08/planes_08A.png', { frameWidth: 96, frameHeight: 96 });
+    // 플레이어8 파워업 스프라이트 시트 로드 20프레임
+    scene.load.spritesheet('plane8_powerup', '/assets/player/Plane 08/planes_08B.png', { frameWidth: 96, frameHeight: 96 });
+
+    // 플레이어9 스프라이트 시트 로드 20프레임
+    scene.load.spritesheet('plane9', '/assets/player/Plane 09/Normal/planes_09A.png', { frameWidth: 96, frameHeight: 96 });
+    // 플레이어9 스프라이트 시트 로드 8프레임 (스핀)
+    scene.load.spritesheet('plane9_spin', '/assets/player/Plane 09/Normal/planes_09A_Spin.png', { frameWidth: 96, frameHeight: 96 });
+    // 플레이어9 파워업 스프라이트 시트 로드 20프레임
+    scene.load.spritesheet('plane9_powerup', '/assets/player/Plane 09/Powered Up/planes_09B.png', { frameWidth: 96, frameHeight: 96 });
+    // 플레이어9 파워업 스프라이트 시트 로드 8프레임 (스핀)    
+    scene.load.spritesheet('plane9_powerup_spin', '/assets/player/Plane 09/Powered Up/planes_09B_Spin.png', { frameWidth: 96, frameHeight: 96 });    
 }
 
 // 3. 적
@@ -393,8 +393,9 @@ function loadAllBGM(scene) {
 
 // sfx
 function loadAllSFX(scene) {
-  scene.load.audio('sfx_bullet3', '/assets/audio/sfx/sfx_bullet3.wav');
-  scene.load.audio('sfx_bullet5', '/assets/audio/sfx/sfx_bullet5.wav');
+  scene.load.audio('sfx_bullets1', '/assets/audio/sfx/sfx_bullet1.wav');
+  scene.load.audio('sfx_bullets3', '/assets/audio/sfx/sfx_bullet3.wav');
+  scene.load.audio('sfx_bullets5', '/assets/audio/sfx/sfx_bullet5.wav');
   scene.load.audio('sfx_enemy_explosion', '/assets/audio/sfx/sfx_enemy_explosion.wav');
   scene.load.audio('sfx_ship_select', '/assets/audio/sfx/sfx_ship_select.wav');
   scene.load.audio('sfx_player_explosion', '/assets/audio/sfx/sfx_player_explosion.wav');
@@ -404,4 +405,5 @@ function loadAllSFX(scene) {
   scene.load.audio('sfx_ui_success', '/assets/audio/sfx/sfx_ui_success.wav');
   scene.load.audio('sfx_falcon_select', '/assets/audio/sfx/sfx_falcon_select.wav');
   scene.load.audio('sfx_cryphix_select', '/assets/audio/sfx/sfx_cryphix_select.wav');
+  scene.load.audio('sfx_hawk_select', '/assets/audio/sfx/sfx_hawk_select.wav');
 }

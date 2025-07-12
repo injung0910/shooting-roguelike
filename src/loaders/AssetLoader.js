@@ -344,19 +344,19 @@ function loadUI(scene) {
 function loadSupportUnits(scene) {
   
   // support_blue 스프라이트 시트 로드 2프레임
-  scene.load.spritesheet('support_blue', '/assets/support Units/support_units-blue.png', {frameWidth: 48,frameHeight: 48,});
+  scene.load.spritesheet('support_blue', '/assets/supportUnits/support_units-blue.png', {frameWidth: 48,frameHeight: 48,});
 
   // support_green 스프라이트 시트 로드 2프레임
-  scene.load.spritesheet('support_green', '/assets/support Units/support_units-green.png', {frameWidth: 48,frameHeight: 48,});
+  scene.load.spritesheet('support_green', '/assets/supportUnits/support_units-green.png', {frameWidth: 48,frameHeight: 48,});
 
   // support_grey 스프라이트 시트 로드 2프레임
-  scene.load.spritesheet('support_grey', '/assets/support Units/support_units-grey.png', {frameWidth: 48,frameHeight: 48,});
+  scene.load.spritesheet('support_grey', '/assets/supportUnits/support_units-grey.png', {frameWidth: 48,frameHeight: 48,});
 
   // support_purple 스프라이트 시트 로드 2프레임
-  scene.load.spritesheet('support_purple', '/assets/support Units/support_units-purple.png', {frameWidth: 48,frameHeight: 48,});
+  scene.load.spritesheet('support_purple', '/assets/supportUnits/support_units-purple.png', {frameWidth: 48,frameHeight: 48,});
 
   // support_red 스프라이트 시트 로드 2프레임
-  scene.load.spritesheet('support_red', '/assets/support Units/support_units-red.png', {frameWidth: 48,frameHeight: 48,});
+  scene.load.spritesheet('support_red', '/assets/supportUnits/support_units-red.png', {frameWidth: 48,frameHeight: 48,});
 }
 
 // 9. bosses

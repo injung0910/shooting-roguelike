@@ -318,12 +318,12 @@ function loadIcons(scene) {
   scene.load.spritesheet('speed_item', '/assets/Icons/Power-Ups/icon-a-speed.png', {frameWidth: 32,frameHeight: 32,});
 
   // 폭탄 아이콘 
-  scene.load.image('icon-bomb_item', '/assets/Icons/icon-bomb.png');
+  scene.load.image('icon-bomb', '/assets/Icons/icon-bomb.png');
 
   // plane1 부터 plane9까지 아이콘 로드
   for (let i = 1; i <= 9; i++) {
     const index = i.toString().padStart(2, '0'); // 01, 02, ..., 09
-    scene.load.image(`icon-plane-${index}`, `/assets/Icons/icon-plane-${index}.png`);
+    scene.load.image(`icon-plane${i}`, `/assets/Icons/icon-plane-${index}.png`);
   }
 
   // plane 아이콘 로드

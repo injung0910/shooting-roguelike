@@ -70,13 +70,13 @@ export default class SelectScene extends Phaser.Scene {
         .play(`${data.key}_idle`).setInteractive();
 
       sprite.on('pointerdown', () => {
-        this.selectShip(i); // 🔸 해당 기체 선택 처리 함수 호출
+        this.selectShip(i); // 해당 기체 선택 처리 함수 호출
       });
       
         this.planes.push(sprite);
 
       // 텍스트 추가 (기본 흰색)
-      const name = this.add.text(x, centerY + 120, data.name, {
+      const name = this.add.text(x, centerY + 100, data.name, {
         fontFamily: 'ThaleahFat',
         fontSize: '28px',
         color: '#ffffff'
@@ -226,25 +226,6 @@ export default class SelectScene extends Phaser.Scene {
       this.updateSelectedPlane(this.planeData[this.selectedIndex].key);
     });
 
-    this.input.keyboard.on('keydown-ENTER', () => {
-      if(this.selectedIndex == 0){
-        this.game.audioManager.playSFX('sfx_falcon_select');
-      }else if(this.selectedIndex == 1){
-        this.game.audioManager.playSFX('sfx_cryphix_select');
-      }else {
-        this.game.audioManager.playSFX('sfx_hawk_select');
-      }
-      const selected = this.planeData[this.selectedIndex];
-      this.registry.set('selectedPlane', selected.key);
-
-      this.cameras.main.fadeOut(500, 0, 0, 0);
-      this.cameras.main.once('camerafadeoutcomplete', () => {
-        this.scene.start('StageIntroScene', { ship: this.planeData[this.selectedIndex],
-                                              stageKey: 'Stage1'
-        });
-      });
-    });
-
     this.input.keyboard.on('keydown-ESC', () => {
       this.cameras.main.fadeOut(500, 0, 0, 0);
       this.cameras.main.once('camerafadeoutcomplete', () => {
@@ -261,10 +242,36 @@ export default class SelectScene extends Phaser.Scene {
 
     // 스페이스바로 파워업 상태 전환
     this.input.keyboard.on('keydown-SPACE', () => {
-      this.game.audioManager.playSFX('sfx_ship_select');
+      if(this.selectedIndex == 0){
+        this.game.audioManager.playSFX('sfx_falcon_select');
+      }else if(this.selectedIndex == 1){
+        this.game.audioManager.playSFX('sfx_cryphix_select');
+      }else {
+        this.game.audioManager.playSFX('sfx_hawk_select');
+      }
       this.poweredUp = !this.poweredUp;
       const selectedKey = this.planeData[this.selectedIndex].key;
       this.updateSelectedPlane(selectedKey);
+    });
+
+
+    // START 버튼
+    this.startBtn = this.add.text(centerX, 700, 'START', {
+      fontFamily: 'ThaleahFat',
+      fontSize: '48px',
+      color: '#ffffff'
+    }).setOrigin(0.5).setInteractive();
+
+    // 클릭 시 실행
+    this.startBtn.on('pointerdown', () => {
+      if (this.selectedIndex !== null) {
+        this.flashAndStart(this.selectedIndex);
+      }
+    });
+
+    // 스페이스바로 파워업 상태 전환
+    this.input.keyboard.on('keydown-ENTER', () => {
+        this.flashAndStart(this.selectedIndex);
     });
 
   }
@@ -323,9 +330,20 @@ export default class SelectScene extends Phaser.Scene {
     const bulletKey = this.getBulletKeyByPlane(planeKey);
     const bulletAnimKey = this.getBulletAnimByPlane(planeKey); // 없으면 생략 가능
 
+    // 스탯 바 길이 (가상의 값)
+    const stats = {
+      plane2: { atk: 80, spd: 200, rate : 200 },
+      plane9: { atk: 100, spd: 250, rate : 250  },
+      plane6: { atk: 50, spd: 150, rate : 125  }
+    };
+    const { atk, spd, rate } = stats[planeKey];
+    this.attackBar.width = atk;
+    this.speedBar.width = spd/2;
+    this.fireBar.width = (350 - rate)/2;
+
     // 총알 프리뷰 타이머
     this.bulletTimer = this.time.addEvent({
-      delay: 300,
+      delay: rate,
       loop: true,
       callback: () => {
         const bullet = this.currentBulletGroup.create(this.currentPlaneSprite.x, this.currentPlaneSprite.y - 40, bulletKey);
@@ -334,16 +352,6 @@ export default class SelectScene extends Phaser.Scene {
       }
     });
 
-    // 스탯 바 길이 (가상의 값)
-    const stats = {
-      plane2: { atk: 100, spd: 200, rate : 200 },
-      plane9: { atk: 80, spd: 250, rate : 250  },
-      plane6: { atk: 50, spd: 180, rate : 150  }
-    };
-    const { atk, spd, rate } = stats[planeKey];
-    this.attackBar.width = atk;
-    this.speedBar.width = spd/2;
-    this.fireBar.width = (400 - rate)/2;
   }
 
   getBulletKeyByPlane(planeKey) {
@@ -397,12 +405,50 @@ export default class SelectScene extends Phaser.Scene {
   }
 
   selectShip(index) {
-    const selectedShip = this.planeData[index];
-    this.game.audioManager.playSFX('sfx_ship_select');   
+    this.selectedIndex = index;
 
-    this.cameras.main.fadeOut(500, 0, 0, 0);
-    this.cameras.main.once('camerafadeoutcomplete', () => {
-      this.scene.start('StageIntroScene', { ship: selectedShip,stageKey: 'Stage1'});
-    });
+    if(this.selectedIndex == 0){
+      this.game.audioManager.playSFX('sfx_falcon_select');
+    }else if(this.selectedIndex == 1){
+      this.game.audioManager.playSFX('sfx_cryphix_select');
+    }else {
+      this.game.audioManager.playSFX('sfx_hawk_select');
+    }
+    const selected = this.planeData[this.selectedIndex];
+    this.registry.set('selectedPlane', selected.key);
+    this.poweredUp = false; // 기본 상태
+    const selectedKey = this.planeData[this.selectedIndex].key;
+    this.updateSelection();
+    this.updateSelectedPlane(selectedKey);
   }
+
+  flashAndStart() {
+
+    if(this.selectedIndex == 0){
+      this.game.audioManager.playSFX('sfx_falcon_select');
+    }else if(this.selectedIndex == 1){
+      this.game.audioManager.playSFX('sfx_cryphix_select');
+    }else {
+      this.game.audioManager.playSFX('sfx_hawk_select');
+    }
+
+    this.game.audioManager.playSFX('sfx_ui_success');
+
+    this.tweens.add({
+      targets: this.startBtn,
+      alpha: 0,
+      yoyo: true,
+      repeat: 3,
+      duration: 150,
+      onComplete: () => {
+        // 선택된 기체 데이터를 넘겨서 StageIntroScene으로 이동
+        this.cameras.main.fadeOut(300, 0, 0, 0);
+        this.cameras.main.once('camerafadeoutcomplete', () => {
+          this.scene.start('StageIntroScene', { ship: this.planeData[this.selectedIndex],
+                                                stageKey: 'Stage1'
+          });
+        });
+      }
+    });
+  }  
 }

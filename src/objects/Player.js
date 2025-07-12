@@ -5,20 +5,20 @@ const SHIP_STATS = {
     key: 'plane2',
     name : 'Falcon',
     speed: 200,
-    fireRate : 250,
+    fireRate : 200,
     hitbox: { width: 19.2, height: 38.4, offsetX: 38.4, offsetY: 38.4 }
   },
   Cryphix: {
     key: 'plane9',
     name : 'Cryphix',
     speed: 250,
-    fireRate : 200,
+    fireRate : 250,
     hitbox: { width: 46.08, height: 24, offsetX: 24, offsetY: 43.2 }
   },
   Hawk: {
     key: 'plane6',
     name : 'Hawk',
-    speed: 180,
+    speed: 150,
     fireRate : 150,
     hitbox: { width: 19.2, height: 38.4, offsetX: 38.4, offsetY: 38.4 }
   }

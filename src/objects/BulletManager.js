@@ -51,9 +51,9 @@ export default class BulletManager {
 
   getDamageByBulletKey(key) {
     switch (key) {
-      case 'bullets3': return 20;
-      case 'bullets5': return 20;
-      case 'bullets1': return 20;
+      case 'bullets3': return 8;
+      case 'bullets5': return 10;
+      case 'bullets1': return 5;
       default: return 5;
     }
   }  

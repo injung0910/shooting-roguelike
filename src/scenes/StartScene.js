@@ -59,26 +59,11 @@ export default class StartScene extends Phaser.Scene {
     const baseY = 600;
     const gap = 40;
 
-    menuOptions.forEach((item, i) => {
-      this.menuItems.push(item);
-
-      item.on('pointerdown', () => {
-        this.game.audioManager.playSFX('sfx_ui_success');
-        this.handleMenuSelection(item.text);
-      });
-    });
-
-    // 터치/클릭 이벤트 등록
-
-
-
     this.add.text(this.scale.width / 2, this.scale.height - 30, '© 2025 injung0910. All rights reserved.', {
       fontFamily: 'Arial',
       fontSize: '14px',
       color: '#999999'
     }).setOrigin(0.5);
-
-    this.updateSelection();
 
     // 키 입력 처리
     this.input.keyboard.on('keydown-UP', () => {
@@ -96,7 +81,7 @@ export default class StartScene extends Phaser.Scene {
     this.input.keyboard.on('keydown-ENTER', () => {
       this.game.audioManager.playSFX('sfx_ui_success');
       const selected = this.menuItems[this.selectedIndex].text;
-      
+
       this.cameras.main.fadeOut(500, 0, 0, 0);
       this.cameras.main.once('camerafadeoutcomplete', () => {
         if (selected === 'START GAME') {
@@ -109,6 +94,19 @@ export default class StartScene extends Phaser.Scene {
       });
     });
 
+    // 터치/클릭 이벤트 등록    
+    menuOptions.forEach((item, i) => {
+      this.menuItems.push(item);
+
+      item.on('pointerdown', () => {
+        this.game.audioManager.playSFX('sfx_ui_success');
+        this.selectedIndex = menuOptions.indexOf(item);
+        this.updateSelection();
+        this.handleMenuSelection(item.text);
+      });
+    });
+
+    this.updateSelection();
   }
 
   updateSelection() {
@@ -117,6 +115,7 @@ export default class StartScene extends Phaser.Scene {
     this.tweensList = [];
 
     this.menuItems.forEach((item, index) => {
+      
       if (index === this.selectedIndex) {
         item.setColor('#00ffff');
         const tween = this.tweens.add({

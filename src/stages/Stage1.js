@@ -1,6 +1,7 @@
 import Player from '../objects/Player.js';
 import BulletManager from '../objects/BulletManager.js'
 import GameStatusManager from '../ui/GameStatusManager.js';
+import EnemyManager from '../objects/EnemyManager.js';
 
 export default class Stage1 extends Phaser.Scene {
   constructor(scene) {
@@ -22,6 +23,41 @@ export default class Stage1 extends Phaser.Scene {
 
     this.statusManager = new GameStatusManager(this, this.ship);
 
+    /*
+    this.enemyManager = new EnemyManager(this);
+
+    this.time.addEvent({
+      delay: 2000, // 2초마다 등장
+      callback: () => {
+        this.enemyManager.spawnEnemy('bug1'); // grunt 외에 zigzag, tank 등 가능
+      },
+      loop: true
+    });
+
+    this.physics.add.overlap(
+      this.bulletManager.bullets,
+      this.enemyManager.enemies,
+      this.handleBulletHitEnemy,
+      null,
+      this
+    );
+    */
+
+    this.anims.create({
+      key: 'bug1_fly',
+      frames: this.anims.generateFrameNumbers('bug1', { start: 0, end: 5 }), // 프레임 범위는 이미지에 따라 조정
+      frameRate: 10,
+      repeat: -1
+    });
+
+  // 적 생성
+    const enemy = this.physics.add.sprite(300, 200, 'bug1');
+    enemy.play('bug1_fly');
+    enemy.setVelocityY(100);
+    enemy.setDepth(10);  
+
+
+    // 맵 타일
     this.tileWidth = 144;
     this.tileHeight = 144;
     const rows = Math.ceil(this.scale.height / this.tileHeight) + 1;
@@ -126,6 +162,18 @@ export default class Stage1 extends Phaser.Scene {
     if (this.player) {
       this.player.update();
     }
-    
+     
+    if (this.enemyManager) {
+      this.enemyManager.update();
+    }
+
   }
+
+  handleBulletHitEnemy(bullet, enemy) {
+    bullet.setActive(false);
+    bullet.setVisible(false);
+    bullet.body.enable = false;
+
+    enemy.takeDamage(this.player.attack); // 기체의 공격력
+  }  
 }

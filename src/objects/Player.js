@@ -88,60 +88,73 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   registerTouchControls() {
     this.scene.input.on('pointerdown', (pointer) => {
       this.touchTarget = { x: pointer.x, y: pointer.y };
+      this.isTouching = true;
     });
 
     this.scene.input.on('pointermove', (pointer) => {
-      if (pointer.isDown) {
+      if (this.isTouching) {
         this.touchTarget = { x: pointer.x, y: pointer.y };
       }
+    });
+
+    this.scene.input.on('pointerup', () => {
+      this.isTouching = false;
+      this.touchTarget = null;
     });
   }
 
   update() {
-    // 키보드 입력 우선
-    if (this.cursors.left.isDown) {
-      this.setVelocityX(-this.speed);
-      this.play('left', true);
-    } else if (this.cursors.right.isDown) {
-      this.setVelocityX(this.speed);
-      this.play('right', true);
-    } else {
-      this.setVelocityX(0);
-      this.play('idle', true);
-    }
 
-    if (this.cursors.up.isDown) {
-      this.setVelocityY(-this.speed);
-    } else if (this.cursors.down.isDown) {
-      this.setVelocityY(this.speed);
-    } else {
-      this.setVelocityY(0);
+    // 화면 경계 제한
+    this.x = Phaser.Math.Clamp(this.x, 0, this.scene.scale.width);
+    this.y = Phaser.Math.Clamp(this.y, 0, this.scene.scale.height);      
+
+    // 키보드 입력 우선
+    if (!this.isTouching) {
+      if (this.cursors.left.isDown) {
+        this.setVelocityX(-this.speed);
+        this.anims.play('left', true);
+      } else if (this.cursors.right.isDown) {
+        this.setVelocityX(this.speed);
+        this.anims.play('right', true);
+      } else {
+        this.setVelocityX(0);
+        this.anims.play('idle', true);
+      }
+
+      if (this.cursors.up.isDown) {
+        this.setVelocityY(-this.speed);
+      } else if (this.cursors.down.isDown) {
+        this.setVelocityY(this.speed);
+      } else {
+        this.setVelocityY(0);
+      }
+
+      if (this.cursors.space.isDown) {
+        this.bulletManager.fire(this.x, this.y - 30);
+      }
     }
 
     // 터치 입력 처리
-    if (this.touchTarget) {
+    if (this.isTouching && this.touchTarget) {
       const angle = Phaser.Math.Angle.Between(this.x, this.y, this.touchTarget.x, this.touchTarget.y);
       const distance = Phaser.Math.Distance.Between(this.x, this.y, this.touchTarget.x, this.touchTarget.y);
 
       if (distance > 5) {
         this.scene.physics.velocityFromRotation(angle, this.speed, this.body.velocity);
-        if (this.touchTarget.x < this.x - 10) this.play('left', true);
-        else if (this.touchTarget.x > this.x + 10) this.play('right', true);
-        else this.play('idle', true);
+
+        if (this.touchTarget.x < this.x - 10) {
+          if (this.anims.currentAnim?.key !== 'left') this.anims.play('left');
+        } else if (this.touchTarget.x > this.x + 10) {
+          if (this.anims.currentAnim?.key !== 'right') this.anims.play('right');
+        } else {
+          if (this.anims.currentAnim?.key !== 'idle') this.anims.play('idle');
+        }
       } else {
         this.setVelocity(0);
+        if (this.anims.currentAnim?.key !== 'idle') this.anims.play('idle');
       }
-    }
-
-    // 화면 경계 제한
-    this.x = Phaser.Math.Clamp(this.x, 0, this.scene.scale.width);
-    this.y = Phaser.Math.Clamp(this.y, 0, this.scene.scale.height);
-
-    if (this.cursors.space.isDown) {
-      this.bulletManager.fire(this.x, this.y - 30);
-    }
-
-    if (this.touchTarget) {
+     
       this.bulletManager.fire(this.x, this.y - 30);
     }
 

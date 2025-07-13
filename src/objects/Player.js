@@ -23,7 +23,7 @@ const SHIP_STATS = {
     key: 'plane6',
     name : 'Hawk',
     damage : 5,
-    speed: 150,
+    speed: 180,
     fireRate : 150,
     hitbox: { width: 19.2, height: 38.4, offsetX: 38.4, offsetY: 38.4 }
   }

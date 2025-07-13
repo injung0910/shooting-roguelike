@@ -1,4 +1,6 @@
+
 import BulletManager from '../objects/BulletManager.js';
+import GameStatusManager from '../ui/GameStatusManager.js';
 
 const SHIP_STATS = {
   Falcon: {
@@ -14,7 +16,7 @@ const SHIP_STATS = {
     name : 'Cryphix',
     damage : 10,
     speed: 250,
-    fireRate : 250,
+    fireRate : 300,
     hitbox: { width: 46.08, height: 24, offsetX: 24, offsetY: 43.2 }
   },
   Hawk: {
@@ -64,6 +66,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     // 발사
     this.bulletManager = new BulletManager(scene, stats, this.scene.game.audioManager);
+
+    // 발사
+    this.gameStatusManager = new GameStatusManager(scene, this.data);
+
+    // 폭탄
+    this.bombKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
   }
 
   createAnimations() {
@@ -156,6 +164,50 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     });
   }  
 
+  takeHitFromEnemy() {
+    if (!this.body.enable) return; // 이미 무적 상태면 무시
+
+    // 폭발 애니메이션 생성
+    if (!this.scene.anims.exists('explosion_small')) {
+      this.scene.anims.create({
+        key: 'explosion_small',
+        frames: this.scene.anims.generateFrameNumbers('explosion_small', { start: 0, end: 39 }),
+        frameRate: 12,
+        hideOnComplete: true
+      });
+    }
+
+    const explosion = this.scene.add.sprite(this.x, this.y, 'explosion_small');
+    explosion.setScale(1);
+    explosion.play('explosion_small');
+    explosion.on('animationcomplete', () => explosion.destroy());
+
+    // 사운드
+    this.scene.game.audioManager.playSFX('sfx_player_explosion');
+
+    // 무적 상태 및 시각 효과
+    this.body.enable = false;
+
+    // 🔸 깜빡이는 효과 시작
+    let blink = true;
+    const blinkTimer = this.scene.time.addEvent({
+      delay: 150,
+      repeat: 9, // 총 10번 반복 (약 1.5초)
+      callback: () => {
+        blink = !blink;
+        this.setAlpha(blink ? 0.3 : 1);
+      }
+    });
+
+    // 2초 후 정상 복귀
+    this.scene.time.delayedCall(2000, () => {
+      this.setAlpha(1);
+      this.clearTint();
+      this.body.enable = true;
+      blinkTimer.remove(); // 타이머 정지
+    });
+  }  
+
   update() {
 
     // 화면 경계 제한
@@ -186,6 +238,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       if (this.cursors.space.isDown) {
         this.bulletManager.fire(this.x, this.y - 30);
       }
+
+      if (Phaser.Input.Keyboard.JustDown(this.bombKey)) {
+         this.gameStatusManager.useBomb(); 
+      }
+
     }
 
     // 터치 입력 처리

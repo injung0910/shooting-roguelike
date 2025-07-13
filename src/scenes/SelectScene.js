@@ -333,7 +333,7 @@ export default class SelectScene extends Phaser.Scene {
     // 스탯 바 길이 (가상의 값)
     const stats = {
       plane2: { atk: 80, spd: 200, rate : 250 },
-      plane9: { atk: 100, spd: 250, rate : 250  },
+      plane9: { atk: 100, spd: 250, rate : 300  },
       plane6: { atk: 50, spd: 150, rate : 150  }
     };
     const { atk, spd, rate } = stats[planeKey];

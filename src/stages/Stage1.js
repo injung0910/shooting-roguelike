@@ -1,6 +1,5 @@
 import Player from '../objects/Player.js';
 import BulletManager from '../objects/BulletManager.js'
-import GameStatusManager from '../ui/GameStatusManager.js';
 import EnemyManager from '../objects/EnemyManager.js';
 
 export default class Stage1 extends Phaser.Scene {
@@ -20,8 +19,6 @@ export default class Stage1 extends Phaser.Scene {
     this.player = new Player(this, 300, 700, this.ship);
 
     this.bulletManager = new BulletManager(this, this.ship); 
-
-    this.statusManager = new GameStatusManager(this, this.ship);
 
     this.enemyManager = new EnemyManager(this);
 
@@ -68,6 +65,15 @@ export default class Stage1 extends Phaser.Scene {
       null,
       this
     );    
+
+    // 플레이어 적 충돌
+    this.physics.add.overlap(
+      this.player,
+      this.enemyManager.enemies,
+      this.enemyManager.handleEnemyPlayerCollision,
+      null,
+      this.enemyManager
+    );
 
     // 맵 타일
     this.tileWidth = 144;

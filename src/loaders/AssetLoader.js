@@ -505,4 +505,7 @@ function loadAllSFX(scene) {
   scene.load.audio('sfx_falcon_select', '/assets/audio/sfx/sfx_falcon_select.wav');
   scene.load.audio('sfx_cryphix_select', '/assets/audio/sfx/sfx_cryphix_select.wav');
   scene.load.audio('sfx_hawk_select', '/assets/audio/sfx/sfx_hawk_select.wav');
+  scene.load.audio('sfx_falcon_bomb', '/assets/audio/sfx/sfx_falcon_bomb.wav');
+  scene.load.audio('sfx_cryphix_bomb', '/assets/audio/sfx/sfx_cryphix_bomb.wav');
+  scene.load.audio('sfx_hawk_bomb', '/assets/audio/sfx/sfx_hawk_bomb.wav');
 }

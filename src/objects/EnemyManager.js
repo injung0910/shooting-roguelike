@@ -154,6 +154,65 @@ export default class EnemyManager {
     }
   }  
 
+  handleEnemyPlayerCollision(player, enemy) {
+    // 폭발 애니메이션
+    if (!this.scene.anims.exists('enemy_explosion_small')) {
+      this.scene.anims.create({
+        key: 'enemy_explosion_small',
+        frames: this.scene.anims.generateFrameNumbers('explosion_small', { start: 0, end: 11 }),
+        frameRate: 12,
+        hideOnComplete: true
+      });
+    }
+
+    const explosion = this.scene.add.sprite(enemy.x, enemy.y, 'explosion_small');
+    explosion.setScale(1);
+    explosion.play('enemy_explosion_small');
+    explosion.on('animationcomplete', () => explosion.destroy());
+
+    // 사운드
+    this.scene.game.audioManager.playSFX('sfx_enemy_explosion');
+
+    // 적 제거
+    enemy.disableBody(true, true);
+
+    // 플레이어도 처리
+    player.takeHitFromEnemy();  // Player.js에 정의한 함수 호출
+  }  
+
+  clearAll() {
+
+    // 적 제거
+    this.enemies.children.each(enemy => {
+      if (enemy.active) {
+        // 폭발 애니메이션
+        if (!this.scene.anims.exists('enemy_explosion_small')) {
+          this.scene.anims.create({
+            key: 'enemy_explosion_small',
+            frames: this.scene.anims.generateFrameNumbers('explosion_small', { start: 0, end: 11 }),
+            frameRate: 12,
+            hideOnComplete: true
+          });
+        }
+
+        const explosion = this.scene.add.sprite(enemy.x, enemy.y, 'explosion_small');
+        explosion.setScale(1);
+        explosion.play('enemy_explosion_small');
+        explosion.on('animationcomplete', () => explosion.destroy());
+
+        enemy.disableBody(true, true);
+      }
+    });
+
+    // 적 총알 제거
+    if (this.enemyBulletManager && this.enemyBulletManager.bullets) {
+      this.enemyBulletManager.bullets.children.each(bullet => {
+        if (bullet.active) {
+          bullet.disableBody(true, true);
+        }
+      });
+    }
+  }
 
   update() {
     this.bulletManager.update();

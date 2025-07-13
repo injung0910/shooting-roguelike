@@ -4,6 +4,8 @@ export default class BulletManager {
     this.playerData = playerData; // ship 정보 포함됨
     this.audioManager = audioManager;
 
+    const bulletKey = this.getBulletKeyByShip();
+
     this.bullets = this.scene.physics.add.group({
       classType: Phaser.Physics.Arcade.Image,
       maxSize: 50,
@@ -28,6 +30,7 @@ export default class BulletManager {
       bullet.setVisible(true);
       bullet.body.enable = true;
       bullet.setVelocityY(-400);
+      bullet.damage = this.getDamageByBulletKey(bulletKey);
 
       this.scene.game.audioManager.playSFX('sfx_' + bulletKey);
     }
@@ -49,6 +52,7 @@ export default class BulletManager {
     }
   }
 
+  
   getDamageByBulletKey(key) {
     switch (key) {
       case 'bullets3': return 8;
@@ -56,7 +60,7 @@ export default class BulletManager {
       case 'bullets1': return 5;
       default: return 5;
     }
-  }  
+  }    
 
   update() {
     this.bullets.children.iterate(bullet => {

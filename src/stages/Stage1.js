@@ -23,39 +23,51 @@ export default class Stage1 extends Phaser.Scene {
 
     this.statusManager = new GameStatusManager(this, this.ship);
 
-    /*
     this.enemyManager = new EnemyManager(this);
 
+    // 스테이지 적 스폰 셋팅
+    const spawnData = [
+      { type: 'bug1', x: 100, delay: 0 },
+      { type: 'bug1', x: 150, delay: 0 },
+      { type: 'bug1', x: 200, delay: 0 },
+      { type: 'bug1', x: 400, delay: 5000 },
+      { type: 'bug1', x: 450, delay: 5000 },
+      { type: 'bug1', x: 500, delay: 5000 },
+    ];
+
+    this.enemyManager.spawnEnemiesFromData(spawnData);    
+
+    //테스트용 무한루프
     this.time.addEvent({
-      delay: 2000, // 2초마다 등장
+      delay: 10000,       // 10초
+      loop: true,        // 무한 반복
       callback: () => {
-        this.enemyManager.spawnEnemy('bug1'); // grunt 외에 zigzag, tank 등 가능
-      },
-      loop: true
+        this.enemyManager.spawnEnemiesFromData(spawnData);
+      }
     });
 
+
+    // 적 -> 플레이어 bullets 충돌처리
     this.physics.add.overlap(
-      this.bulletManager.bullets,
-      this.enemyManager.enemies,
-      this.handleBulletHitEnemy,
+      this.player,
+      this.enemyManager.bulletManager.bullets,
+      (player, bullet) => {
+        player.handleHit(bullet);
+      },
       null,
       this
     );
-    */
 
-    this.anims.create({
-      key: 'bug1_fly',
-      frames: this.anims.generateFrameNumbers('bug1', { start: 0, end: 5 }), // 프레임 범위는 이미지에 따라 조정
-      frameRate: 10,
-      repeat: -1
-    });
-
-  // 적 생성
-    const enemy = this.physics.add.sprite(300, 200, 'bug1');
-    enemy.play('bug1_fly');
-    enemy.setVelocityY(100);
-    enemy.setDepth(10);  
-
+    // 플레이어 -> 적 bullets 충돌처리
+    this.physics.add.overlap(
+      this.player.bulletManager.bullets,
+      this.enemyManager.enemies,
+      (bullet, enemy) => {
+        this.enemyManager.handleEnemyHit(bullet, enemy);
+      },
+      null,
+      this
+    );    
 
     // 맵 타일
     this.tileWidth = 144;
@@ -168,12 +180,5 @@ export default class Stage1 extends Phaser.Scene {
     }
 
   }
-
-  handleBulletHitEnemy(bullet, enemy) {
-    bullet.setActive(false);
-    bullet.setVisible(false);
-    bullet.body.enable = false;
-
-    enemy.takeDamage(this.player.attack); // 기체의 공격력
-  }  
+    
 }

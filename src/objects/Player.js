@@ -4,13 +4,15 @@ const SHIP_STATS = {
   Falcon: {
     key: 'plane2',
     name : 'Falcon',
+    damage : 8,
     speed: 200,
-    fireRate : 200,
+    fireRate : 250,
     hitbox: { width: 19.2, height: 38.4, offsetX: 38.4, offsetY: 38.4 }
   },
   Cryphix: {
     key: 'plane9',
     name : 'Cryphix',
+    damage : 10,
     speed: 250,
     fireRate : 250,
     hitbox: { width: 46.08, height: 24, offsetX: 24, offsetY: 43.2 }
@@ -18,6 +20,7 @@ const SHIP_STATS = {
   Hawk: {
     key: 'plane6',
     name : 'Hawk',
+    damage : 5,
     speed: 150,
     fireRate : 150,
     hitbox: { width: 19.2, height: 38.4, offsetX: 38.4, offsetY: 38.4 }
@@ -35,7 +38,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
-    this.setDepth(999); // 다른 오브젝트보다 위로
+    this.setDepth(20); // 다른 오브젝트보다 위로
     
     // 히트박스 설정
     this.setSize(stats.hitbox.width, stats.hitbox.height);
@@ -51,6 +54,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.touchTarget = null;
     // 속도, 데미지 등 설정
     this.speed = stats.speed;
+    //this.damage = this.getDamageByBulletKey(this.data.ship.key);
 
     this.registerTouchControls();
     this.createAnimations();
@@ -102,6 +106,55 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.touchTarget = null;
     });
   }
+
+  handleHit(bullet) {
+    bullet.disableBody(true, true);
+
+    if (!this.body.enable) return;
+
+    this.scene.game.audioManager.playSFX('sfx_player_explosion');
+
+    if (!this.scene.anims.exists('explosion_small')) {
+      this.scene.anims.create({
+        key: 'explosion_small',
+        frames: this.scene.anims.generateFrameNumbers('explosion_small', { start: 0, end: 11 }),
+        frameRate: 22,
+        repeat: 3,
+        hideOnComplete: true,
+      });
+    }
+
+    const explosion = this.scene.add.sprite(this.x, this.y, 'explosion_small');
+    explosion.play('explosion_small');
+    explosion.on('animationcomplete', () => {
+      // 2초 후 제거
+      this.scene.time.delayedCall(2000, () => {
+        explosion.destroy();
+      });
+    });
+
+    // 무적 상태 및 시각 효과
+    this.body.enable = false;
+
+    // 🔸 깜빡이는 효과 시작
+    let blink = true;
+    const blinkTimer = this.scene.time.addEvent({
+      delay: 150,
+      repeat: 9, // 총 10번 반복 (약 1.5초)
+      callback: () => {
+        blink = !blink;
+        this.setAlpha(blink ? 0.3 : 1);
+      }
+    });
+
+    // 2초 후 정상 복귀
+    this.scene.time.delayedCall(2000, () => {
+      this.setAlpha(1);
+      this.clearTint();
+      this.body.enable = true;
+      blinkTimer.remove(); // 타이머 정지
+    });
+  }  
 
   update() {
 

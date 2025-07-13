@@ -332,14 +332,14 @@ export default class SelectScene extends Phaser.Scene {
 
     // 스탯 바 길이 (가상의 값)
     const stats = {
-      plane2: { atk: 80, spd: 200, rate : 200 },
+      plane2: { atk: 80, spd: 200, rate : 250 },
       plane9: { atk: 100, spd: 250, rate : 250  },
-      plane6: { atk: 50, spd: 150, rate : 125  }
+      plane6: { atk: 50, spd: 150, rate : 150  }
     };
     const { atk, spd, rate } = stats[planeKey];
     this.attackBar.width = atk;
     this.speedBar.width = spd/2;
-    this.fireBar.width = (350 - rate)/2;
+    this.fireBar.width = (400 - rate)/2;
 
     // 총알 프리뷰 타이머
     this.bulletTimer = this.time.addEvent({

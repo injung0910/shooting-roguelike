@@ -298,6 +298,105 @@ function loadEffects(scene) {
   // large-thrusters 스프라이트 시트 로드 3프레임
   scene.load.spritesheet('large-thrusters', '/assets/effects/Large Thrusters/large-thrusters1-sheet.png', {frameWidth: 48,frameHeight: 32,});
 
+  // charging50 121프레임
+  scene.load.spritesheet('charging50', '/assets/effects/charging_50x50px.png', {frameWidth: 50,frameHeight: 50,});
+  // charging100 121프레임
+  scene.load.spritesheet('charging100', '/assets/effects/charging_50x50px.png', {frameWidth: 100,frameHeight: 100,});
+  // charging200 121프레임
+  scene.load.spritesheet('charging200', '/assets/effects/charging_50x50px.png', {frameWidth: 200,frameHeight: 200,});
+  // charging400 121프레임
+  scene.load.spritesheet('charging400', '/assets/effects/charging_50x50px.png', {frameWidth: 400,frameHeight: 400,});
+
+  // fireCircle50 62프레임
+  scene.load.spritesheet('fireCircle50', '/assets/effects/fire_circles_50x50px.png', {frameWidth: 50,frameHeight: 50,});
+  // fireCircle100 121프레임
+  scene.load.spritesheet('fireCircle100', '/assets/effects/fire_circles_100x100.png', {frameWidth: 100,frameHeight: 100,});
+  // fireCircle200 121프레임
+  scene.load.spritesheet('fireCircle200', '/assets/effects/fire_circles_200x200.png', {frameWidth: 200,frameHeight: 200,});
+  // fireCircle400 121프레임
+  scene.load.spritesheet('fireCircle400', '/assets/effects/fire_circles_400x400.png', {frameWidth: 400,frameHeight: 400,});  
+
+  // dust50 62프레임
+  scene.load.spritesheet('dust50', '/assets/effects/dust_burst_real_50x50px.png', {frameWidth: 50,frameHeight: 50,});
+  // dust100 62프레임
+  scene.load.spritesheet('dust100', '/assets/effects/dust_burst_real_100x100px.png', {frameWidth: 100,frameHeight: 100,});
+  // dust200 62프레임
+  scene.load.spritesheet('dust200', '/assets/effects/dust_burst_real_200x200px.png', {frameWidth: 200,frameHeight: 200,});
+  // dust400 62프레임
+  scene.load.spritesheet('dust400', '/assets/effects/dust_burst_real_400x400px.png', {frameWidth: 400,frameHeight: 400,});
+
+  // fire50 62프레임
+  scene.load.spritesheet('fire50', '/assets/effects/fire_50x50px.png', {frameWidth: 50,frameHeight: 50,});
+  // fire100 62프레임
+  scene.load.spritesheet('fire100', '/assets/effects/fire_100x100px.png', {frameWidth: 100,frameHeight: 100,});
+  // fire200 62프레임
+  scene.load.spritesheet('fire200', '/assets/effects/fire_200x200px.png', {frameWidth: 200,frameHeight: 200,});  
+  // fire400 62프레임
+  scene.load.spritesheet('fire400', '/assets/effects/fire_400x400px.png', {frameWidth: 400,frameHeight: 400,});
+  
+  // fireFloor50 62프레임
+  scene.load.spritesheet('fireFloor50', '/assets/effects/fire_floor_50x50px.png', {frameWidth: 50,frameHeight: 50,});
+  // fireFloor100 62프레임
+  scene.load.spritesheet('fireFloor100', '/assets/effects/fire_floor_100x100px.png', {frameWidth: 100,frameHeight: 100,});
+  // fireFloor200 62프레임
+  scene.load.spritesheet('fireFloor200', '/assets/effects/fire_floor_200x200px.png', {frameWidth: 200,frameHeight: 200,});
+  // fireFloor400 62프레임
+  scene.load.spritesheet('fireFloor400', '/assets/effects/fire_floor_400x400px.png', {frameWidth: 400,frameHeight: 400,});
+
+  // smokeFloor 62프레임
+  scene.load.spritesheet('smokeFloo50', '/assets/effects/smoke_floor_50x50px.png', {frameWidth: 50,frameHeight: 50,});
+  // smokeFloor 62프레임
+  scene.load.spritesheet('smokeFloor100', '/assets/effects/smoke_floor_100x100px.png', {frameWidth: 100,frameHeight: 100,});
+  // smokeFloor 62프레임
+  scene.load.spritesheet('smokeFloor200', '/assets/effects/smoke_floor_200x200px.png', {frameWidth: 200,frameHeight: 200,});
+  // smokeFloor 62프레임
+  scene.load.spritesheet('smokeFloor400', '/assets/effects/smoke_floor_400x400px.png', {frameWidth: 400,frameHeight: 400,});
+
+  // explosion50 38프레임
+  scene.load.spritesheet('explosion50', '/assets/effects/explosion_50x50px.png', {frameWidth: 50,frameHeight: 50,});
+  // explosion100 38프레임
+  scene.load.spritesheet('explosion100', '/assets/effects/explosion_100x100px.png', {frameWidth: 100,frameHeight: 100,});
+  // explosion200 38프레임
+  scene.load.spritesheet('explosion200', '/assets/effects/explosion_200x200px.png', {frameWidth: 200,frameHeight: 200,});  
+  // explosion400 38프레임
+  scene.load.spritesheet('explosion400', '/assets/effects/explosion_400x400px.png', {frameWidth: 400,frameHeight: 400,});
+
+  // explosionOrb50 38프레임
+  scene.load.spritesheet('explosionOrb50', '/assets/effects/explosion_orb_50x50px.png', {frameWidth: 50,frameHeight: 50,});
+  // explosionOrb100 38프레임
+  scene.load.spritesheet('explosionOrb100', '/assets/effects/explosion_orb_100x100px.png', {frameWidth: 100,frameHeight: 100,});
+  // explosionOrb200 38프레임
+  scene.load.spritesheet('explosionOrb200', '/assets/effects/explosion_orb_200x200px.png', {frameWidth: 200,frameHeight: 200,});  
+  // explosionOrb400 38프레임
+  scene.load.spritesheet('explosionOrb400', '/assets/effects/explosion_orb_400x400px.png', {frameWidth: 400,frameHeight: 400,});  
+
+  // hitClaws50 60프레임
+  scene.load.spritesheet('hitClaws50', '/assets/effects/hit_claws_50x50px.png', {frameWidth: 50,frameHeight: 50,});
+  // hitClaws100 60프레임
+  scene.load.spritesheet('hitClaws100', '/assets/effects/hit_claws_100x100px.png', {frameWidth: 100,frameHeight: 100,});
+  // hitClaws200 60프레임
+  scene.load.spritesheet('hitClaws200', '/assets/effects/hit_claws_200x200px.png', {frameWidth: 200,frameHeight: 200,});  
+  // hitClaws400 60프레임
+  scene.load.spritesheet('hitClaws400', '/assets/effects/hit_claws_400x400px.png', {frameWidth: 400,frameHeight: 400,});    
+
+  // thunder50 40프레임
+  scene.load.spritesheet('thunder50', '/assets/effects/thunder_50x50px.png', {frameWidth: 50,frameHeight: 50,});
+  // thunder100 40프레임
+  scene.load.spritesheet('thunder100', '/assets/effects/thunder_100x100px.png', {frameWidth: 100,frameHeight: 100,});
+  // thunder200 40프레임
+  scene.load.spritesheet('thunder200', '/assets/effects/thunder_200x200px.png', {frameWidth: 200,frameHeight: 200,});  
+  // thunder400 40프레임
+  scene.load.spritesheet('thunder400', '/assets/effects/thunder_400x400px.png', {frameWidth: 400,frameHeight: 400,});
+
+  // snow50 40프레임
+  scene.load.spritesheet('snow50', '/assets/effects/top_snow_50x50px.png', {frameWidth: 50,frameHeight: 50,});
+  // snow100 40프레임
+  scene.load.spritesheet('snow100', '/assets/effects/top_snow_100x100px.png', {frameWidth: 100,frameHeight: 100,});
+  // snow200 40프레임
+  scene.load.spritesheet('snow200', '/assets/effects/top_snow_200x200px.png', {frameWidth: 200,frameHeight: 200,});  
+  // snow400 40프레임
+  scene.load.spritesheet('snow400', '/assets/effects/top_snow_400x400px.png', {frameWidth: 400,frameHeight: 400,});
+
 }
 
 // 6. 아이콘

@@ -181,8 +181,9 @@ export default class GameStatusManager {
       this.scene.anims.create({
         key: 'fireCircle200',
         frames: this.scene.anims.generateFrameNumbers('fireCircle200', { start: 0, end: 63 }),
-        frameRate: 64,
-        hideOnComplete: true
+        frameRate: 192,
+        hideOnComplete: true,
+        repeat: 3,
       });
     }
 

@@ -121,7 +121,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     if (!this.body.enable) return;
 
-    this.scene.game.audioManager.playSFX('sfx_player_explosion');
+    const shipName = this.playerData.ship.name;
+    this.scene.game.audioManager.playSFX(`sfx_${shipName}_down`);
 
     if (!this.scene.anims.exists('explosion_small')) {
       this.scene.anims.create({
@@ -187,7 +188,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     explosion.on('animationcomplete', () => explosion.destroy());
 
     // 사운드
-    this.scene.game.audioManager.playSFX('sfx_player_explosion');
+    const shipName = this.playerData.ship.name;
+    this.scene.game.audioManager.playSFX(`sfx_${shipName}_down`);
 
     // 목숨잃음
     this.gameStatusManager.loseLife();

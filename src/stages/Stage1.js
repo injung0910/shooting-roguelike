@@ -27,16 +27,16 @@ export default class Stage1 extends Phaser.Scene {
       { type: 'bug1', x: 100, delay: 0 },
       { type: 'bug1', x: 150, delay: 0 },
       { type: 'bug1', x: 200, delay: 0 },
-      { type: 'bug1', x: 400, delay: 5000 },
-      { type: 'bug1', x: 450, delay: 5000 },
-      { type: 'bug1', x: 500, delay: 5000 },
+      { type: 'bug1', x: 400, delay: 2000 },
+      { type: 'bug1', x: 450, delay: 2000 },
+      { type: 'bug1', x: 500, delay: 2000 },
     ];
 
     this.enemyManager.spawnEnemiesFromData(spawnData);    
 
     //테스트용 무한루프
     this.time.addEvent({
-      delay: 10000,       // 10초
+      delay: 4000,       // 10초
       loop: true,        // 무한 반복
       callback: () => {
         this.enemyManager.spawnEnemiesFromData(spawnData);
@@ -47,7 +47,7 @@ export default class Stage1 extends Phaser.Scene {
     // 적 -> 플레이어 bullets 충돌처리
     this.physics.add.overlap(
       this.player,
-      this.enemyManager.bulletManager.bullets,
+      this.enemyManager.enemyBulletManager.bullets,
       (player, bullet) => {
         player.handleHit(bullet);
       },

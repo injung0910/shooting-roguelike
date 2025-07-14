@@ -34,9 +34,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     super(scene, 300, 700, data);
     
     this.scene = scene;
-    this.data = data; // key, name 등 전체 저장
+    this.playerData = data; // key, name 등 전체 저장
 
-    const stats = SHIP_STATS[this.data.ship.name];
+    const stats = SHIP_STATS[this.playerData.ship.name];
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
@@ -56,45 +56,44 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.touchTarget = null;
     // 속도, 데미지 등 설정
     this.speed = stats.speed;
-    //this.damage = this.getDamageByBulletKey(this.data.ship.key);
 
     this.registerTouchControls();
     this.createAnimations();
     this.play('idle');
 
-    //this.game.audioManager.scene = this;
-
     // 발사
     this.bulletManager = new BulletManager(scene, stats, this.scene.game.audioManager);
 
     // 발사
-    this.gameStatusManager = new GameStatusManager(scene, this.data);
+    this.gameStatusManager = new GameStatusManager(scene, this.playerData);
 
     // 폭탄
     this.bombKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
   }
 
   createAnimations() {
+    const key = this.playerData.ship.key;
+    
     this.scene.anims.create({
-      key: 'idle',
-      frames: this.scene.anims.generateFrameNumbers(this.data.ship.key, { start: 0, end: 3 }),
+      key: `${key}_idle`,
+      frames: this.scene.anims.generateFrameNumbers(key, { start: 0, end: 3 }),
       frameRate: 10,
       repeat: -1
     });
 
     this.scene.anims.create({
-      key: 'left',
-      frames: this.scene.anims.generateFrameNumbers(this.data.ship.key, { start: 4, end: 11 }),
+      key: `${key}_left`,
+      frames: this.scene.anims.generateFrameNumbers(key, { start: 4, end: 11 }),
       frameRate: 15,
       repeat: -1
     });
 
     this.scene.anims.create({
-      key: 'right',
-      frames: this.scene.anims.generateFrameNumbers(this.data.ship.key, { start: 12, end: 19 }),
+      key: `${key}_right`,
+      frames: this.scene.anims.generateFrameNumbers(key, { start: 12, end: 19 }),
       frameRate: 15,
       repeat: -1
-    });
+    });   
   }
 
   registerTouchControls() {
@@ -113,6 +112,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.isTouching = false;
       this.touchTarget = null;
     });
+
+    
   }
 
   handleHit(bullet) {
@@ -141,8 +142,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       });
     });
 
+    // 목숨잃음
+    this.gameStatusManager.loseLife();
+
     // 무적 상태 및 시각 효과
-    this.body.enable = false;
+    this.body.checkCollision.none = true;
 
     // 🔸 깜빡이는 효과 시작
     let blink = true;
@@ -159,7 +163,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.scene.time.delayedCall(2000, () => {
       this.setAlpha(1);
       this.clearTint();
-      this.body.enable = true;
+      this.body.checkCollision.none = false;
       blinkTimer.remove(); // 타이머 정지
     });
   }  
@@ -185,6 +189,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     // 사운드
     this.scene.game.audioManager.playSFX('sfx_player_explosion');
 
+    // 목숨잃음
+    this.gameStatusManager.loseLife();
+
     // 무적 상태 및 시각 효과
     this.body.enable = false;
 
@@ -208,7 +215,186 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     });
   }  
 
+  useBomb() {
+    if (this.gameStatusManager.bombs <= 0) return;
+
+    // 중복 방지: 0.1초 안에 다시 호출되지 않도록
+    if (this.bombCooldown) return;
+    this.bombCooldown = true;
+    this.scene.time.delayedCall(150, () => {
+      this.bombCooldown = false;
+    });
+
+    this.gameStatusManager.bombs--;
+    this.gameStatusManager.updateBombUI(); // UI 동기화
+
+    const shipName = this.playerData.ship.name;
+
+    switch (shipName) {
+      case 'Falcon':
+        this.falconBomb();
+        break;
+      case 'Cryphix':
+        this.cryphixBomb();
+        break;
+      case 'Hawk':
+        this.hawkBomb();
+        break;
+      default:
+        this.falconBomb();
+        break;
+    }
+    
+  }
+
+  falconBomb() {
+    // 폭발 애니메이션 생성
+    if (!this.scene.anims.exists('explosion200')) {
+      this.scene.anims.create({
+        key: 'explosion200',
+        frames: this.scene.anims.generateFrameNumbers('explosion200', { start: 0, end: 39 }),
+        frameRate: 20,
+        hideOnComplete: true
+      });
+    }
+    
+    const centerX = this.scene.scale.width / 2;
+    const centerY = this.scene.scale.height / 2;
+
+    const explosion200 = this.scene.add.sprite(centerX, centerY, 'explosion200');
+    explosion200.setDepth(30);
+    explosion200.setScale(4);
+    explosion200.setAlpha(0.7);
+    explosion200.play('explosion200');
+
+    this.bombFlash = this.scene.add.rectangle(0, 0, this.scene.scale.width, this.scene.scale.height, 0xffffff)
+      .setOrigin(0)
+      .setAlpha(0)
+      .setDepth(9999); // 모든 요소 위에
+
+    this.bombFlash.setAlpha(0.8);
+    this.scene.tweens.add({
+      targets: this.bombFlash,
+      alpha: 0,
+      duration: 300,
+      ease: 'Cubic.easeOut',
+    });
+
+    this.scene.game.audioManager.playSFX('sfx_falcon_bomb');
+
+    const bombDuration = 2000; // 폭탄 지속 시간 (2초)
+    const interval = 200;      // 0.2초마다 제거
+
+    // 반복 제거 타이머
+    const clearTimer = this.scene.time.addEvent({
+      delay: interval,
+      callback: () => {
+        this.scene.enemyManager.clearAll(); // 적과 총알 모두 제거
+      },
+      repeat: Math.floor(bombDuration / interval) - 1 // 총 몇 번 반복할지
+    });    
+
+    explosion200.on('animationcomplete', () => explosion200.destroy());
+  }
+
+  cryphixBomb() {
+    // 폭발 애니메이션 생성
+    if (!this.scene.anims.exists('thunder200')) {
+      this.scene.anims.create({
+        key: 'thunder200',
+        frames: this.scene.anims.generateFrameNumbers('thunder200', { start: 50, end: 89 }),
+        frameRate: 40,
+        hideOnComplete: true
+      });
+    }
+
+    const centerX = this.scene.scale.width / 2;
+    const centerY = this.scene.scale.height / 2;
+
+    const thunder200 = this.scene.add.sprite(centerX, centerY, 'thunder200');
+    thunder200.setDepth(30);
+    thunder200.setScale(4);
+    thunder200.setAlpha(0.7);
+    thunder200.play('thunder200');
+
+    this.bombFlash = this.scene.add.rectangle(0, 0, this.scene.scale.width, this.scene.scale.height, 0xffffff)
+      .setOrigin(0)
+      .setAlpha(0)
+      .setDepth(9999); // 모든 요소 위에
+
+    this.bombFlash.setAlpha(0.8);
+    this.scene.tweens.add({
+      targets: this.bombFlash,
+      alpha: { from: 0.6, to: 0 },
+      duration: 100,
+      repeat: 4,
+    });
+
+    this.scene.game.audioManager.playSFX('sfx_cryphix_bomb');
+
+    this.scene.enemyManager.clearAll();
+
+    thunder200.on('animationcomplete', () => thunder200.destroy());
+  }  
+
+  hawkBomb() {
+    // 폭발 애니메이션 생성
+    if (!this.scene.anims.exists('fireCircle200')) {
+      this.scene.anims.create({
+        key: 'fireCircle200',
+        frames: this.scene.anims.generateFrameNumbers('fireCircle200', { start: 0, end: 63 }),
+        frameRate: 192,
+        hideOnComplete: true,
+        repeat: 3,
+      });
+    }
+
+    for (let i = 0; i < 20; i++) {
+      this.scene.time.delayedCall(i * 100, () => {
+        this.scene.game.audioManager.playSFX('sfx_hawk_bomb');
+
+        const x = Phaser.Math.Between(50, this.scene.scale.width - 50); // 화면 좌우 여백 50
+        const y = this.scene.scale.height + 50; // 화면 아래쪽 바깥
+
+        //const fireCircle200 = this.scene.add.sprite(this.x, this.y, 'fireCircle200');
+        const fireCircle200 = this.scene.physics.add.sprite(x, y, 'fireCircle200');
+        fireCircle200.setDepth(30);
+        fireCircle200.setAlpha(0.7);
+        fireCircle200.setVelocityY(-1000); 
+        fireCircle200.play('fireCircle200');
+        fireCircle200.on('animationcomplete', () => fireCircle200.destroy());
+      });
+    }
+
+    this.bombFlash = this.scene.add.rectangle(0, 0, this.scene.scale.width, this.scene.scale.height, 0xff3300)
+      .setOrigin(0)
+      .setAlpha(0)
+      .setDepth(9999); // 모든 요소 위에
+
+    this.bombFlash.setAlpha(0.8);
+    this.scene.tweens.add({
+      targets: this.bombFlash,
+      alpha: { from: 0.3, to: 0 },
+      duration: 400,
+      repeat: 4,
+    });
+
+    const bombDuration = 2000; // 폭탄 지속 시간 (2초)
+    const interval = 200;      // 0.2초마다 제거
+
+    // 반복 제거 타이머
+    const clearTimer = this.scene.time.addEvent({
+      delay: interval,
+      callback: () => {
+        this.scene.enemyManager.clearAll(); // 적과 총알 모두 제거
+      },
+      repeat: Math.floor(bombDuration / interval) - 1 // 총 몇 번 반복할지
+    });    
+  }
+
   update() {
+
+    const key = this.playerData.ship.key;
 
     // 화면 경계 제한
     this.x = Phaser.Math.Clamp(this.x, 0, this.scene.scale.width);
@@ -218,13 +404,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     if (!this.isTouching) {
       if (this.cursors.left.isDown) {
         this.setVelocityX(-this.speed);
-        this.anims.play('left', true);
+        this.anims.play(`${key}_left`, true);
       } else if (this.cursors.right.isDown) {
         this.setVelocityX(this.speed);
-        this.anims.play('right', true);
+        this.anims.play(`${key}_right`, true);
       } else {
         this.setVelocityX(0);
-        this.anims.play('idle', true);
+        this.anims.play(`${key}_idle`, true);
       }
 
       if (this.cursors.up.isDown) {
@@ -240,7 +426,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       }
 
       if (Phaser.Input.Keyboard.JustDown(this.bombKey)) {
-         this.gameStatusManager.useBomb(); 
+         this.useBomb(); 
       }
 
     }
@@ -254,15 +440,15 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.scene.physics.velocityFromRotation(angle, this.speed, this.body.velocity);
 
         if (this.touchTarget.x < this.x - 10) {
-          if (this.anims.currentAnim?.key !== 'left') this.anims.play('left');
+          if (this.anims.currentAnim?.key !== `${key}_left`) this.anims.play(`${key}_left`);
         } else if (this.touchTarget.x > this.x + 10) {
-          if (this.anims.currentAnim?.key !== 'right') this.anims.play('right');
+          if (this.anims.currentAnim?.key !== `${key}_right`) this.anims.play(`${key}_right`);
         } else {
-          if (this.anims.currentAnim?.key !== 'idle') this.anims.play('idle');
+          if (this.anims.currentAnim?.key !== `${key}_idle`) this.anims.play(`${key}_idle`);
         }
       } else {
         this.setVelocity(0);
-        if (this.anims.currentAnim?.key !== 'idle') this.anims.play('idle');
+        if (this.anims.currentAnim?.key !== `${key}_idle`) this.anims.play(`${key}_idle`);
       }
      
       this.bulletManager.fire(this.x, this.y - 30);

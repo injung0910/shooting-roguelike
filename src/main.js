@@ -8,6 +8,7 @@ import LoadingScene from './scenes/LoadingScene.js';
 import OptionScene from './scenes/OptionScene.js';
 import StageIntroScene from './scenes/StageIntroScene'; 
 import AudioManager from './audio/AudioManager.js';
+import GameOverScene from './scenes/GameOverScene.js';
 
 import Stage1 from './stages/Stage1'; 
 
@@ -23,7 +24,8 @@ const config = {
       StageIntroScene, 
       Stage1,
       OptionScene, 
-      AboutScene], // 순서 중요: StartScene이 첫 진입
+      AboutScene,
+      GameOverScene], // 순서 중요: StartScene이 첫 진입
   parent: 'game-container',
   scale: {
     mode: Phaser.Scale.FIT,

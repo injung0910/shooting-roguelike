@@ -36,7 +36,7 @@ export default class EnemyManager {
     this.createBugAnimations();
 
     // EnemyBulletManager 인스턴스 생성
-    this.bulletManager = new EnemyBulletManager(scene);
+    this.enemyBulletManager = new EnemyBulletManager(scene);
 
     console.log('this.scene : ' + this.scene);
   }
@@ -86,7 +86,7 @@ export default class EnemyManager {
             delay: enemy.fireRate,
             callback: () => {
               if (enemy.active) {
-                this.bulletManager.fire(enemy.x, enemy.y + 20, enemy.bulletKey, 200);
+                this.enemyBulletManager.fire(enemy.x, enemy.y + 20, enemy.bulletKey, 200);
               }
             },
             loop: true
@@ -215,6 +215,6 @@ export default class EnemyManager {
   }
 
   update() {
-    this.bulletManager.update();
+    this.enemyBulletManager.update();
   }
 }

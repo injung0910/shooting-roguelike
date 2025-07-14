@@ -3,6 +3,10 @@ export default class SelectScene extends Phaser.Scene {
     super({ key: 'SelectScene' });
   }
 
+  init() {
+    this.selectedIndex = 0; // 초기 기체 선택 강제
+  }
+
   create() {
     
     // bgm 설정

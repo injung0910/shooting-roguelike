@@ -65,7 +65,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.bulletManager = new BulletManager(scene, stats, this.scene.game.audioManager);
 
     // 발사
-    this.gameStatusManager = new GameStatusManager(scene, this.playerData);
+    this.gameStatusManager = new GameStatusManager(scene, this.playerData, this);
 
     // 폭탄
     this.bombKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);

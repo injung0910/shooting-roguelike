@@ -1,7 +1,8 @@
 export default class GameStatusManager {
-  constructor(scene, playerData) {
+  constructor(scene, playerData, player) {
     this.scene = scene;
     this.playerData = playerData;
+    this.player = player;
 
     this.score = 0;
     this.lives = 2;

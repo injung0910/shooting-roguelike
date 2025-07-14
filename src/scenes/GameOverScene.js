@@ -4,6 +4,13 @@ export default class GameOverScene extends Phaser.Scene {
   }
 
   create() {
+    // bgm 설정
+    if (!this.sys.settings.data?.fromOption) {
+      this.sound.stopAll();
+    }
+    this.game.audioManager.scene = this;
+    this.game.audioManager.playBGM('bgm_gameover');    
+    
     const centerX = this.cameras.main.centerX;
     const centerY = this.cameras.main.centerY;
 

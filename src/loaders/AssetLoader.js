@@ -1,5 +1,6 @@
 // public/src/loaders/AssetLoader.js
 
+// 이미지, 스프라이트 시트는 여기서
 export function loadAllAssets(scene) {
   loadBackgrounds(scene);
   loadPlayer(scene);
@@ -402,19 +403,19 @@ function loadEffects(scene) {
 // 6. 아이콘
 function loadIcons(scene) {
   // 파워 아이콘 스프라이트 시트 로드 5프레임
-  scene.load.spritesheet('powerup_item', '/assets/Icons/Power-Ups/icon-a-power.png', {frameWidth: 32,frameHeight: 32,});
+  scene.load.spritesheet('item-power', '/assets/Icons/Power-Ups/icon-a-power.png', {frameWidth: 32,frameHeight: 32,});
 
   // 헬스 아이콘 스프라이트 시트 로드 5프레임
-  scene.load.spritesheet('health_item', '/assets/Icons/Power-Ups/icon-a-health.png', {frameWidth: 32,frameHeight: 32,});
+  scene.load.spritesheet('item-health', '/assets/Icons/Power-Ups/icon-a-health.png', {frameWidth: 32,frameHeight: 32,});
 
   // 쉴드 아이콘 스프라이트 시트 로드 5프레임
-  scene.load.spritesheet('shield_item', '/assets/Icons/Power-Ups/icon-a-shield.png', {frameWidth: 32,frameHeight: 32,});
+  scene.load.spritesheet('item-shield', '/assets/Icons/Power-Ups/icon-a-shield.png', {frameWidth: 32,frameHeight: 32,});
 
   // 스페셜 아이콘 스프라이트 시트 로드 5프레임
-  scene.load.spritesheet('special_item', '/assets/Icons/Power-Ups/icon-a-special.png', {frameWidth: 32,frameHeight: 32,});
+  scene.load.spritesheet('item-special', '/assets/Icons/Power-Ups/icon-a-special.png', {frameWidth: 32,frameHeight: 32,});
 
   // 스피드 아이콘 스프라이트 시트 로드 5프레임
-  scene.load.spritesheet('speed_item', '/assets/Icons/Power-Ups/icon-a-speed.png', {frameWidth: 32,frameHeight: 32,});
+  scene.load.spritesheet('item-speed', '/assets/Icons/Power-Ups/icon-a-speed.png', {frameWidth: 32,frameHeight: 32,});
 
   // 폭탄 아이콘 
   scene.load.image('icon-bomb', '/assets/Icons/icon-bomb.png');
@@ -499,6 +500,7 @@ function loadAllSFX(scene) {
   scene.load.audio('sfx_ship_select', '/assets/audio/sfx/sfx_ship_select.wav');
   scene.load.audio('sfx_player_explosion', '/assets/audio/sfx/sfx_player_explosion.wav');
   scene.load.audio('sfx_powerup', '/assets/audio/sfx/sfx_powerup.wav');
+  scene.load.audio('sfx_powerup_etc', '/assets/audio/sfx/sfx_powerup_etc.wav');
   scene.load.audio('sfx_support_powerup', '/assets/audio/sfx/sfx_support_powerup.wav');
   scene.load.audio('sfx_ui_select', '/assets/audio/sfx/sfx_ui_select.wav');
   scene.load.audio('sfx_ui_success', '/assets/audio/sfx/sfx_ui_success.wav');
@@ -511,4 +513,319 @@ function loadAllSFX(scene) {
   scene.load.audio('sfx_Falcon_down', '/assets/audio/sfx/sfx_falcon_down.wav');
   scene.load.audio('sfx_Cryphix_down', '/assets/audio/sfx/sfx_cryphix_down.wav');
   scene.load.audio('sfx_Hawk_down', '/assets/audio/sfx/sfx_hawk_down.wav');
+}
+
+// 애니메이션 생성은 여기서
+export function createAllAnimations(scene) {
+    // preview용 player 생성
+    scene.anims.create({
+      key: 'plane2_anim',
+      frames: scene.anims.generateFrameNumbers('plane2', { start: 0, end: 3 }),
+      frameRate: 6,
+      repeat: -1
+    });
+
+    // preview용 player 생성
+    scene.anims.create({
+      key: 'plane2_powerup_anim',
+      frames: scene.anims.generateFrameNumbers('plane2_powerup', { start: 0, end: 3 }),
+      frameRate: 6,
+      repeat: -1
+    });
+
+    scene.anims.create({
+      key: 'plane2_idle',
+      frames: scene.anims.generateFrameNumbers('plane2', { start: 0, end: 3 }),
+      frameRate: 10,
+      repeat: -1
+    });
+
+    scene.anims.create({
+      key: 'plane2_left',
+      frames: scene.anims.generateFrameNumbers('plane2', { start: 4, end: 11 }),
+      frameRate: 15,
+      repeat: -1
+    });
+
+    scene.anims.create({
+      key: 'plane2_right',
+      frames: scene.anims.generateFrameNumbers('plane2', { start: 12, end: 19 }),
+      frameRate: 15,
+      repeat: -1
+    });        
+
+    scene.anims.create({
+      key: 'plane2_powerup_idle',
+      frames: scene.anims.generateFrameNumbers('plane2_powerup', { start: 0, end: 3 }),
+      frameRate: 10,
+      repeat: -1
+    });
+
+    scene.anims.create({
+      key: 'plane2_powerup_left',
+      frames: scene.anims.generateFrameNumbers('plane2_powerup', { start: 4, end: 11 }),
+      frameRate: 15,
+      repeat: -1
+    });
+
+    scene.anims.create({
+      key: 'plane2_powerup_right',
+      frames: scene.anims.generateFrameNumbers('plane2_powerup', { start: 12, end: 19 }),
+      frameRate: 15,
+      repeat: -1
+    });    
+
+    // preview용 player 생성
+    scene.anims.create({
+      key: 'plane9_anim',
+      frames: scene.anims.generateFrameNumbers('plane9', { start: 0, end: 3 }),
+      frameRate: 6,
+      repeat: -1
+    });
+
+    // preview용 player 생성
+    scene.anims.create({
+      key: 'plane9_powerup_anim',
+      frames: scene.anims.generateFrameNumbers('plane9_powerup', { start: 0, end: 3 }),
+      frameRate: 6,
+      repeat: -1
+    });
+
+    scene.anims.create({
+      key: 'plane9_idle',
+      frames: scene.anims.generateFrameNumbers('plane9', { start: 0, end: 3 }),
+      frameRate: 10,
+      repeat: -1
+    });
+
+    scene.anims.create({
+      key: 'plane9_left',
+      frames: scene.anims.generateFrameNumbers('plane9', { start: 4, end: 11 }),
+      frameRate: 15,
+      repeat: -1
+    });
+
+    scene.anims.create({
+      key: 'plane9_right',
+      frames: scene.anims.generateFrameNumbers('plane9', { start: 12, end: 19 }),
+      frameRate: 15,
+      repeat: -1
+    });      
+
+
+    scene.anims.create({
+      key: 'plane9_powerup_idle',
+      frames: scene.anims.generateFrameNumbers('plane9_powerup', { start: 0, end: 3 }),
+      frameRate: 10,
+      repeat: -1
+    });
+
+    scene.anims.create({
+      key: 'plane9_powerup_left',
+      frames: scene.anims.generateFrameNumbers('plane9_powerup', { start: 4, end: 11 }),
+      frameRate: 15,
+      repeat: -1
+    });
+
+    scene.anims.create({
+      key: 'plane9_powerup_right',
+      frames: scene.anims.generateFrameNumbers('plane9_powerup', { start: 12, end: 19 }),
+      frameRate: 15,
+      repeat: -1
+    });       
+
+    // preview용 player 생성
+    scene.anims.create({
+      key: 'plane6_anim',
+      frames: scene.anims.generateFrameNumbers('plane6', { start: 0, end: 3 }),
+      frameRate: 6,
+      repeat: -1
+    });
+
+    // preview용 player 생성
+    scene.anims.create({
+      key: 'plane6_powerup_anim',
+      frames: scene.anims.generateFrameNumbers('plane6_powerup', { start: 0, end: 3 }),
+      frameRate: 6,
+      repeat: -1
+    });
+
+    scene.anims.create({
+      key: 'plane6_idle',
+      frames: scene.anims.generateFrameNumbers('plane6', { start: 0, end: 3 }),
+      frameRate: 10,
+      repeat: -1
+    });
+
+    scene.anims.create({
+      key: 'plane6_left',
+      frames: scene.anims.generateFrameNumbers('plane6', { start: 4, end: 11 }),
+      frameRate: 15,
+      repeat: -1
+    });
+
+    scene.anims.create({
+      key: 'plane6_right',
+      frames: scene.anims.generateFrameNumbers('plane6', { start: 12, end: 19 }),
+      frameRate: 15,
+      repeat: -1
+    });   
+
+    scene.anims.create({
+      key: 'plane6_powerup_idle',
+      frames: scene.anims.generateFrameNumbers('plane6_powerup', { start: 0, end: 3 }),
+      frameRate: 10,
+      repeat: -1
+    });
+
+    scene.anims.create({
+      key: 'plane6_powerup_left',
+      frames: scene.anims.generateFrameNumbers('plane6_powerup', { start: 4, end: 11 }),
+      frameRate: 15,
+      repeat: -1
+    });
+
+    scene.anims.create({
+      key: 'plane6_powerup_right',
+      frames: scene.anims.generateFrameNumbers('plane6_powerup', { start: 12, end: 19 }),
+      frameRate: 15,
+      repeat: -1
+    });   
+
+    // preview용 bullet 생성
+    scene.anims.create({
+      key: 'bullets3_anim',
+      frames: scene.anims.generateFrameNumbers('bullets3', { start: 0, end: 1 }),
+      frameRate: 8,
+      repeat: -1
+    });
+
+    // preview용 bullet 생성
+    scene.anims.create({
+      key: 'bullets5_anim',
+      frames: scene.anims.generateFrameNumbers('bullets5', { start: 0, end: 1 }),
+      frameRate: 8,
+      repeat: -1
+    });
+
+    // preview용 bullet 생성
+    scene.anims.create({
+      key: 'bullets1_anim',
+      frames: scene.anims.generateFrameNumbers('bullets1', { start: 0, end: 1 }),
+      frameRate: 8,
+      repeat: -1
+    });
+
+    // 폭발 애니메이션
+    scene.anims.create({
+      key: 'explosion_small',
+      frames: scene.anims.generateFrameNumbers('explosion_small', { start: 0, end: 11 }),
+      frameRate: 11,
+      hideOnComplete: true
+    });
+
+    scene.anims.create({
+      key: 'enemy_explosion_small',
+      frames: scene.anims.generateFrameNumbers('explosion_small', { start: 0, end: 11 }),
+      frameRate: 11,
+      hideOnComplete: true
+    });    
+
+    // bug 1~6
+    for (let i = 1; i <= 6; i++) {
+      const key = `bug${i}`;
+      scene.anims.create({
+        key,
+        frames: scene.anims.generateFrameNumbers(key, { start: 0, end: 5 }),
+        frameRate: 10,
+        repeat: -1
+      });
+    }
+
+    // 파워업 아이템
+    scene.anims.create({
+      key: 'item-power-anim',
+      frames: scene.anims.generateFrameNumbers('item-power', { start: 0, end: 4 }),
+      frameRate: 6,
+      repeat: -1
+    });
+
+    // 
+    scene.anims.create({
+      key: 'explosion200',
+      frames: scene.anims.generateFrameNumbers('explosion200', { start: 0, end: 39 }),
+      frameRate: 20,
+      hideOnComplete: true
+    });
+
+    // 
+    scene.anims.create({
+      key: 'thunder200',
+      frames: scene.anims.generateFrameNumbers('thunder200', { start: 50, end: 89 }),
+      frameRate: 40,
+      hideOnComplete: true
+    });
+
+    // 
+    scene.anims.create({
+      key: 'fireCircle200',
+      frames: scene.anims.generateFrameNumbers('fireCircle200', { start: 0, end: 63 }),
+      frameRate: 192,
+      hideOnComplete: true,
+      repeat: 3,
+    });
+
+    // 
+    scene.anims.create({
+      key: 'plane2_support',
+      frames: scene.anims.generateFrameNumbers('support_red', { start: 0, end: 1 }),
+      frameRate: 6,
+      repeat: -1
+    });   
+    
+    scene.anims.create({
+      key: 'plane9_support',
+      frames: scene.anims.generateFrameNumbers('support_blue', { start: 0, end: 1 }),
+      frameRate: 6,
+      repeat: -1
+    });
+    
+    scene.anims.create({
+      key: 'plane6_support',
+      frames: scene.anims.generateFrameNumbers('support_grey', { start: 0, end: 1 }),
+      frameRate: 6,
+      repeat: -1
+    });
+
+    // preview용 missile 생성
+    scene.anims.create({
+      key: 'missile3_anim',
+      frames: scene.anims.generateFrameNumbers('missile03', { start: 0, end: 2 }),
+      frameRate: 8,
+      repeat: -1
+    });
+
+    scene.anims.create({
+      key: 'missile4_anim',
+      frames: scene.anims.generateFrameNumbers('missile04', { start: 0, end: 2 }),
+      frameRate: 8,
+      repeat: -1
+    });
+
+    scene.anims.create({
+      key: 'lightningShield',
+      frames: scene.anims.generateFrameNumbers('lightningShield', { start: 0, end: 2 }),
+      frameRate: 15,
+      repeat: -1
+    });
+
+        // 
+    scene.anims.create({
+      key: 'rotating_flame_sheet',
+      frames: scene.anims.generateFrameNumbers('rotating_flame_sheet', { start: 0, end: 5 }),
+      frameRate: 30,
+      hideOnComplete: true,
+      repeat: -1,
+    });
+
 }

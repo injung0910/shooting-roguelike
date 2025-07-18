@@ -1,6 +1,6 @@
 import Player from '../objects/Player.js';
-import BulletManager from '../objects/BulletManager.js'
 import EnemyManager from '../objects/EnemyManager.js';
+import ItemManager from '../objects/ItemManager';
 
 export default class Stage1 extends Phaser.Scene {
   constructor(scene) {
@@ -17,10 +17,13 @@ export default class Stage1 extends Phaser.Scene {
 
     // Player 생성 시 ship 이름 전달
     this.player = new Player(this, 300, 700, this.ship);
-
-    this.bulletManager = new BulletManager(this, this.ship); 
-
+    console.log('Player.scene:', this.player.scene); 
+    
     this.enemyManager = new EnemyManager(this);
+
+    //아이템 처리
+    this.itemManager = new ItemManager(this);
+    this.itemManager.initCollision(this.player);
 
     // 스테이지 적 스폰 셋팅
     const spawnData = [
@@ -74,6 +77,32 @@ export default class Stage1 extends Phaser.Scene {
       null,
       this.enemyManager
     );
+
+
+    // 서포트
+    this.supportBulletGroup = this.physics.add.group();
+
+    this.physics.add.overlap(
+      this.supportBulletGroup,
+      this.enemyManager.enemies,
+      (bullet, enemy) => {
+        this.enemyManager.handleEnemyHit(bullet, enemy);
+      },
+      null,
+      this
+    );
+
+    // 호크 유도
+    this.physics.add.overlap(
+      this.player.bulletManager.hwakGroup,
+      this.enemyManager.enemies,
+      (bullet, enemy) => {
+        this.enemyManager.handleEnemyHit(bullet, enemy);
+      },
+      null,
+      this
+    );
+
 
     // 맵 타일
     this.tileWidth = 144;
@@ -134,20 +163,6 @@ export default class Stage1 extends Phaser.Scene {
       this.clouds.push(cloud);
     }
 
-    // 발사키
-    this.fireKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-
-    this.isTouching = false;
-    this.lastFired = 0;
-    this.fireInterval = 300; // 300ms 간격    
-
-    this.input.on('pointerdown', () => {
-      this.isTouching = true;
-    });
-
-    this.input.on('pointerup', () => {
-      this.isTouching = false;
-    });
   }
 
   update(time, delta){
@@ -184,6 +199,8 @@ export default class Stage1 extends Phaser.Scene {
     if (this.enemyManager) {
       this.enemyManager.update();
     }
+
+    this.itemManager.update();
 
   }
     

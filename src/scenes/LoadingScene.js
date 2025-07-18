@@ -1,4 +1,4 @@
-import { loadAllAssets } from '../loaders/AssetLoader.js';
+import { loadAllAssets, createAllAnimations } from '../loaders/AssetLoader.js';
 
 export default class LoadingScene extends Phaser.Scene {
   constructor() {
@@ -45,11 +45,10 @@ export default class LoadingScene extends Phaser.Scene {
       percentText.setText(`${Math.round(value * 100)}%`);
     });
 
+    // ✅ 로딩 완료되면 ready 플래그만 true로 설정
     this.load.on('complete', () => {
+      this.ready = true;
       percentText.setText('Complete!');
-      this.time.delayedCall(400, () => {
-        this.scene.start('BootScene');
-      });
     });
     
     // 실제 게임에 필요한 에셋들을 여기서 로드
@@ -64,6 +63,19 @@ export default class LoadingScene extends Phaser.Scene {
   }
 
   create() {
-    // create는 preload 완료 후 호출되므로 필요 시 사용
+    
+    // 애니메이션 생성
+    createAllAnimations(this);
+
+    // ✅ 로딩 완료 후에 전환 (ready 플래그를 체크)
+    this.time.addEvent({
+      delay: 100,
+      loop: true,
+      callback: () => {
+        if (this.ready) {
+          this.scene.start('BootScene');
+        }
+      }
+    });
   }
 }

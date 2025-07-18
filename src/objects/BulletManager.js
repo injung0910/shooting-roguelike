@@ -1,3 +1,6 @@
+import SupportUnit from './SupportUnit.js';
+import HwakMissile from './HwakMissile.js';
+
 export default class BulletManager {
   constructor(scene, playerData, audioManager) {
     this.scene = scene;
@@ -14,27 +17,90 @@ export default class BulletManager {
 
     this.fireRate = this.playerData.fireRate;
     this.lastFired = 0;
+
+    // 초기 파워 레벨
+    this.powerLevel = 1; // 초기 파워 레벨
+
+    this.supportUnits = [];
+
+    this.auraTimer = null; // 오라 타이머 추적용
+
+    this.hwakGroup = scene.physics.add.group();
+    this.hwakAutoFireTimer = null; // 자동 발사 타이머
   }
 
   fire(x, y) {
     const time = this.scene.time.now;
     if (time < this.lastFired + this.fireRate) return;
 
-    const bulletKey = this.getBulletKeyByShip(); // 기체에 따라 bullet 키 다르게
+    const bulletKey = this.getBulletKeyByShip();
+    console.log('this.powerLevel : ' + this.powerLevel);
 
-    //console.log('bulletKey : ' + bulletKey);
+    // 파워 레벨에 따른 오프셋/각도 설정
+    let config = [];
 
-    const bullet = this.bullets.get(x, y, bulletKey);
-    if (bullet) {
-      bullet.setActive(true);
-      bullet.setVisible(true);
-      bullet.body.enable = true;
-      bullet.setVelocityY(-400);
-      bullet.damage = this.getDamageByBulletKey(bulletKey);
+    if (bulletKey === 'bullets3') {
+      const levels = {
+        1: [ { offsetX: 0, angle: 0 } ],
+        2: [ { offsetX: -10, angle: -0.1 }, { offsetX: 10, angle: 0.1 } ],
+        3: [ { offsetX: 0, angle: 0 }, { offsetX: -10, angle: -0.3 }, { offsetX: 10, angle: 0.3 } ],
+        4: [ 
+          { offsetX: 0, angle: 0 }, 
+          { offsetX: -10, angle: -0.3 }, 
+          { offsetX: 10, angle: 0.3 }, 
+          { offsetX: -30, angle: -0.6 }, 
+          { offsetX: 30, angle: 0.6 }
+        ],
+        5: [ 
+          { offsetX: 0, angle: 0 }, 
+          { offsetX: -10, angle: -0.3 }, 
+          { offsetX: 10, angle: 0.3 }, 
+          { offsetX: -30, angle: -0.6 }, 
+          { offsetX: 30, angle: 0.6 }
+        ]
+      };
+      config = levels[this.powerLevel] || levels[1];
 
-      this.scene.game.audioManager.playSFX('sfx_' + bulletKey);
+    } else if (bulletKey === 'bullets5') {
+      // bullets5
+      const levels = {
+        1: [ { offsetX: 0, angle: 0 } ],
+        2: [ { offsetX: -5, angle: 0 }, { offsetX: 5, angle: 0 } ],
+        3: [ { offsetX: 0, angle: 0 }, { offsetX: -10, angle: 0 }, { offsetX: 10, angle: 0 } ],
+        4: [ 
+          { offsetX: 0, angle: 0 }, 
+          { offsetX: -10, angle: 0 }, 
+          { offsetX: 10, angle: 0 }, 
+          { offsetX: -20, angle: 0 }, 
+          { offsetX: 20, angle: 0 }
+        ],
+        5: [ 
+          { offsetX: 0, angle: 0 }, 
+          { offsetX: -10, angle: 0 }, 
+          { offsetX: 10, angle: 0 }, 
+          { offsetX: -20, angle: 0 }, 
+          { offsetX: 20, angle: 0 }
+        ]
+      };
+      config = levels[this.powerLevel] || levels[1];
+    } else if (bulletKey === 'bullets1') {
+      // bullets1
+      const levels = {
+        1: [ { offsetX: 0, angle: 0 } ],
+        2: [ { offsetX: -5, angle: 0 }, { offsetX: 5, angle: 0 } ],
+        3: [ { offsetX: 0, angle: 0 }, { offsetX: -10, angle: 0 }, { offsetX: 10, angle: 0 } ],
+        4: [ { offsetX: -5, angle: 0 }, { offsetX: 5, angle: 0 }, { offsetX: -15, angle: 0 }, { offsetX: 15, angle: 0 } ],
+        5: [ { offsetX: -5, angle: 0 }, { offsetX: 5, angle: 0 }, { offsetX: -15, angle: 0 }, { offsetX: 15, angle: 0 } ]
+      };
+      config = levels[this.powerLevel] || levels[1];
     }
 
+    // config 배열을 기반으로 총알 생성
+    config.forEach(cfg => {
+      this.spawnBullet(x + cfg.offsetX, y, bulletKey, cfg.angle);
+    });
+
+    this.scene.game.audioManager.playSFX('sfx_' + bulletKey);
     this.lastFired = time;
   }
 
@@ -52,7 +118,6 @@ export default class BulletManager {
     }
   }
 
-  
   getDamageByBulletKey(key) {
     switch (key) {
       case 'bullets3': return 8;
@@ -62,6 +127,153 @@ export default class BulletManager {
     }
   }    
 
+  increasePowerLevel() {
+    if (this.powerLevel < 5) {
+      this.scene.game.audioManager.playSFX('sfx_powerup');
+      this.powerLevel++;
+    }else{
+      this.scene.game.audioManager.playSFX('sfx_powerup_etc');
+    }
+  }
+
+  spawnBullet(x, y, key, angle = 0) {
+    const bullet = this.bullets.get(x, y, key);
+    if (!bullet) return;
+
+    bullet.setActive(true);
+    bullet.setVisible(true);
+    bullet.body.enable = true;
+
+    const speed = -400;
+    bullet.setVelocityY(speed);
+    bullet.setVelocityX(Math.sin(angle) * 150); // 지그재그 각도
+    bullet.setAngle(Phaser.Math.RadToDeg(angle));
+    
+    if(key === 'bullets3'){
+      if (this.powerLevel === 5 && this.supportUnits.length === 0) {
+        const unit1 = new SupportUnit(this.scene, this.scene.player.x - 10, this.scene.player.y + 25);
+        const unit2 = new SupportUnit(this.scene, this.scene.player.x + 10, this.scene.player.y + 25);
+        this.supportUnits.push(unit1, unit2);
+      }    
+    }else if(key === 'bullets5'){
+      if (this.powerLevel < 5) {
+        bullet.setScale(1 + this.powerLevel * 0.2, 1 + this.powerLevel * 0.2);
+      }
+
+      // 레벨 5 도달 시 오라 시작
+      if (this.powerLevel === 5 && !this.auraTimer) {
+        this.createElectricAura();
+
+        this.auraTimer = this.scene.time.addEvent({
+          delay: 3000, // 5초 (ms 단위)
+          callback: this.createElectricAura,
+          callbackScope: this,
+          loop: true
+        });
+      }
+      
+    }else if (key === 'bullets1'){
+      let baseFireRate = this.playerData.fireRate;
+      if (this.powerLevel >= 4) this.fireRate = baseFireRate - 25;
+      else this.fireRate = baseFireRate;
+
+      // 레벨 5 도달 시 자동 발사 타이머 등록
+      /*
+      if (this.powerLevel >= 5 && !this.hwakAutoFireTimer) {
+        this.hwakAutoFireTimer = this.scene.time.addEvent({
+          delay: 500, // 0.5초마다 자동 발사
+          callback: () => {
+            this.fireHwakMissile();
+          },
+          loop: true
+        });
+        console.log("Hwak 자동 발사 시작");
+      }
+      */
+    }
+
+    bullet.damage = this.getDamageByBulletKey(key);
+  }  
+
+  createElectricAura() {
+    if (this.electricAura) return; // 이미 생성되어 있으면 무시
+
+    this.electricAura = this.scene.add.sprite(this.scene.player.x, this.scene.player.y, 'lightningShield');
+    this.electricAura.play('lightningShield');
+    this.electricAura.setDepth(5);
+    this.electricAura.setScale(2.5);
+    this.electricAura.setAlpha(0.8);
+
+    // 충돌 감지를 위해 물리 엔진 적용
+    this.scene.physics.add.existing(this.electricAura);
+    this.electricAura.body.setCircle(this.electricAura.width / 2); // 원형 충돌 범위
+    this.electricAura.body.setAllowGravity(false);
+
+    // 주기적으로 적에게 데미지
+    this.auraDamageTimer = this.scene.time.addEvent({
+      delay: 500, // 0.5초마다 데미지
+      callback: () => {
+        this.scene.physics.overlap(
+          this.electricAura,
+          this.scene.enemyManager.enemies,
+          (aura, enemy) => {
+            this.scene.enemyManager.applyDamage(enemy, 5); // 5 데미지
+          }
+        );
+      },
+      loop: true
+    });
+
+    // 3초 후 오라 제거
+    this.scene.time.delayedCall(3000, () => {
+      if (this.electricAura) {
+        this.electricAura.destroy();
+        this.electricAura = null;
+      }
+      if (this.auraDamageTimer) {
+        this.auraDamageTimer.remove();
+        this.auraDamageTimer = null;
+      }
+    });
+  }
+
+  destroyAura() {
+    if (this.auraTimer) {
+      this.auraTimer.remove();
+      this.auraTimer = null;
+    }
+  }
+
+  fireHwakMissile() {
+    const target = this.findClosestEnemy();
+    if (!target) return;
+
+    const x = this.scene.player.x;
+    const y = this.scene.player.y;
+
+    const main = new HwakMissile(this.scene, x, y, target);
+    this.hwakGroup.add(main);
+  }
+
+  // 가장 가까운 적 찾기
+  findClosestEnemy() {
+    const enemies = this.scene.enemyManager.enemies.getChildren();
+    if (enemies.length === 0) return null;
+
+    let closest = enemies[0];
+    let minDist = Phaser.Math.Distance.Between(this.scene.player.x, this.scene.player.y, closest.x, closest.y);
+
+    enemies.forEach(enemy => {
+      const dist = Phaser.Math.Distance.Between(this.scene.player.x, this.scene.player.y, enemy.x, enemy.y);
+      if (dist < minDist) {
+        closest = enemy;
+        minDist = dist;
+      }
+    });
+
+    return closest;
+  }
+
   update() {
     this.bullets.children.iterate(bullet => {
       if (bullet && bullet.active && bullet.y < -50) {
@@ -69,5 +281,10 @@ export default class BulletManager {
         bullet.body.enable = false;
       }
     });
+
+    if (this.electricAura) {
+      this.electricAura.x = this.scene.player.x;
+      this.electricAura.y = this.scene.player.y;
+    }    
   }
 }

@@ -34,4 +34,5 @@ export default class EnemyBulletManager {
   getGroup() {
     return this.bullets;
   }
+
 } 

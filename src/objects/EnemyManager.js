@@ -33,28 +33,12 @@ export default class EnemyManager {
     this.scene = scene;
     this.enemies = scene.physics.add.group();
 
-    this.createBugAnimations();
-
     // EnemyBulletManager 인스턴스 생성
     this.enemyBulletManager = new EnemyBulletManager(scene);
 
     console.log('this.scene : ' + this.scene);
   }
 
-  spawnLeftEnemy(type) {
-    const status = enemyTypes[type];
-    const leftPositions = [100, 150, 200];
-
-    console.log('this.scene : ' + this.scene);
-
-    leftPositions.forEach(x => {
-      const enemy = this.enemies.create(x, -64, type);
-      enemy.play(type);
-      enemy.setVelocityY(100);
-      enemy.setDepth(10);
-      
-    });    
-  }
 
   spawnEnemiesFromData(spawnData) {
     spawnData.forEach(({ type, x, delay }) => {
@@ -72,6 +56,11 @@ export default class EnemyManager {
           // bug 계열은 애니메이션 play
           if (type.startsWith('bug')) {
             enemy.play(type);
+          }
+
+          if(type === 'bug1'){
+            enemy.setSize(30, 30);
+            //enemy.setOffset(5, 10);
           }
 
           enemy.setVelocityY(status.speed);
@@ -98,20 +87,6 @@ export default class EnemyManager {
     });
   }
 
-  createBugAnimations() {
-    for (let i = 1; i <= 6; i++) {
-      const key = `bug${i}`;
-      if (!this.scene.anims.exists(key)) {
-        this.scene.anims.create({
-          key,
-          frames: this.scene.anims.generateFrameNumbers(key, { start: 0, end: 5 }),
-          frameRate: 10,
-          repeat: -1
-        });
-      }
-    }
-  }
-
   handleEnemyHit(bullet, enemy) {
     bullet.disableBody(true, true);
 
@@ -131,16 +106,6 @@ export default class EnemyManager {
     });
 
     if (enemy.hp <= 0) {
-      // 폭발 애니메이션
-      if (!this.scene.anims.exists('enemy_explosion_small')) {
-        this.scene.anims.create({
-          key: 'enemy_explosion_small',
-          frames: this.scene.anims.generateFrameNumbers('explosion_small', { start: 0, end: 11 }),
-          frameRate: 11,
-          hideOnComplete: true
-        });
-      }
-
       const explosion = this.scene.add.sprite(enemy.x, enemy.y, 'enemy_explosion_small');
       explosion.setScale(1);
       explosion.play('enemy_explosion_small');
@@ -151,20 +116,14 @@ export default class EnemyManager {
 
       // 적 제거
       enemy.disableBody(true, true);
+
+      if (Phaser.Math.Between(0, 100) < 30) { // 30% 확률로 드롭
+        this.scene.itemManager.spawn(enemy.x, enemy.y, 'power');
+      }      
     }
   }  
 
   handleEnemyPlayerCollision(player, enemy) {
-    // 폭발 애니메이션
-    if (!this.scene.anims.exists('enemy_explosion_small')) {
-      this.scene.anims.create({
-        key: 'enemy_explosion_small',
-        frames: this.scene.anims.generateFrameNumbers('explosion_small', { start: 0, end: 11 }),
-        frameRate: 12,
-        hideOnComplete: true
-      });
-    }
-
     const explosion = this.scene.add.sprite(enemy.x, enemy.y, 'explosion_small');
     explosion.setScale(1);
     explosion.play('enemy_explosion_small');
@@ -185,16 +144,6 @@ export default class EnemyManager {
     // 적 제거
     this.enemies.children.each(enemy => {
       if (enemy.active) {
-        // 폭발 애니메이션
-        if (!this.scene.anims.exists('enemy_explosion_small')) {
-          this.scene.anims.create({
-            key: 'enemy_explosion_small',
-            frames: this.scene.anims.generateFrameNumbers('explosion_small', { start: 0, end: 11 }),
-            frameRate: 12,
-            hideOnComplete: true
-          });
-        }
-
         const explosion = this.scene.add.sprite(enemy.x, enemy.y, 'explosion_small');
         explosion.setScale(1);
         explosion.play('enemy_explosion_small');
@@ -211,6 +160,39 @@ export default class EnemyManager {
           bullet.disableBody(true, true);
         }
       });
+    }
+  }
+  
+  applyDamage(enemy, amount) {
+    enemy.hp -= amount;
+
+    // 깜빡이기 효과 시작
+    this.scene.tweens.add({
+      targets: enemy,
+      alpha: 0.3,
+      duration: 100,
+      yoyo: true,
+      repeat: 2,
+      onComplete: () => {
+        enemy.setAlpha(1); // 원래대로 복귀
+      }
+    });
+
+    if (enemy.hp <= 0) {
+      const explosion = this.scene.add.sprite(enemy.x, enemy.y, 'enemy_explosion_small');
+      explosion.setScale(1);
+      explosion.play('enemy_explosion_small');
+      explosion.on('animationcomplete', () => explosion.destroy());
+
+      // 사운드
+      this.scene.game.audioManager.playSFX('sfx_enemy_explosion');
+
+      // 적 제거
+      enemy.disableBody(true, true);
+
+      if (Phaser.Math.Between(0, 100) < 30) { // 30% 확률로 드롭
+        this.scene.itemManager.spawn(enemy.x, enemy.y, 'power');
+      }      
     }
   }
 

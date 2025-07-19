@@ -6,8 +6,8 @@ const SHIP_STATS = {
   Falcon: {
     key: 'plane2',
     name : 'Falcon',
-    damage : 8,
-    speed: 200,
+    damage : 5,
+    speed: 220,
     fireRate : 300,
     hitbox: { width: 19.2, height: 38.4, offsetX: 38.4, offsetY: 38.4 }
   },
@@ -23,7 +23,7 @@ const SHIP_STATS = {
     key: 'plane6',
     name : 'Hawk',
     damage : 5,
-    speed: 180,
+    speed: 200,
     fireRate : 200,
     hitbox: { width: 19.2, height: 38.4, offsetX: 38.4, offsetY: 38.4 }
   }

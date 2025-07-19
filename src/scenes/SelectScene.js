@@ -246,9 +246,9 @@ export default class SelectScene extends Phaser.Scene {
 
     // 스탯 바 길이 (가상의 값)
     const stats = {
-      plane2: { atk: 80, spd: 200, rate : 250 },
+      plane2: { atk: 50, spd: 220, rate : 250 },
       plane9: { atk: 100, spd: 250, rate : 300  },
-      plane6: { atk: 50, spd: 180, rate : 150  }
+      plane6: { atk: 50, spd: 200, rate : 200  }
     };
     const { atk, spd, rate } = stats[planeKey];
     this.attackBar.width = atk;
@@ -286,27 +286,6 @@ export default class SelectScene extends Phaser.Scene {
     };
     return animMap[planeKey] || 'bullets3_anim';
   }  
-
-  getBulletConfigByPlane(planeKey, isPowerup) {
-    const configMap = {
-      player1: {
-        delay: 300,
-        spread: isPowerup ? [-100, 0, 100] : [0], // 3갈래 or 단일
-        offsetY: -40,
-      },
-      player2: {
-        delay: isPowerup ? 100 : 300,
-        spread: isPowerup ? [-100, -50, 0, 50, 100] : [-50, 50], // 병렬
-        offsetY: -40,
-      }
-    };
-
-    return configMap[planeKey] || {
-      delay: 300,
-      spread: [0],
-      offsetY: -40
-    };
-  }
 
   applyBlinkTween(target) {
     return this.tweens.add({

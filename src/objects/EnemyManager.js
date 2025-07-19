@@ -164,6 +164,9 @@ export default class EnemyManager {
   }
   
   applyDamage(enemy, amount) {
+    console.log('enemy.hp : ' + enemy.hp);
+    console.log('amount : ' + amount);
+    
     enemy.hp -= amount;
 
     // 깜빡이기 효과 시작

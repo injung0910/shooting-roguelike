@@ -78,7 +78,6 @@ export default class Stage1 extends Phaser.Scene {
       this.enemyManager
     );
 
-
     // 서포트
     this.supportBulletGroup = this.physics.add.group();
 
@@ -92,17 +91,15 @@ export default class Stage1 extends Phaser.Scene {
       this
     );
 
-    // 호크 유도
     this.physics.add.overlap(
-      this.player.bulletManager.hwakGroup,
+      this.player.bulletManager.missileGroup,
       this.enemyManager.enemies,
-      (bullet, enemy) => {
-        this.enemyManager.handleEnemyHit(bullet, enemy);
+      (missile, enemy) => {
+        this.enemyManager.applyDamage(enemy, missile.damage); // 관통탄도 데미지 적용
       },
       null,
       this
     );
-
 
     // 맵 타일
     this.tileWidth = 144;

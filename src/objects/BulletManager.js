@@ -1,5 +1,4 @@
 import SupportUnit from './SupportUnit.js';
-import HwakMissile from './HwakMissile.js';
 
 export default class BulletManager {
   constructor(scene, playerData, audioManager) {
@@ -10,8 +9,14 @@ export default class BulletManager {
     const bulletKey = this.getBulletKeyByShip();
 
     this.bullets = this.scene.physics.add.group({
-      classType: Phaser.Physics.Arcade.Image,
-      maxSize: 50,
+      classType: Phaser.Physics.Arcade.Sprite,
+      maxSize: 100,
+      runChildUpdate: true
+    });
+
+    this.missileGroup = this.scene.physics.add.group({
+      classType: Phaser.Physics.Arcade.Sprite,
+      maxSize : 100,
       runChildUpdate: true
     });
 
@@ -25,8 +30,9 @@ export default class BulletManager {
 
     this.auraTimer = null; // 오라 타이머 추적용
 
-    this.hwakGroup = scene.physics.add.group();
-    this.hwakAutoFireTimer = null; // 자동 발사 타이머
+    this.lastMissileTime = 0;
+    this.missileCooldown = 500; // 밀리초 단위, 예: 0.5초마다 발사
+
   }
 
   fire(x, y) {
@@ -165,7 +171,7 @@ export default class BulletManager {
         this.createElectricAura();
 
         this.auraTimer = this.scene.time.addEvent({
-          delay: 3000, // 5초 (ms 단위)
+          delay: 4000, // 5초 (ms 단위)
           callback: this.createElectricAura,
           callbackScope: this,
           loop: true
@@ -177,19 +183,16 @@ export default class BulletManager {
       if (this.powerLevel >= 4) this.fireRate = baseFireRate - 25;
       else this.fireRate = baseFireRate;
 
-      // 레벨 5 도달 시 자동 발사 타이머 등록
-      /*
-      if (this.powerLevel >= 5 && !this.hwakAutoFireTimer) {
-        this.hwakAutoFireTimer = this.scene.time.addEvent({
-          delay: 500, // 0.5초마다 자동 발사
-          callback: () => {
-            this.fireHwakMissile();
-          },
-          loop: true
+      const now = this.scene.time.now;
+
+      if (this.powerLevel >= 5 && now - this.lastMissileTime > this.missileCooldown) {
+        this.lastMissileTime = now;
+
+        const missileOffsets = [-50, -30, 30, 50];
+        missileOffsets.forEach(offset => {
+          this.spawnMissile(this.scene.player.x + offset, this.scene.player.y);
         });
-        console.log("Hwak 자동 발사 시작");
       }
-      */
     }
 
     bullet.damage = this.getDamageByBulletKey(key);
@@ -201,7 +204,7 @@ export default class BulletManager {
     this.electricAura = this.scene.add.sprite(this.scene.player.x, this.scene.player.y, 'lightningShield');
     this.electricAura.play('lightningShield');
     this.electricAura.setDepth(5);
-    this.electricAura.setScale(2.5);
+    this.electricAura.setScale(3);
     this.electricAura.setAlpha(0.8);
 
     // 충돌 감지를 위해 물리 엔진 적용
@@ -211,7 +214,7 @@ export default class BulletManager {
 
     // 주기적으로 적에게 데미지
     this.auraDamageTimer = this.scene.time.addEvent({
-      delay: 500, // 0.5초마다 데미지
+      delay: 100, // 0.1초마다 데미지
       callback: () => {
         this.scene.physics.overlap(
           this.electricAura,
@@ -244,41 +247,42 @@ export default class BulletManager {
     }
   }
 
-  fireHwakMissile() {
-    const target = this.findClosestEnemy();
-    if (!target) return;
+  spawnMissile(x, y) {
+    const missile = this.missileGroup.get(x, y, 'missile03');
 
-    const x = this.scene.player.x;
-    const y = this.scene.player.y;
+    if (!missile) return;
 
-    const main = new HwakMissile(this.scene, x, y, target);
-    this.hwakGroup.add(main);
-  }
+    missile.setActive(true);
+    missile.setVisible(true);
+    missile.body.enable = true;
 
-  // 가장 가까운 적 찾기
-  findClosestEnemy() {
-    const enemies = this.scene.enemyManager.enemies.getChildren();
-    if (enemies.length === 0) return null;
+    missile.setVelocityY(-300); // 위로 직진
+    missile.setAngle(0);        // 회전 보정
+    missile.damage = 1;         // 데미지 설정 (관통탄용)
 
-    let closest = enemies[0];
-    let minDist = Phaser.Math.Distance.Between(this.scene.player.x, this.scene.player.y, closest.x, closest.y);
+    // 애니메이션 재생 (missile03에 대한 anim이 정의되어 있어야 함)
+    if (missile.anims && typeof missile.play === 'function') {
+      missile.play('missile3_anim');
+    }
 
-    enemies.forEach(enemy => {
-      const dist = Phaser.Math.Distance.Between(this.scene.player.x, this.scene.player.y, enemy.x, enemy.y);
-      if (dist < minDist) {
-        closest = enemy;
-        minDist = dist;
-      }
-    });
-
-    return closest;
+    // 충돌 처리용 그룹에 추가
+    if (this.scene.hwakGroup) {
+      this.scene.hwakGroup.add(missile);
+    }
   }
 
   update() {
     this.bullets.children.iterate(bullet => {
-      if (bullet && bullet.active && bullet.y < -50) {
+      if (bullet && bullet.active && bullet.y < -100) {
         this.bullets.killAndHide(bullet);
         bullet.body.enable = false;
+      }
+    });
+
+    this.missileGroup.children.iterate(missile => {
+      if (missile && missile.active && missile.y < -100) {
+        this.missileGroup.killAndHide(missile);
+        missile.body.enable = false;
       }
     });
 

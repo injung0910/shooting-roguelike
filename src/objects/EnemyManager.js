@@ -36,7 +36,6 @@ export default class EnemyManager {
     // EnemyBulletManager 인스턴스 생성
     this.enemyBulletManager = new EnemyBulletManager(scene);
 
-    console.log('this.scene : ' + this.scene);
   }
 
 
@@ -164,8 +163,6 @@ export default class EnemyManager {
   }
   
   applyDamage(enemy, amount) {
-    console.log('enemy.hp : ' + enemy.hp);
-    console.log('amount : ' + amount);
     
     enemy.hp -= amount;
 

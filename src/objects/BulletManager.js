@@ -40,7 +40,6 @@ export default class BulletManager {
     if (time < this.lastFired + this.fireRate) return;
 
     const bulletKey = this.getBulletKeyByShip();
-    console.log('this.powerLevel : ' + this.powerLevel);
 
     // 파워 레벨에 따른 오프셋/각도 설정
     let config = [];

@@ -9,7 +9,6 @@ export default class Stage1 extends Phaser.Scene {
   }
 
   init(data) {
-    console.log('[Stage1] 받은 데이터:', data);
 
     this.ship = data;
   }
@@ -18,7 +17,6 @@ export default class Stage1 extends Phaser.Scene {
 
     // Player 생성 시 ship 이름 전달
     this.player = new Player(this, 300, 700, this.ship);
-    console.log('Player.scene:', this.player.scene); 
     
     this.enemyManager = new EnemyManager(this);
 

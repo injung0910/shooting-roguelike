@@ -219,6 +219,7 @@ export default class Stage1 extends Phaser.Scene {
 
     // 화면 깜빡임 연출, 텍스트 경고 등 원하면 추가
     this.warningText = this.add.text(300, 400, 'WARNING!', {
+      fontFamily: 'ThaleahFat',
       fontSize: '64px',
       fill: '#ff0000',
     }).setOrigin(0.5).setAlpha(0);

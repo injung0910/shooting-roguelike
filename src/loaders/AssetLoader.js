@@ -3,6 +3,7 @@
 // 이미지, 스프라이트 시트는 여기서
 export function loadAllAssets(scene) {
   loadBackgrounds(scene);
+  loadStage1(scene);
   loadPlayer(scene);
   loadEnemies(scene);
   loadBullets(scene);
@@ -91,6 +92,14 @@ function loadBackgrounds(scene) {
 
   scene.load.atlas('tile1', '/assets/backgrounds/normal-spritesheet.png', '/assets/backgrounds/normal-spritesheet.json');
   scene.load.atlas('tile2', '/assets/backgrounds/dark-spritesheet.png', '/assets/backgrounds/dark-spritesheet.json');
+}
+
+// stage1
+function loadStage1(scene) {
+  for (let i = 1; i <= 12; i++) {
+    const key = `stage1_${String(i).padStart(2, '0')}`;
+    scene.load.image(key, `/assets/backgrounds/stage1/${key}.png`);
+  }  
 }
 
 // 2. 플레이어
@@ -513,6 +522,7 @@ function loadAllSFX(scene) {
   scene.load.audio('sfx_Falcon_down', '/assets/audio/sfx/sfx_falcon_down.wav');
   scene.load.audio('sfx_Cryphix_down', '/assets/audio/sfx/sfx_cryphix_down.wav');
   scene.load.audio('sfx_Hawk_down', '/assets/audio/sfx/sfx_hawk_down.wav');
+  scene.load.audio('sfx_warning', '/assets/audio/sfx/sfx_warning.wav');
 }
 
 // 애니메이션 생성은 여기서

@@ -838,4 +838,28 @@ export function createAllAnimations(scene) {
       repeat: -1,
     });
 
+
+    scene.anims.create({
+      key: 'dust50',
+      frames: scene.anims.generateFrameNumbers('dust50', { start: 60, end: 120 }),
+      frameRate: 60,
+      hideOnComplete: true,
+      repeat: 3,
+    });
+
+    scene.anims.create({
+      key: 'fireFloor100',
+      frames: scene.anims.generateFrameNumbers('fireFloor100', { start: 0, end: 58 }),
+      frameRate: 60,
+      hideOnComplete: true,
+      repeat: 3,
+    });    
+
+    scene.anims.create({
+      key: 'smokeFloor50',
+      frames: scene.anims.generateFrameNumbers('smokeFloor50', { start: 0, end: 61 }),
+      frameRate: 60,
+      hideOnComplete: true,
+      repeat: 3,
+    });        
 }

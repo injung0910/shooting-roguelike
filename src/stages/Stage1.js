@@ -148,6 +148,27 @@ export default class Stage1 extends Phaser.Scene {
       callbackScope: this,
       loop: true
     });
+    
+
+    this.effectGroup = this.add.group();
+
+    this.time.addEvent({
+      delay: 2000,
+      callback: () => {
+        const fire = this.add.sprite(Phaser.Math.Between(50, 550), -Phaser.Math.Between(50, 150), 'fireFloor100');
+        fire.play('fireFloor100');
+        fire.setScale(1);
+        fire.setAlpha(0);
+        this.tweens.add({ targets: fire, alpha: 1, duration: 800 });
+
+        this.effectGroup.add(fire);
+        //this.backgroundContainer.add(fire);  // 🔥 이거 중요!
+
+        console.log('🔥 생성됨', fire.x, fire.y);
+      },
+      callbackScope: this,
+      loop: true
+    });
 
     // 맵 타일
     /*
@@ -304,34 +325,43 @@ export default class Stage1 extends Phaser.Scene {
     });
     */
 
-  // 구름
-  this.cloudGroup.children.iterate(cloud => {
-    if (!cloud) return;
+    // 구름
+    this.cloudGroup.children.iterate(cloud => {
+      if (!cloud) return;
 
-    cloud.y += cloud.speed * (delta / 1000);
+      cloud.y += cloud.speed * (delta / 1000);
 
-    // 화면 아래로 벗어나면 제거
-    if (cloud.y > 850) {
-      this.cloudGroup.remove(cloud, true, true); // remove + destroy
+      // 화면 아래로 벗어나면 제거
+      if (cloud.y > 850) {
+        this.cloudGroup.remove(cloud, true, true); // remove + destroy
+      }
+    });
+
+    // 배경
+    if (this.backgroundContainer && !this.stopScroll) {
+      this.backgroundContainer.y += this.scrollSpeed * (delta / 1000);
+
+      // 배경 끝에 도달했는지 확인
+      const maxScroll = this.backgroundHeight - 800; // 화면 기준 최하단
+
+      // 끝 도달 처리
+      if (this.backgroundContainer.y >= maxScroll && !this.bossTriggered) {
+        this.backgroundContainer.y = maxScroll;
+        this.stopScroll = true;
+        this.bossTriggered = true;
+
+        this.triggerBossWarning();
+      }
     }
-  });
 
-  // 배경
-  if (this.backgroundContainer && !this.stopScroll) {
-    this.backgroundContainer.y += this.scrollSpeed * (delta / 1000);
-
-    // 배경 끝에 도달했는지 확인
-    const maxScroll = this.backgroundHeight - 800; // 화면 기준 최하단
-
-    // 끝 도달 처리
-    if (this.backgroundContainer.y >= maxScroll && !this.bossTriggered) {
-      this.backgroundContainer.y = maxScroll;
-      this.stopScroll = true;
-      this.bossTriggered = true;
-
-      this.triggerBossWarning();
-    }
-  }
+    this.effectGroup.children.iterate(fire => {
+      if (fire) {
+        fire.y += this.scrollSpeed * (delta / 1000);
+        if (fire.y > 1050) {
+          fire.destroy();
+        }
+      }
+    });
 
     if (this.player) {
       this.player.update();

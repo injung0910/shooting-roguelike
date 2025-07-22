@@ -1,4 +1,3 @@
-import Enemy from '../objects/Enemy.js';
 import EnemyBulletManager from '../objects/EnemyBulletManager.js';
 
 const enemyTypes = {

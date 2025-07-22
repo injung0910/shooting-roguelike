@@ -1,6 +1,7 @@
 import Player from '../objects/Player.js';
 import EnemyManager from '../objects/EnemyManager.js';
 import ItemManager from '../objects/ItemManager';
+import GroundEnemyManager from '../objects/GroundEnemyManager.js';
 
 
 export default class Stage1 extends Phaser.Scene {
@@ -23,6 +24,9 @@ export default class Stage1 extends Phaser.Scene {
     //아이템 처리
     this.itemManager = new ItemManager(this);
     this.itemManager.initCollision(this.player);
+
+    this.groundEnemyManager = new GroundEnemyManager(this);
+    this.groundEnemyManager.createEnemies();
 
     // 스테이지 적 스폰 셋팅
     const spawnData = [
@@ -102,6 +106,7 @@ export default class Stage1 extends Phaser.Scene {
 
 
     // 배경 순서 배열
+    /*
     const backgroundOrder = [
       'stage1_01', 'stage1_01', 'stage1_01', 'stage1_01',
       'stage1_02', 'stage1_02', 'stage1_02', 'stage1_02',
@@ -116,11 +121,29 @@ export default class Stage1 extends Phaser.Scene {
       'stage1_11', 'stage1_11', 'stage1_11', 'stage1_11',
       'stage1_12',
     ];    
+    */
+
+    const backgroundOrder = [
+      'sample_01', 'sample_01', 'sample_01', 'sample_01',
+      'sample_01', 'sample_01', 'sample_01', 'sample_01',
+      'sample_01',
+      'sample_01', 'sample_01', 'sample_01', 'sample_01',
+      'sample_01',
+      'sample_01', 'sample_01', 'sample_01', 'sample_01',
+      'sample_01',
+      'sample_01',
+      'sample_01', 'sample_01', 'sample_01', 'sample_01',
+      'sample_01',
+      'sample_01', 'sample_01', 'sample_01', 'sample_01',
+      'sample_01',
+    ];     
 
     // 배경 그룹 생성
     this.backgroundGroup = this.add.group();
     backgroundOrder.forEach((key, i) => {
-      const bg = this.add.image(0, -800 * i, key).setOrigin(0, 0);
+      const bg = this.add.image(0, -800 * i, key)
+      .setOrigin(0, 0)
+      .setDisplaySize(600, 800); 
       this.backgroundGroup.add(bg);
     });
 
@@ -149,26 +172,6 @@ export default class Stage1 extends Phaser.Scene {
       loop: true
     });
     
-
-    this.effectGroup = this.add.group();
-
-    this.time.addEvent({
-      delay: 2000,
-      callback: () => {
-        const fire = this.add.sprite(Phaser.Math.Between(50, 550), -Phaser.Math.Between(50, 150), 'fireFloor100');
-        fire.play('fireFloor100');
-        fire.setScale(1);
-        fire.setAlpha(0);
-        this.tweens.add({ targets: fire, alpha: 1, duration: 800 });
-
-        this.effectGroup.add(fire);
-        //this.backgroundContainer.add(fire);  // 🔥 이거 중요!
-
-        console.log('🔥 생성됨', fire.x, fire.y);
-      },
-      callbackScope: this,
-      loop: true
-    });
 
     // 맵 타일
     /*
@@ -354,15 +357,6 @@ export default class Stage1 extends Phaser.Scene {
       }
     }
 
-    this.effectGroup.children.iterate(fire => {
-      if (fire) {
-        fire.y += this.scrollSpeed * (delta / 1000);
-        if (fire.y > 1050) {
-          fire.destroy();
-        }
-      }
-    });
-
     if (this.player) {
       this.player.update();
     }
@@ -373,6 +367,9 @@ export default class Stage1 extends Phaser.Scene {
 
     this.itemManager.update();
 
+    if (this.groundEnemyManager) {
+      this.groundEnemyManager.update();
+    }
   }
     
 }

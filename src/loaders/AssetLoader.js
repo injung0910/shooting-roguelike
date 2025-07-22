@@ -855,11 +855,4 @@ export function createAllAnimations(scene) {
       repeat: 3,
     });    
 
-    scene.anims.create({
-      key: 'smokeFloor50',
-      frames: scene.anims.generateFrameNumbers('smokeFloor50', { start: 0, end: 61 }),
-      frameRate: 60,
-      hideOnComplete: true,
-      repeat: 3,
-    });        
 }

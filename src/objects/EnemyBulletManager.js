@@ -22,6 +22,23 @@ export default class EnemyBulletManager {
     }
   }
 
+  fireWithAngle(x, y, angle, bulletKey = 'bullets4', speed = 300) {
+    const bullet = this.bullets.get(x, y, bulletKey);
+    if (bullet) {
+      bullet.setActive(true);
+      bullet.setVisible(true);
+      bullet.body.enable = true;
+
+      bullet.setVelocity(
+        Math.cos(angle) * speed,
+        Math.sin(angle) * speed
+      );
+
+      bullet.setRotation(angle); // 시각적으로 방향 맞추기
+      bullet.setDepth(10);
+    }
+  }
+
   update() {
     this.bullets.children.iterate(bullet => {
       if (bullet && bullet.active && bullet.y > this.scene.scale.height + 50) {

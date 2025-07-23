@@ -3,30 +3,20 @@ export default class GroundEnemyManager {
     this.scene = scene;
     this.enemyTanks = [];
 
-    // 생성할 배경과 좌표
-    this.spawnConfigs = [
-      { key: 'stage1_03', x: 129, y: 175, b:'tankbase_1', c:'tankcannon_1a'},
-      { key: 'stage1_03', x: 129, y: 255, b:'tankbase_1', c:'tankcannon_1a' },
-      { key: 'stage1_03', x: 478, y: 175, b:'tankbase_1', c:'tankcannon_1a' },
-      { key: 'stage1_03', x: 478, y: 255, b:'tankbase_1', c:'tankcannon_1a' },
-
-      { key: 'stage1_09', x: 129, y: 535, b:'tankbase_2', c:'tankcannon_2a' },
-      { key: 'stage1_09', x: 129, y: 610, b:'tankbase_2', c:'tankcannon_2a' },
-      { key: 'stage1_09', x: 478, y: 535, b:'tankbase_2', c:'tankcannon_2a' },
-      { key: 'stage1_09', x: 478, y: 610, b:'tankbase_2', c:'tankcannon_2a' }
-    ];
   }
 
-  createEnemies() {
+  spawnGroundEnemies(groundSpawnData) {
     const backgrounds = this.scene.backgroundGroup.getChildren();
 
-    this.spawnConfigs.forEach(config => {
+    groundSpawnData.forEach(config => {
       const bg = backgrounds.find(bg => bg.texture.key === config.key);
       if (!bg) return;
 
       //const enemy = this.scene.add.sprite(bg.x + config.x, bg.y + config.y, 'enemy');
       const base = this.scene.add.sprite(bg.x + config.x, bg.y + config.y, config.b);
+      base.setScale(1.2);
       const cannon = this.scene.add.sprite(bg.x + config.x, bg.y + config.y, config.c);
+      cannon.setScale(1.2);
 
       base.setName(`tank_base_${Phaser.Math.RND.uuid()}`);
       cannon.setName(`tank_cannon_${Phaser.Math.RND.uuid()}`);
@@ -80,12 +70,8 @@ export default class GroundEnemyManager {
     );
     if (!tank || !tank.base || !tank.cannon) return;
 
-    console.log('tank.hp1 : ' + tank.hp);
-
     // 체력 감소
     tank.hp  -= bullet.damage || 10;
-
-    console.log('tank.hp2 : ' + tank.hp);
 
     // 데미지 반응 (선택: 깜빡임 효과 등)
     this.scene.tweens.add({
@@ -150,8 +136,6 @@ export default class GroundEnemyManager {
         cannonWorldX < camera.worldView.x + camera.width &&
         cannonWorldY > camera.worldView.y &&
         cannonWorldY < camera.worldView.y + camera.height;
-
-      console.log('🔥 탱크 발사!', cannonWorldX, cannonWorldY);
 
       if (inCameraView && time > tank.lastFired + 1500) {
         tank.lastFired = time;

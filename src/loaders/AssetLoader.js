@@ -217,6 +217,7 @@ function loadEnemies(scene) {
   scene.load.image('mini_5', '/assets/enemies/05 Mini/Bomb Mine/mini_5.png');
   scene.load.image('mini_5_e1', '/assets/enemies/05 Mini/Bomb Mine/explosion_1.png');
   scene.load.image('mini_5_e2', '/assets/enemies/05 Mini/Bomb Mine/explosion_2.png');
+  scene.load.spritesheet('mini_5_explosion', '/assets/enemies/05 Mini/Bomb Mine/mine_explosion.png', {frameWidth: 64,frameHeight: 64,});
 
   // mini_6
   scene.load.image('mini_6', '/assets/enemies/05 Mini/Ice/mini_6.png');
@@ -523,6 +524,7 @@ function loadAllSFX(scene) {
   scene.load.audio('sfx_Cryphix_down', '/assets/audio/sfx/sfx_cryphix_down.wav');
   scene.load.audio('sfx_Hawk_down', '/assets/audio/sfx/sfx_hawk_down.wav');
   scene.load.audio('sfx_warning', '/assets/audio/sfx/sfx_warning.wav');
+  scene.load.audio('sfx_mine_explosion', '/assets/audio/sfx/sfx_mine_explosion.wav');
 }
 
 // 애니메이션 생성은 여기서
@@ -854,5 +856,19 @@ export function createAllAnimations(scene) {
       hideOnComplete: true,
       repeat: 3,
     });    
+
+    scene.anims.create({
+      key: 'minibeam',
+      frames: scene.anims.generateFrameNumbers('minibeam', { start: 0, end: 2 }),
+      frameRate: 6,
+      repeat: -1
+    });
+
+    scene.anims.create({
+      key: 'mini_5_explosion',
+      frames: scene.anims.generateFrameNumbers('mini_5_explosion', { start: 0, end: 1 }),
+      frameRate: 6,
+      repeat: 0
+    });
 
 }

@@ -2,6 +2,7 @@ import Player from '../objects/Player.js';
 import EnemyManager from '../objects/EnemyManager.js';
 import ItemManager from '../objects/ItemManager';
 import GroundEnemyManager from '../objects/GroundEnemyManager.js';
+import MineEnemyManager from '../objects/MineEnemyManager.js';
 
 
 export default class Stage1 extends Phaser.Scene {
@@ -52,24 +53,15 @@ export default class Stage1 extends Phaser.Scene {
 
     // 스테이지 적 스폰 셋팅
     const spawnData = [
-      { type: 'bug1', x: 100, delay: 0 },
-      { type: 'bug1', x: 150, delay: 0 },
-      { type: 'bug1', x: 200, delay: 0 },
-      { type: 'bug1', x: 400, delay: 2000 },
-      { type: 'bug1', x: 450, delay: 2000 },
-      { type: 'bug1', x: 500, delay: 2000 },
+      { key: 'stage1_01', type: 'bug1', x: 100, delay: 0 },
+      { key: 'stage1_01', type: 'bug1', x: 150, delay: 0 },
+      { key: 'stage1_01', type: 'bug1', x: 200, delay: 0 },
+      { key: 'stage1_01', type: 'bug1', x: 400, delay: 2000 },
+      { key: 'stage1_01', type: 'bug1', x: 450, delay: 2000 },
+      { key: 'stage1_01', type: 'bug1', x: 500, delay: 2000 },
     ];
 
-    this.enemyManager.spawnEnemiesFromData(spawnData);    
-
-    //테스트용 무한루프
-    this.time.addEvent({
-      delay: 4000,       // 10초
-      loop: true,        // 무한 반복
-      callback: () => {
-        this.enemyManager.spawnEnemiesFromData(spawnData);
-      }
-    });
+    this.enemyManager.spawnEnemies(spawnData);    
 
 
     // 적 -> 플레이어 bullets 충돌처리
@@ -139,9 +131,50 @@ export default class Stage1 extends Phaser.Scene {
     
     this.enemyBaseGroup = this.physics.add.group();
 
+
+    // 스테이지 적 스폰 셋팅
+    const groundSpawnData = [
+      { key: 'stage1_03', x: 129, y: 175, b:'tankbase_1', c:'tankcannon_1a'},
+      { key: 'stage1_03', x: 129, y: 255, b:'tankbase_1', c:'tankcannon_1a' },
+      { key: 'stage1_03', x: 478, y: 175, b:'tankbase_1', c:'tankcannon_1a' },
+      { key: 'stage1_03', x: 478, y: 255, b:'tankbase_1', c:'tankcannon_1a' },
+
+      { key: 'stage1_09', x: 129, y: 535, b:'tankbase_2', c:'tankcannon_2a' },
+      { key: 'stage1_09', x: 129, y: 610, b:'tankbase_2', c:'tankcannon_2a' },
+      { key: 'stage1_09', x: 478, y: 535, b:'tankbase_2', c:'tankcannon_2a' },
+      { key: 'stage1_09', x: 478, y: 610, b:'tankbase_2', c:'tankcannon_2a' },
+
+      { key: 'stage1_12', x: 90, y: 50,  b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_12', x: 90, y: 250, b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_12', x: 90, y: 450, b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_12', x: 90, y: 650, b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_13', x: 90, y: 50,  b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_13', x: 90, y: 250, b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_13', x: 90, y: 450, b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_13', x: 90, y: 650, b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_14', x: 90, y: 50,  b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_14', x: 90, y: 250, b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_14', x: 90, y: 450, b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_14', x: 90, y: 650, b:'tankbase_5', c:'tankcannon_3a' },
+      
+      { key: 'stage1_15', x: 510, y: 50,  b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_15', x: 510, y: 250, b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_15', x: 510, y: 450, b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_15', x: 510, y: 650, b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_16', x: 510, y: 50,  b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_16', x: 510, y: 250, b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_16', x: 510, y: 450, b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_16', x: 510, y: 650, b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_17', x: 510, y: 50,  b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_17', x: 510, y: 250, b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_17', x: 510, y: 450, b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_17', x: 510, y: 650, b:'tankbase_5', c:'tankcannon_3a' }
+
+    ];
+
     // 지상 적
     this.groundEnemyManager = new GroundEnemyManager(this);
-    this.groundEnemyManager.createEnemies();
+    this.groundEnemyManager.spawnGroundEnemies(groundSpawnData);
 
     this.physics.add.overlap(
       this.player.bulletManager.bullets,
@@ -149,6 +182,69 @@ export default class Stage1 extends Phaser.Scene {
       (bullet, base) => {
         this.groundEnemyManager.handleGroundEnemyHit(bullet, base);
       },
+      null,
+      this
+    );
+
+
+    const mineSpawnData = [
+      { key: 'stage1_12', x: 300, y: 0,   type : 'passive'},
+      { key: 'stage1_12', x: 400, y: 150, type : 'passive'},
+      { key: 'stage1_12', x: 500, y: 0,   type : 'passive'},
+
+      { key: 'stage1_12', x: 300, y: 300, type : 'passive'},
+      { key: 'stage1_12', x: 400, y: 450, type : 'passive'},
+      { key: 'stage1_12', x: 500, y: 300, type : 'passive'},
+
+      { key: 'stage1_13', x: 300, y: 0,   type : 'passive'},
+      { key: 'stage1_13', x: 400, y: 150, type : 'passive'},
+      { key: 'stage1_13', x: 500, y: 0,   type : 'passive'},
+
+      { key: 'stage1_13', x: 300, y: 300, type : 'passive'},
+      { key: 'stage1_13', x: 400, y: 450, type : 'passive'},
+      { key: 'stage1_13', x: 500, y: 300, type : 'passive'},
+      
+      { key: 'stage1_14', x: 300, y: 0,   type : 'passive'},
+      { key: 'stage1_14', x: 400, y: 150, type : 'passive'},
+      { key: 'stage1_14', x: 500, y: 0,   type : 'passive'},
+
+      { key: 'stage1_14', x: 300, y: 300, type : 'passive'},
+      { key: 'stage1_14', x: 400, y: 450, type : 'passive'},
+      { key: 'stage1_14', x: 500, y: 300, type : 'passive'},
+
+      { key: 'stage1_15', x: 100, y: 0,   type : 'suicide'},
+      { key: 'stage1_15', x: 200, y: 150, type : 'suicide'},
+      { key: 'stage1_15', x: 300, y: 0,   type : 'suicide'},
+
+      { key: 'stage1_15', x: 100, y: 300, type : 'suicide'},
+      { key: 'stage1_15', x: 200, y: 450, type : 'suicide'},
+      { key: 'stage1_15', x: 300, y: 300, type : 'suicide'},
+
+      { key: 'stage1_16', x: 100, y: 0,   type : 'suicide'},
+      { key: 'stage1_16', x: 200, y: 150, type : 'suicide'},
+      { key: 'stage1_16', x: 300, y: 0,   type : 'suicide'},
+
+      { key: 'stage1_16', x: 100, y: 300, type : 'suicide'},
+      { key: 'stage1_16', x: 200, y: 450, type : 'suicide'},
+      { key: 'stage1_16', x: 300, y: 300, type : 'suicide'},
+      
+      { key: 'stage1_17', x: 100, y: 0,   type : 'suicide'},
+      { key: 'stage1_17', x: 200, y: 150, type : 'suicide'},
+      { key: 'stage1_17', x: 300, y: 0,   type : 'suicide'},
+
+      { key: 'stage1_17', x: 100, y: 300, type : 'suicide'},
+      { key: 'stage1_17', x: 200, y: 450, type : 'suicide'},
+      { key: 'stage1_17', x: 300, y: 300, type : 'suicide'}
+    ];
+
+    this.mineEnemyManager = new MineEnemyManager(this);
+    this.mineEnemyManager.spawnMine(mineSpawnData);
+
+    // 충돌 설정
+    this.physics.add.overlap(
+      this.player,
+      this.mineEnemyManager.mines,
+      (player, mine) => this.mineEnemyManager.handlePlayerCollision(mine, player),
       null,
       this
     );

@@ -38,8 +38,13 @@ export default class EnemyManager {
   }
 
 
-  spawnEnemiesFromData(spawnData) {
-    spawnData.forEach(({ type, x, delay }) => {
+  spawnEnemies(spawnData) {
+    const backgrounds = this.scene.backgroundGroup.getChildren();
+    
+    spawnData.forEach(({ key, type, x, delay }) => {
+      const bg = backgrounds.find(bg => bg.texture.key === key);
+      if (!bg) return;
+      
       const status = enemyTypes[type];
       if (!status) {
         console.warn(`Unknown enemy type: ${type}`);

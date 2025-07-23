@@ -22,7 +22,8 @@ export default class EnemyBulletManager {
     }
   }
 
-  fireWithAngle(x, y, angle, bulletKey = 'bullets4', speed = 300) {
+  fireWithAngle(x, y, angle, bulletKey = 'bullets4', speed = 150) {
+    console.log('fire!')
     const bullet = this.bullets.get(x, y, bulletKey);
     if (bullet) {
       bullet.setActive(true);

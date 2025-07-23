@@ -96,7 +96,7 @@ function loadBackgrounds(scene) {
 
 // stage1
 function loadStage1(scene) {
-  for (let i = 1; i <= 12; i++) {
+  for (let i = 1; i <= 31; i++) {
     const key = `stage1_${String(i).padStart(2, '0')}`;
     scene.load.image(key, `/assets/backgrounds/stage1/${key}.png`);
   }  

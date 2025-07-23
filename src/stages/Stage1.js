@@ -19,7 +19,27 @@ export default class Stage1 extends Phaser.Scene {
     // 고정 배경 3종
     this.fixedBG1 = this.add.image(0, 0, 'purple_background').setOrigin(0).setDisplaySize(600, 800).setScrollFactor(0);
     this.fixedBG2 = this.add.image(0, 0, 'stars_1').setOrigin(0).setDisplaySize(600, 800).setScrollFactor(0);
-    this.fixedBG3 = this.add.image(0, 0, 'stars_2').setOrigin(0).setDisplaySize(600, 800).setScrollFactor(0);    
+    this.fixedBG3 = this.add.image(0, 0, 'stars_2').setOrigin(0).setDisplaySize(600, 800).setScrollFactor(0);   
+        // 배경 순서 배열
+    const backgroundOrder = [
+      'stage1_01', 'stage1_02', 'stage1_03', 'stage1_04', 'stage1_05', 'stage1_06', 'stage1_07', 'stage1_08',
+      'stage1_09', 'stage1_10', 'stage1_11', 'stage1_12', 'stage1_13', 'stage1_14', 'stage1_15', 'stage1_16',
+      'stage1_17', 'stage1_18', 'stage1_19', 'stage1_20', 'stage1_21', 'stage1_22', 'stage1_23', 'stage1_24',
+      'stage1_25', 'stage1_26', 'stage1_27', 'stage1_28', 'stage1_29', 'stage1_30', 'stage1_31'
+    ];    
+
+    // 배경 그룹 생성
+    this.backgroundGroup = this.add.group();
+    backgroundOrder.forEach((key, i) => {
+      const bg = this.add.image(0, -800 * i, key)
+      .setOrigin(0, 0)
+      .setDisplaySize(600, 800); 
+      this.backgroundGroup.add(bg);
+    });
+
+    // 컨테이너에 배경 묶기
+    this.backgroundContainer = this.add.container(0, 0, this.backgroundGroup.getChildren());
+    
 
     // Player 생성 시 ship 이름 전달
     this.player = new Player(this, 300, 700, this.ship);
@@ -107,52 +127,6 @@ export default class Stage1 extends Phaser.Scene {
     );
 
 
-    // 배경 순서 배열
-    /*
-    const backgroundOrder = [
-      'stage1_01', 'stage1_01', 'stage1_01', 'stage1_01',
-      'stage1_02', 'stage1_02', 'stage1_02', 'stage1_02',
-      'stage1_03',
-      'stage1_04', 'stage1_04', 'stage1_04', 'stage1_04',
-      'stage1_05',
-      'stage1_06', 'stage1_06', 'stage1_06', 'stage1_06',
-      'stage1_07',
-      'stage1_08',
-      'stage1_09', 'stage1_09', 'stage1_09', 'stage1_09',
-      'stage1_10',
-      'stage1_11', 'stage1_11', 'stage1_11', 'stage1_11',
-      'stage1_12',
-    ];    
-    */
-
-    const backgroundOrder = [
-      'sample_01', 'sample_01', 'sample_01', 'sample_01',
-      'sample_01', 'sample_01', 'sample_01', 'sample_01',
-      'sample_01',
-      'sample_01', 'sample_01', 'sample_01', 'sample_01',
-      'sample_01',
-      'sample_01', 'sample_01', 'sample_01', 'sample_01',
-      'sample_01',
-      'sample_01',
-      'sample_01', 'sample_01', 'sample_01', 'sample_01',
-      'sample_01',
-      'sample_01', 'sample_01', 'sample_01', 'sample_01',
-      'sample_01',
-    ];     
-
-    // 배경 그룹 생성
-    this.backgroundGroup = this.add.group();
-    backgroundOrder.forEach((key, i) => {
-      const bg = this.add.image(0, -800 * i, key)
-      .setOrigin(0, 0)
-      .setDisplaySize(600, 800); 
-      this.backgroundGroup.add(bg);
-    });
-
-
-    // 컨테이너에 배경 묶기
-    this.backgroundContainer = this.add.container(0, 0, this.backgroundGroup.getChildren());
-
     // 픽셀 경계 흔들림 방지
     this.cameras.main.roundPixels = true;
     
@@ -180,16 +154,17 @@ export default class Stage1 extends Phaser.Scene {
     );
 
     // 구름
-    this.cloudGroup = this.add.group();
+    //this.cloudGroup = this.add.group();
 
     // 일정 간격으로 구름 생성
+    /*
     this.time.addEvent({
       delay: 3000, // 1.5초마다 생성
       callback: this.spawnRandomCloud,
       callbackScope: this,
       loop: true
     });
-    
+    */
   }
 
   triggerBossWarning() {
@@ -259,6 +234,7 @@ export default class Stage1 extends Phaser.Scene {
   update(time, delta){
 
     // 구름
+    /*
     this.cloudGroup.children.iterate(cloud => {
       if (!cloud) return;
 
@@ -269,6 +245,7 @@ export default class Stage1 extends Phaser.Scene {
         this.cloudGroup.remove(cloud, true, true); // remove + destroy
       }
     });
+    */
 
     // 배경
     if (this.backgroundContainer && !this.stopScroll) {
@@ -298,7 +275,7 @@ export default class Stage1 extends Phaser.Scene {
     this.itemManager.update();
 
     if (this.groundEnemyManager) {
-      this.groundEnemyManager.update();
+      this.groundEnemyManager.update(time, delta);
     }
   }
     

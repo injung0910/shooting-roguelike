@@ -5,8 +5,15 @@ export default class GroundEnemyManager {
 
     // 생성할 배경과 좌표
     this.spawnConfigs = [
-      { key: 'sample_01', x: 250, y: 100 },
-      { key: 'sample_01', x: 350, y: 100 },
+      { key: 'stage1_03', x: 129, y: 175, b:'tankbase_1', c:'tankcannon_1a'},
+      { key: 'stage1_03', x: 129, y: 255, b:'tankbase_1', c:'tankcannon_1a' },
+      { key: 'stage1_03', x: 478, y: 175, b:'tankbase_1', c:'tankcannon_1a' },
+      { key: 'stage1_03', x: 478, y: 255, b:'tankbase_1', c:'tankcannon_1a' },
+
+      { key: 'stage1_09', x: 129, y: 535, b:'tankbase_2', c:'tankcannon_2a' },
+      { key: 'stage1_09', x: 129, y: 610, b:'tankbase_2', c:'tankcannon_2a' },
+      { key: 'stage1_09', x: 478, y: 535, b:'tankbase_2', c:'tankcannon_2a' },
+      { key: 'stage1_09', x: 478, y: 610, b:'tankbase_2', c:'tankcannon_2a' }
     ];
   }
 
@@ -18,8 +25,8 @@ export default class GroundEnemyManager {
       if (!bg) return;
 
       //const enemy = this.scene.add.sprite(bg.x + config.x, bg.y + config.y, 'enemy');
-      const base = this.scene.add.sprite(bg.x + config.x, bg.y + config.y, 'tankbase_1');
-      const cannon = this.scene.add.sprite(bg.x + config.x, bg.y + config.y, 'tankcannon_1a');
+      const base = this.scene.add.sprite(bg.x + config.x, bg.y + config.y, config.b);
+      const cannon = this.scene.add.sprite(bg.x + config.x, bg.y + config.y, config.c);
 
       base.setName(`tank_base_${Phaser.Math.RND.uuid()}`);
       cannon.setName(`tank_cannon_${Phaser.Math.RND.uuid()}`);
@@ -44,34 +51,7 @@ export default class GroundEnemyManager {
 
       cannon.rotation = angle + Phaser.Math.DegToRad(90);
 
-      // 🔁 일정 간격으로 발사
-      this.scene.time.addEvent({
-        delay: 1000,
-        callback: () => {
-          if (!this.scene.player || !cannon.active) return;
-
-          const tempMatrix = cannon.getWorldTransformMatrix();
-          const worldX = tempMatrix.tx;
-          const worldY = tempMatrix.ty;
-
-          const angle = Phaser.Math.Angle.Between(
-            worldX, worldY,
-            this.scene.player.x, this.scene.player.y
-          );
-
-          this.scene.enemyManager.enemyBulletManager.fireWithAngle(
-            worldX,
-            worldY,
-            angle,
-            'bullets4',
-            300
-          );
-        },
-        callbackScope: this,
-        loop: true
-      });
-
-      this.enemyTanks.push({ base, cannon, hp: 15 }); // 원하는 체력 설정
+      this.enemyTanks.push({ base, cannon, hp: 15, lastFired: 0 }); // 원하는 체력 설정
     });
   }
 
@@ -146,11 +126,12 @@ export default class GroundEnemyManager {
     }
   }  
 
-  update() {
+  update(time, delta) {
     this.enemyTanks.forEach(tank => {
-      const { cannon } = tank;
-      if (!cannon || !this.scene.player) return;
+      const { cannon, base } = tank;
+      if (!cannon || !cannon.active || !this.scene.player) return;
 
+      // 회전 처리
       const world = cannon.getWorldTransformMatrix().decomposeMatrix();
       const cannonWorldX = world.translateX;
       const cannonWorldY = world.translateY;
@@ -159,8 +140,31 @@ export default class GroundEnemyManager {
         cannonWorldX, cannonWorldY,
         this.scene.player.x, this.scene.player.y
       );
-
       cannon.rotation = angle + Phaser.Math.DegToRad(90);
-    });
+
+      // 발사 조건 확인
+      const camera = this.scene.cameras.main;
+
+      const inCameraView =
+        cannonWorldX > camera.worldView.x &&
+        cannonWorldX < camera.worldView.x + camera.width &&
+        cannonWorldY > camera.worldView.y &&
+        cannonWorldY < camera.worldView.y + camera.height;
+
+      console.log('🔥 탱크 발사!', cannonWorldX, cannonWorldY);
+
+      if (inCameraView && time > tank.lastFired + 1500) {
+        tank.lastFired = time;
+        
+        // 총알 발사
+        this.scene.enemyManager.enemyBulletManager.fireWithAngle(
+          cannonWorldX,
+          cannonWorldY,
+          angle,
+          'bullets4',
+          300
+        );
+      }
+    }); 
   }
 }

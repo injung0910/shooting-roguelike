@@ -63,31 +63,66 @@ export default class EnemyBulletManager {
 
     const bullet = this.bullets.get(x, y, bulletKey);
 
-    if (!bullet) return;
+    if (bullet) {
+      bullet.setActive(true);
+      bullet.setVisible(true);
+      bullet.body.enable = true;
 
-    bullet.setActive(true);
-    bullet.setVisible(true);
-    bullet.body.enable = true;
+      // 플레이어 방향 계산
+      const targetX = this.scene.player.x;
+      const targetY = this.scene.player.y;
 
-    // 플레이어 방향 계산
-    const targetX = this.scene.player.x;
-    const targetY = this.scene.player.y;
+      const angle = Phaser.Math.Angle.Between(x, y, targetX, targetY);
 
-    const angle = Phaser.Math.Angle.Between(x, y, targetX, targetY);
+      const velocityX = Math.cos(angle) * speed;
+      const velocityY = Math.sin(angle) * speed;
 
-    const velocityX = Math.cos(angle) * speed;
-    const velocityY = Math.sin(angle) * speed;
-
-    bullet.setVelocity(velocityX, velocityY);
-    bullet.setRotation(angle); // 총알 방향 시각화
+      bullet.setVelocity(velocityX, velocityY);
+      bullet.setRotation(angle); // 총알 방향 시각화
+    }
   }  
 
-  fireFixedSpread(x, y, bulletKey, speed = 300, angleDeg = 270, spreadDeg = 40) {
+  fireSpread(x, y, baseAngle, count, bulletKey = 'bullets4', speed) {
+   // 📌 카메라 안에 있는지 확인
+    const camera = this.scene.cameras.main;
+    if (
+      x < camera.worldView.x || x > camera.worldView.x + camera.width ||
+      y < camera.worldView.y || y > camera.worldView.y + camera.height
+    ) {
+      return; // 화면 밖이면 발사 안 함
+    }    
+    
+    const spread = Phaser.Math.DegToRad(15); // 탄 간격 (각도)
+    const half = Math.floor(count / 2);
 
-  }  
+    for (let i = 0; i < count; i++) {
+      const angleOffset = (i - half) * spread;
+      const angle = baseAngle + angleOffset;
 
-  fireTripleBurstAtPlayer(x, y, bulletKey, speed = 300, delay = 150) {
+      const bullet = this.bullets.get(x, y, bulletKey);
 
+      if (bullet) {
+        bullet.setActive(true);
+        bullet.setVisible(true);
+        bullet.body.enable = true;
+
+        bullet.setVelocity(
+          Math.cos(angle) * speed,
+          Math.sin(angle) * speed
+        );
+
+        bullet.setRotation(angle); // 총알 방향
+        bullet.setDepth(10);       // z-index
+      }
+    }
+  }
+
+  fireTripleBurstAtPlayer(x, y, bulletKey = 'bullets4', speed = 300, delay = 150) {
+    for (let i = 0; i < 3; i++) {
+      this.scene.time.delayedCall(delay * i, () => {
+        this.fireAtPlayer(x, y, bulletKey, speed);
+      });
+    }
   }
 
   update() {

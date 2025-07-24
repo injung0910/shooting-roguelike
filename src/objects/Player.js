@@ -261,8 +261,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     const clearTimer = this.scene.time.addEvent({
       delay: interval,
       callback: () => {
-        this.scene.enemyManager.clearAll(); // 적과 총알 모두 제거
-        this.scene.groundEnemyManager.clearAll(); // 지상 적 모두 제거
+        this.scene.enemyManager.clearAll(this.gameStatusManager.bombDamage); // 적과 총알 모두 제거
+        this.scene.groundEnemyManager.clearAll(this.gameStatusManager.bombDamage); // 지상 적 모두 제거
       },
       repeat: Math.floor(bombDuration / interval) - 1 // 총 몇 번 반복할지
     });    
@@ -296,8 +296,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.scene.game.audioManager.playSFX('sfx_cryphix_bomb');
 
-    this.scene.enemyManager.clearAll();
-    this.scene.groundEnemyManager.clearAll(); // 지상 적 모두 제거
+    this.scene.enemyManager.clearAll(this.gameStatusManager.cryphixBombDamage);
+    this.scene.groundEnemyManager.clearAll(this.gameStatusManager.cryphixBombDamage); // 지상 적 모두 제거
 
     thunder200.on('animationcomplete', () => thunder200.destroy());
   }  
@@ -341,8 +341,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     const clearTimer = this.scene.time.addEvent({
       delay: interval,
       callback: () => {
-        this.scene.enemyManager.clearAll(); // 적과 총알 모두 제거
-        this.scene.groundEnemyManager.clearAll(); // 지상 적 모두 제거
+        this.scene.enemyManager.clearAll(this.gameStatusManager.bombDamage); // 적과 총알 모두 제거
+        this.scene.groundEnemyManager.clearAll(this.gameStatusManager.bombDamage); // 지상 적 모두 제거
       },
       repeat: Math.floor(bombDuration / interval) - 1 // 총 몇 번 반복할지
     });    

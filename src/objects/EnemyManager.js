@@ -172,7 +172,7 @@ export default class EnemyManager {
                 }
               });
 
-              this.scene.time.delayedCall(15000, () => {
+              this.scene.time.delayedCall(16000, () => {
                 const direction = (enemy.x < 300) ? -800 : 800; // 왼쪽에 있으면 왼쪽으로, 오른쪽에 있으면 오른쪽으로
 
                 this.scene.tweens.add({
@@ -213,13 +213,24 @@ export default class EnemyManager {
               enemy.play(type);
               enemy.setSize(30, 30);         
               enemy.setVelocityY(status.speed);     
-              break;                            
+              break;    
 
-            default:
+            case 'danger1':
               enemy = this.enemies.create(bg.x + x, bg.y - 64, status.name);
               enemy.setSize(30, 30);         
               enemy.setVelocityY(status.speed);     
-              
+              break;
+
+            case 'danger2':
+              enemy = this.enemies.create(bg.x + x, bg.y - 64, status.name);
+              enemy.setSize(30, 30);         
+              enemy.setVelocityY(status.speed);     
+              break;
+
+            case 'danger6':
+              enemy = this.enemies.create(bg.x + x, bg.y - 64, status.name);
+              enemy.setSize(30, 30);         
+              enemy.setVelocityY(status.speed);     
               break;
           }
 
@@ -249,7 +260,9 @@ export default class EnemyManager {
                     break;              
 
                   case 'emperor4':
-                    this.enemyBulletManager.fireAtPlayer(enemy.x, enemy.y + 20, enemy.bulletKey, 300);
+                  const angle = Phaser.Math.Angle.Between(enemy.x, enemy.y,this.scene.player.x, this.scene.player.y);  
+
+                  this.enemyBulletManager.fireSpread(enemy.x, enemy.y, angle, 5, enemy.bulletKey, 300);
                     break;
 
                   case 'emperor4_1':
@@ -267,7 +280,15 @@ export default class EnemyManager {
                     this.enemyBulletManager.fire(enemy.x, enemy.y + 20, enemy.bulletKey, 200);
                     break;                            
 
-                  default:
+                  case 'danger1':
+                    this.enemyBulletManager.fireAtPlayer(enemy.x, enemy.y + 20, enemy.bulletKey, 300);
+                    break;
+
+                  case 'danger2':
+                    this.enemyBulletManager.fireAtPlayer(enemy.x, enemy.y + 20, enemy.bulletKey, 300);
+                    break;
+
+                  case 'danger6':
                     this.enemyBulletManager.fireAtPlayer(enemy.x, enemy.y + 20, enemy.bulletKey, 300);
                     break;
                 }                
@@ -335,28 +356,59 @@ export default class EnemyManager {
     player.takeHitFromEnemy();  // Player.js에 정의한 함수 호출
   }  
 
-  clearAll() {
+  clearAll(damage) {
+      // 적 제거
+      this.enemies.children.each(enemy => {
+        if (enemy.active) {
+          const world = enemy.getWorldTransformMatrix().decomposeMatrix();
+          const cannonWorldX = world.translateX;
+          const cannonWorldY = world.translateY;
+          
+          const camera = this.scene.cameras.main;
 
-    // 적 제거
-    this.enemies.children.each(enemy => {
-      if (enemy.active) {
-        const explosion = this.scene.add.sprite(enemy.x, enemy.y, 'explosion_small');
-        explosion.setScale(1);
-        explosion.play('enemy_explosion_small');
-        explosion.on('animationcomplete', () => explosion.destroy());
+          const inCameraView =
+              cannonWorldX > camera.worldView.x &&
+              cannonWorldX < camera.worldView.x + camera.width &&
+              cannonWorldY > camera.worldView.y &&
+              cannonWorldY < camera.worldView.y + camera.height;
 
-        enemy.disableBody(true, true);
-      }
-    });
+          if (inCameraView) {
+            
+            enemy.hp -= damage;
 
-    // 적 총알 제거
-    if (this.enemyBulletManager && this.enemyBulletManager.bullets) {
-      this.enemyBulletManager.bullets.children.each(bullet => {
-        if (bullet.active) {
-          bullet.disableBody(true, true);
+            // 깜빡이기 효과 시작
+            this.scene.tweens.add({
+              targets: enemy,
+              alpha: 0.3,
+              duration: 100,
+              yoyo: true,
+              repeat: 2,
+              onComplete: () => {
+                enemy.setAlpha(1); // 원래대로 복귀
+              }
+            });
+
+            if (enemy.hp <= 0) {
+              const explosion = this.scene.add.sprite(enemy.x, enemy.y, 'explosion_small');
+              explosion.setScale(1);
+              explosion.play('enemy_explosion_small');
+              explosion.on('animationcomplete', () => explosion.destroy());
+
+              enemy.disableBody(true, true);
+            }
+
+          }
         }
       });
-    }
+
+      // 적 총알 제거
+      if (this.enemyBulletManager && this.enemyBulletManager.bullets) {
+        this.enemyBulletManager.bullets.children.each(bullet => {
+          if (bullet.active) {
+            bullet.disableBody(true, true);
+          }
+        });
+      }
   }
   
   applyDamage(enemy, amount) {

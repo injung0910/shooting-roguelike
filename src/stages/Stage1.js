@@ -24,7 +24,7 @@ export default class Stage1 extends Phaser.Scene {
         // 배경 순서 배열
     const backgroundOrder = [
       'stage1_01', 'stage1_02', 'stage1_03', 'stage1_04', 'stage1_05', 'stage1_06', 'stage1_07', 'stage1_08',
-      'stage1_09', 'stage1_10', 'stage1_11', 'stage1_10', 'stage1_11', 'stage1_12', 'stage1_14', 'stage1_15',
+      'stage1_09', 'stage1_10', 'stage1_11', 'stage1_12', 'stage1_13', 'stage1_14', 'stage1_15', 'stage1_16',
       'stage1_17', 'stage1_18', 'stage1_19', 'stage1_20', 'stage1_21', 'stage1_22', 'stage1_23', 'stage1_24',
       'stage1_25', 'stage1_26', 'stage1_27', 'stage1_28', 'stage1_29', 'stage1_30', 'stage1_31'
     ];    
@@ -59,6 +59,16 @@ export default class Stage1 extends Phaser.Scene {
       { key: 'stage1_01', type: 'bug3', x: 400, delay: 2000 },
       { key: 'stage1_01', type: 'bug3', x: 450, delay: 2000 },
       { key: 'stage1_01', type: 'bug3', x: 500, delay: 2000 },
+
+      { key: 'stage1_05', type: 'bug3', x: 50, delay: 0 },
+      { key: 'stage1_05', type: 'bug3', x: 100, delay: 0 },
+      { key: 'stage1_05', type: 'bug3', x: 500, delay: 0 },
+      { key: 'stage1_05', type: 'bug3', x: 550, delay: 0 },
+
+      { key: 'stage1_06', type: 'bug3', x: 50, delay: 0 },
+      { key: 'stage1_06', type: 'bug3', x: 100, delay: 0 },
+      { key: 'stage1_06', type: 'bug3', x: 500, delay: 0 },
+      { key: 'stage1_06', type: 'bug3', x: 550, delay: 0 },      
 
       { key: 'stage1_04', type: 'danger2', x: 100, delay: 2000 },
       { key: 'stage1_04', type: 'danger2', x: 100, delay: 2200 },
@@ -97,7 +107,7 @@ export default class Stage1 extends Phaser.Scene {
       { key: 'stage1_08', type: 'emperor1_1', x: 300, delay: 20000 },
 
       { key: 'stage1_09', type: 'emperor4', x: 200,  delay: 30000 },
-      { key: 'stage1_09', type: 'emperor4', x: 400,  delay: 30000 },
+      { key: 'stage1_09', type: 'emperor4', x: 400,  delay: 30000 }
     ];
 
     this.enemyManager.spawnEnemies(spawnData);    
@@ -186,36 +196,38 @@ export default class Stage1 extends Phaser.Scene {
       { key: 'stage1_03', x: 478, y: 175, b:'tankbase_1', c:'tankcannon_1a' },
       { key: 'stage1_03', x: 478, y: 255, b:'tankbase_1', c:'tankcannon_1a' },
 
-      { key: 'stage1_09', x: 129, y: 535, b:'tankbase_2', c:'tankcannon_2a' },
-      { key: 'stage1_09', x: 129, y: 610, b:'tankbase_2', c:'tankcannon_2a' },
-      { key: 'stage1_09', x: 478, y: 535, b:'tankbase_2', c:'tankcannon_2a' },
-      { key: 'stage1_09', x: 478, y: 610, b:'tankbase_2', c:'tankcannon_2a' },
+      { key: 'stage1_09', x: 129, y: 535, b:'tankbase_1', c:'tankcannon_2a' },
+      { key: 'stage1_09', x: 129, y: 610, b:'tankbase_1', c:'tankcannon_2a' },
+      { key: 'stage1_09', x: 478, y: 535, b:'tankbase_1', c:'tankcannon_2a' },
+      { key: 'stage1_09', x: 478, y: 610, b:'tankbase_1', c:'tankcannon_2a' },
 
-      { key: 'stage1_12', x: 90, y: 50,  b:'tankbase_5', c:'tankcannon_3a' },
-      { key: 'stage1_12', x: 90, y: 250, b:'tankbase_5', c:'tankcannon_3a' },
-      { key: 'stage1_12', x: 90, y: 450, b:'tankbase_5', c:'tankcannon_3a' },
-      { key: 'stage1_12', x: 90, y: 650, b:'tankbase_5', c:'tankcannon_3a' },
-      //{ key: 'stage1_13', x: 90, y: 50,  b:'tankbase_5', c:'tankcannon_3a' },
-      //{ key: 'stage1_13', x: 90, y: 250, b:'tankbase_5', c:'tankcannon_3a' },
-      //{ key: 'stage1_13', x: 90, y: 450, b:'tankbase_5', c:'tankcannon_3a' },
-      //{ key: 'stage1_13', x: 90, y: 650, b:'tankbase_5', c:'tankcannon_3a' },
       { key: 'stage1_14', x: 90, y: 50,  b:'tankbase_5', c:'tankcannon_3a' },
       { key: 'stage1_14', x: 90, y: 250, b:'tankbase_5', c:'tankcannon_3a' },
       { key: 'stage1_14', x: 90, y: 450, b:'tankbase_5', c:'tankcannon_3a' },
       { key: 'stage1_14', x: 90, y: 650, b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_15', x: 90, y: 50,  b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_15', x: 90, y: 250, b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_15', x: 90, y: 450, b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_15', x: 90, y: 650, b:'tankbase_5', c:'tankcannon_3a' },
       
-      { key: 'stage1_15', x: 510, y: 50,  b:'tankbase_5', c:'tankcannon_3a' },
-      { key: 'stage1_15', x: 510, y: 250, b:'tankbase_5', c:'tankcannon_3a' },
-      { key: 'stage1_15', x: 510, y: 450, b:'tankbase_5', c:'tankcannon_3a' },
-      { key: 'stage1_15', x: 510, y: 650, b:'tankbase_5', c:'tankcannon_3a' },
-      //{ key: 'stage1_16', x: 510, y: 50,  b:'tankbase_5', c:'tankcannon_3a' },
-      //{ key: 'stage1_16', x: 510, y: 250, b:'tankbase_5', c:'tankcannon_3a' },
-      //{ key: 'stage1_16', x: 510, y: 450, b:'tankbase_5', c:'tankcannon_3a' },
-      //{ key: 'stage1_16', x: 510, y: 650, b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_16', x: 510, y: 50,  b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_16', x: 510, y: 250, b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_16', x: 510, y: 450, b:'tankbase_5', c:'tankcannon_3a' },
+      { key: 'stage1_16', x: 510, y: 650, b:'tankbase_5', c:'tankcannon_3a' },
       { key: 'stage1_17', x: 510, y: 50,  b:'tankbase_5', c:'tankcannon_3a' },
       { key: 'stage1_17', x: 510, y: 250, b:'tankbase_5', c:'tankcannon_3a' },
       { key: 'stage1_17', x: 510, y: 450, b:'tankbase_5', c:'tankcannon_3a' },
-      { key: 'stage1_17', x: 510, y: 650, b:'tankbase_5', c:'tankcannon_3a' }
+      { key: 'stage1_17', x: 510, y: 650, b:'tankbase_5', c:'tankcannon_3a' },
+
+      { key: 'stage1_19', x: 90, y: 50,  b:'tankbase_2', c:'tankcannon_3a' },
+      { key: 'stage1_19', x: 90, y: 450, b:'tankbase_2', c:'tankcannon_3a' },
+      { key: 'stage1_19', x: 510, y: 250, b:'tankbase_2', c:'tankcannon_3a' },
+      { key: 'stage1_19', x: 510, y: 650, b:'tankbase_2', c:'tankcannon_3a' },
+
+      { key: 'stage1_20', x: 90, y: 50,  b:'tankbase_2', c:'tankcannon_3a' },
+      { key: 'stage1_20', x: 90, y: 450, b:'tankbase_2', c:'tankcannon_3a' },
+      { key: 'stage1_20', x: 510, y: 250, b:'tankbase_2', c:'tankcannon_3a' },
+      { key: 'stage1_20', x: 510, y: 650, b:'tankbase_2', c:'tankcannon_3a' }
 
     ];
 
@@ -235,53 +247,56 @@ export default class Stage1 extends Phaser.Scene {
 
 
     const mineSpawnData = [
-      { key: 'stage1_12', x: 300, y: 0,   type : 'passive'},
-      { key: 'stage1_12', x: 400, y: 150, type : 'passive'},
-      { key: 'stage1_12', x: 500, y: 0,   type : 'passive'},
+      { key: 'stage1_14', x: 300, y: 150, type : 'passive'},
+      { key: 'stage1_14', x: 400, y: 300, type : 'passive'},
+      { key: 'stage1_14', x: 500, y: 150, type : 'passive'},
 
-      { key: 'stage1_12', x: 300, y: 300, type : 'passive'},
-      { key: 'stage1_12', x: 400, y: 450, type : 'passive'},
-      { key: 'stage1_12', x: 500, y: 300, type : 'passive'},
-
-      //{ key: 'stage1_13', x: 300, y: 0,   type : 'passive'},
-      //{ key: 'stage1_13', x: 400, y: 150, type : 'passive'},
-      //{ key: 'stage1_13', x: 500, y: 0,   type : 'passive'},
-
-      //{ key: 'stage1_13', x: 300, y: 300, type : 'passive'},
-      //{ key: 'stage1_13', x: 400, y: 450, type : 'passive'},
-      //{ key: 'stage1_13', x: 500, y: 300, type : 'passive'},
+      { key: 'stage1_14', x: 300, y: 450, type : 'passive'},
+      { key: 'stage1_14', x: 400, y: 600, type : 'passive'},
+      { key: 'stage1_14', x: 500, y: 450, type : 'passive'},
       
-      { key: 'stage1_14', x: 300, y: 0,   type : 'passive'},
-      { key: 'stage1_14', x: 400, y: 150, type : 'passive'},
-      { key: 'stage1_14', x: 500, y: 0,   type : 'passive'},
+      { key: 'stage1_15', x: 300, y: 150, type : 'passive'},
+      { key: 'stage1_15', x: 400, y: 300, type : 'passive'},
+      { key: 'stage1_15', x: 500, y: 150, type : 'passive'},
 
-      { key: 'stage1_14', x: 300, y: 300, type : 'passive'},
-      { key: 'stage1_14', x: 400, y: 450, type : 'passive'},
-      { key: 'stage1_14', x: 500, y: 300, type : 'passive'},
+      { key: 'stage1_15', x: 300, y: 450, type : 'passive'},
+      { key: 'stage1_15', x: 400, y: 600, type : 'passive'},
+      { key: 'stage1_15', x: 500, y: 450, type : 'passive'},
 
-      { key: 'stage1_15', x: 100, y: 0,   type : 'suicide'},
-      { key: 'stage1_15', x: 200, y: 150, type : 'suicide'},
-      { key: 'stage1_15', x: 300, y: 0,   type : 'suicide'},
+      { key: 'stage1_16', x: 100, y: 150, type : 'suicide'},
+      { key: 'stage1_16', x: 200, y: 300, type : 'suicide'},
+      { key: 'stage1_16', x: 300, y: 150, type : 'suicide'},
 
-      { key: 'stage1_15', x: 100, y: 300, type : 'suicide'},
-      { key: 'stage1_15', x: 200, y: 450, type : 'suicide'},
-      { key: 'stage1_15', x: 300, y: 300, type : 'suicide'},
+      { key: 'stage1_16', x: 100, y: 450, type : 'suicide'},
+      { key: 'stage1_16', x: 200, y: 600, type : 'suicide'},
+      { key: 'stage1_16', x: 300, y: 450, type : 'suicide'},
 
-      //{ key: 'stage1_16', x: 100, y: 0,   type : 'suicide'},
-      //{ key: 'stage1_16', x: 200, y: 150, type : 'suicide'},
-      //{ key: 'stage1_16', x: 300, y: 0,   type : 'suicide'},
+      { key: 'stage1_17', x: 100, y: 150, type : 'suicide'},
+      { key: 'stage1_17', x: 200, y: 300, type : 'suicide'},
+      { key: 'stage1_17', x: 300, y: 150, type : 'suicide'},
 
-      //{ key: 'stage1_16', x: 100, y: 300, type : 'suicide'},
-      //{ key: 'stage1_16', x: 200, y: 450, type : 'suicide'},
-      //{ key: 'stage1_16', x: 300, y: 300, type : 'suicide'},
-      
-      { key: 'stage1_17', x: 100, y: 0,   type : 'suicide'},
-      { key: 'stage1_17', x: 200, y: 150, type : 'suicide'},
-      { key: 'stage1_17', x: 300, y: 0,   type : 'suicide'},
+      { key: 'stage1_17', x: 100, y: 450, type : 'suicide'},
+      { key: 'stage1_17', x: 200, y: 600, type : 'suicide'},
+      { key: 'stage1_17', x: 300, y: 450, type : 'suicide'},
 
-      { key: 'stage1_17', x: 100, y: 300, type : 'suicide'},
-      { key: 'stage1_17', x: 200, y: 450, type : 'suicide'},
-      { key: 'stage1_17', x: 300, y: 300, type : 'suicide'}
+      { key: 'stage1_18', x: 100, y: 200, type : 'passive'},
+      { key: 'stage1_18', x: 200, y: 300, type : 'passive'},
+      { key: 'stage1_18', x: 300, y: 200, type : 'passive'},
+      { key: 'stage1_18', x: 400, y: 300, type : 'passive'},
+      { key: 'stage1_18', x: 500, y: 200, type : 'passive'},
+
+      { key: 'stage1_18', x: 200, y: 100, type : 'passive'},
+      { key: 'stage1_18', x: 400, y: 100, type : 'passive'},
+
+      { key: 'stage1_18', x: 100, y: 600, type : 'suicide'},
+      { key: 'stage1_18', x: 200, y: 700, type : 'suicide'},
+      { key: 'stage1_18', x: 300, y: 600, type : 'suicide'},
+      { key: 'stage1_18', x: 400, y: 700, type : 'suicide'},
+      { key: 'stage1_18', x: 500, y: 600, type : 'suicide'},
+
+      { key: 'stage1_18', x: 200, y: 500, type : 'suicide'},
+      { key: 'stage1_18', x: 400, y: 500, type : 'suicide'},
+
     ];
 
     this.mineEnemyManager = new MineEnemyManager(this);
@@ -372,6 +387,33 @@ export default class Stage1 extends Phaser.Scene {
     cloud.setAngle(angle);
 
     this.cloudGroup.add(cloud);
+  }
+
+  spawnEnemies(time) {
+    const camera = this.cameras.main;
+    const backgrounds = this.backgroundGroup.getChildren();
+
+    this.spawnData.forEach(config => {
+      if (config.spawned) return;
+
+      const bg = backgrounds.find(bg => bg.texture.key === config.key);
+      if (!bg) return;
+
+      // 카메라 안에 해당 배경이 들어왔을 때만
+      const inView =
+        bg.y > camera.worldView.y &&
+        bg.y < camera.worldView.y + camera.height;
+
+      if (inView && time > config.delay) {
+        const x = bg.x + config.x;
+        const y = bg.y + (config.y || 0);
+
+        this.enemyManager.spawnEnemies(config.type, x, y); // 적 생성
+        config.spawned = true;
+
+        console.log(`🚀 spawn 시도: ${config.type} at ${config.key} (delay: ${config.delay})`);
+      }
+    });
   }
 
   update(time, delta){

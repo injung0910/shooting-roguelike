@@ -8,6 +8,10 @@ export default class GameStatusManager {
     this.lives = 2;
     this.bombs = 2;
 
+    this.bombDamage = 50;
+    
+    this.cryphixBombDamage = 150;
+
     this.createUI();
   }
 

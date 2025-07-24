@@ -112,7 +112,7 @@ export default class GroundEnemyManager {
     }
   }  
 
-  clearAll(){
+  clearAll(damage){
     const camera = this.scene.cameras.main;
 
     this.enemyTanks.slice().forEach(tank => {
@@ -122,26 +122,42 @@ export default class GroundEnemyManager {
 
       // 💡 탱크와 카메라가 겹치는지 검사
       if (Phaser.Geom.Intersects.RectangleToRectangle(baseBounds, camera.worldView)) {
-        // 폭발 이펙트
-        const explosion = this.scene.add.sprite(tank.base.x, tank.base.y, 'enemy_explosion_small');
-        explosion.play('enemy_explosion_small');
-        explosion.once('animationcomplete', () => explosion.destroy());
 
-        const explosioncannon = this.scene.add.sprite(tank.cannon.x, tank.cannon.y, 'enemy_explosion_small');
-        explosioncannon.play('enemy_explosion_small');
-        explosioncannon.once('animationcomplete', () => explosioncannon.destroy());
+        tank.hp -= damage;
 
-        this.scene.game.audioManager.playSFX('sfx_enemy_explosion');
+        this.scene.tweens.add({
+          targets: [tank.base, tank.cannon],
+          alpha: 0.3,
+          yoyo: true,
+          duration: 100,
+          repeat: 1,
+          onComplete: () => {
+            tank.base.setAlpha(1);
+            tank.cannon.setAlpha(1);
+          }
+        });
+        if (tank.hp <= 0) {
+          // 폭발 이펙트
+          const explosion = this.scene.add.sprite(tank.base.x, tank.base.y, 'enemy_explosion_small');
+          explosion.play('enemy_explosion_small');
+          explosion.once('animationcomplete', () => explosion.destroy());
 
-        // 제거 처리
-        this.scene.backgroundContainer.remove(tank.base, true);
-        this.scene.backgroundContainer.remove(tank.cannon, true);
+          const explosioncannon = this.scene.add.sprite(tank.cannon.x, tank.cannon.y, 'enemy_explosion_small');
+          explosioncannon.play('enemy_explosion_small');
+          explosioncannon.once('animationcomplete', () => explosioncannon.destroy());
 
-        tank.base.destroy();
-        tank.cannon.destroy();
+          this.scene.game.audioManager.playSFX('sfx_enemy_explosion');
 
-        Phaser.Utils.Array.Remove(this.enemyTanks, tank);
-        this.scene.enemyBaseGroup.remove(tank.base, true, true); 
+          // 제거 처리
+          this.scene.backgroundContainer.remove(tank.base, true);
+          this.scene.backgroundContainer.remove(tank.cannon, true);
+
+          tank.base.destroy();
+          tank.cannon.destroy();
+
+          Phaser.Utils.Array.Remove(this.enemyTanks, tank);
+          this.scene.enemyBaseGroup.remove(tank.base, true, true); 
+        }
       }
     });
   }

@@ -13,7 +13,7 @@ const enemyTypes = {
     name : 'bug2',
     speed: 100,
     fireRate: 2000,
-    hp: 20,
+    hp: 15,
     bulletKey: 'bullets4',
     pattern: 'zigzag'
   },
@@ -21,7 +21,79 @@ const enemyTypes = {
     name : 'bug3',
     speed: 100,
     fireRate: 2000,
-    hp: 24,
+    hp: 15,
+    bulletKey: 'bullets4',
+    pattern: 'straight'
+  },
+  danger1 : {
+    name : 'danger1',
+    speed: 200,
+    fireRate: 2000,
+    hp: 20,
+    bulletKey: 'bullets4',
+    pattern: 'straight'
+  },
+  danger2 : {
+    name : 'danger2',
+    speed: 300,
+    fireRate: 1000,
+    hp: 20,
+    bulletKey: 'bullets4',
+    pattern: 'straight'
+  },
+  danger6 : {
+    name : 'danger6',
+    speed: 800,
+    fireRate: 1000,
+    hp: 1000,
+    bulletKey: 'bullets4',
+    pattern: 'straight'
+  },
+  emperor1_1 : {
+    name : 'emperor1',
+    speed: 800,
+    fireRate: 1000,
+    hp: 20000,
+    bulletKey: 'bullets4',
+    pattern: 'straight'
+  },
+  emperor1 : {
+    name : 'emperor1',
+    speed: 400,
+    fireRate: 1000,
+    hp: 2000,
+    bulletKey: 'bullets4',
+    pattern: 'straight'
+  },  
+  emperor3_1 : {
+    name : 'emperor3',
+    speed: 800,
+    fireRate: 1000,
+    hp: 20000,
+    bulletKey: 'bullets4',
+    pattern: 'straight'
+  },      
+  emperor3 : {
+    name : 'emperor3',
+    speed: 800,
+    fireRate: 1000,
+    hp: 1000,
+    bulletKey: 'bullets4',
+    pattern: 'straight'
+  },  
+  emperor4_1 : {
+    name : 'emperor4',
+    speed: 800,
+    fireRate: 1000,
+    hp: 20000,
+    bulletKey: 'bullets4',
+    pattern: 'straight'
+  },      
+  emperor4 : {
+    name : 'emperor4',
+    speed: 200,
+    fireRate: 1000,
+    hp: 700,
     bulletKey: 'bullets4',
     pattern: 'straight'
   }
@@ -44,7 +116,7 @@ export default class EnemyManager {
     spawnData.forEach(({ key, type, x, delay }) => {
       const bg = backgrounds.find(bg => bg.texture.key === key);
       if (!bg) return;
-      
+
       const status = enemyTypes[type];
       if (!status) {
         console.warn(`Unknown enemy type: ${type}`);
@@ -54,19 +126,103 @@ export default class EnemyManager {
       this.scene.time.addEvent({
         delay,
         callback: () => {
-          let enemy = this.enemies.create(x, -64, type);
+          let enemy;
 
-          // bug 계열은 애니메이션 play
-          if (type.startsWith('bug')) {
-            enemy.play(type);
+          switch (type) {
+            case 'emperor1':
+              enemy.setScale(3.5);
+              break;
+
+            case 'emperor1_1':
+              enemy = this.enemies.create(bg.x + x, bg.y - 64, status.name);  
+              enemy.setScale(3.5);
+              enemy.setVelocityY(status.speed); 
+              break;
+
+            case 'emperor3':
+              enemy.setScale(1.5);
+              break;
+
+            case 'emperor3_1':
+              enemy = this.enemies.create(bg.x + x, bg.y - 64, status.name);  
+              enemy.setScale(1.5);
+              enemy.setVelocityY(status.speed); 
+              break;              
+
+            case 'emperor4':
+              // 등장: 월드 좌표 기준 생성
+              enemy = this.enemies.create(bg.x + x, bg.y - 64,status.name);  
+            
+              enemy.setScale(1.5);
+
+              // 등장 연출 (예: 내려오기)
+              this.scene.tweens.add({
+                targets: enemy,
+                y: this.scene.cameras.main.scrollY + 150,
+                duration: 3000,
+                ease: 'Sine.easeInOut',
+                onComplete: () => {
+                  // 📌 화면에 고정되게 설정
+                  enemy.setScrollFactor(0);
+
+                  // 겹치지 않도록 각자 다른 위치에 고정
+                  enemy.x = x;
+                  enemy.y = 150;
+
+                }
+              });
+
+              this.scene.time.delayedCall(15000, () => {
+                const direction = (enemy.x < 300) ? -800 : 800; // 왼쪽에 있으면 왼쪽으로, 오른쪽에 있으면 오른쪽으로
+
+                this.scene.tweens.add({
+                  targets: enemy,
+                  x: enemy.x + direction,
+                  duration: 2000,
+                  ease: 'Sine.easeInOut',
+                  onComplete: () => {
+                    enemy.destroy();
+                  }
+                });
+              });
+
+              break;
+
+            case 'emperor4_1':
+              enemy = this.enemies.create(bg.x + x, bg.y - 64, status.name);
+              enemy.setScale(1.5);
+              enemy.setVelocityY(status.speed); 
+              break;
+
+            case 'bug1':
+              enemy = this.enemies.create(bg.x + x, bg.y - 64, status.name);  
+              enemy.play(type);
+              enemy.setSize(30, 30);     
+              enemy.setVelocityY(status.speed);          
+              break;
+
+            case 'bug2':
+              enemy = this.enemies.create(bg.x + x, bg.y - 64, status.name);  
+              enemy.play(type);
+              enemy.setSize(30, 30);         
+              enemy.setVelocityY(status.speed);     
+              break;        
+              
+            case 'bug3':
+              enemy = this.enemies.create(bg.x + x, bg.y - 64, status.name);
+              enemy.play(type);
+              enemy.setSize(30, 30);         
+              enemy.setVelocityY(status.speed);     
+              break;                            
+
+            default:
+              enemy = this.enemies.create(bg.x + x, bg.y - 64, status.name);
+              enemy.setSize(30, 30);         
+              enemy.setVelocityY(status.speed);     
+              
+              break;
           }
 
-          if(type === 'bug1'){
-            enemy.setSize(30, 30);
-            //enemy.setOffset(5, 10);
-          }
-
-          enemy.setVelocityY(status.speed);
           enemy.setDepth(10);
           enemy.hp = status.hp;
           enemy.bulletKey = status.bulletKey;
@@ -78,7 +234,44 @@ export default class EnemyManager {
             delay: enemy.fireRate,
             callback: () => {
               if (enemy.active) {
-                this.enemyBulletManager.fire(enemy.x, enemy.y + 20, enemy.bulletKey, 200);
+                
+                switch (type) {
+                  case 'emperor1':
+                    break;
+
+                  case 'emperor1_1':
+                    break;
+
+                  case 'emperor3':
+                    break;
+
+                  case 'emperor3_1':
+                    break;              
+
+                  case 'emperor4':
+                    this.enemyBulletManager.fireAtPlayer(enemy.x, enemy.y + 20, enemy.bulletKey, 300);
+                    break;
+
+                  case 'emperor4_1':
+                    break;
+
+                  case 'bug1':       
+                  this.enemyBulletManager.fire(enemy.x, enemy.y + 20, enemy.bulletKey, 200);
+                    break;
+
+                  case 'bug2':   
+                    this.enemyBulletManager.fire(enemy.x, enemy.y + 20, enemy.bulletKey, 200);
+                    break;        
+                    
+                  case 'bug3': 
+                    this.enemyBulletManager.fire(enemy.x, enemy.y + 20, enemy.bulletKey, 200);
+                    break;                            
+
+                  default:
+                    this.enemyBulletManager.fireAtPlayer(enemy.x, enemy.y + 20, enemy.bulletKey, 300);
+                    break;
+                }                
+                
               }
             },
             loop: true
@@ -199,6 +392,60 @@ export default class EnemyManager {
       }      
     }
   }
+
+  showEnemyWarning(warningData) {
+    const backgrounds = this.scene.backgroundGroup.getChildren();
+
+    warningData.forEach(({ key, delay, duration, xMin, xMax }) => {
+      const bg = backgrounds.find(bg => bg.texture.key === key);
+      if (!bg) return;
+
+      const camera = this.scene.cameras.main;
+
+      this.scene.time.delayedCall(delay, () => {
+        const centerX = (xMin + xMax) / 2;
+
+        const warningText = this.scene.add.text(centerX, 100, 'ENEMY APPROACHING', {
+          fontSize: '48px',
+          fill: '#ff0000',
+          fontFamily: 'ThaleahFat',
+          stroke: '#000',
+          strokeThickness: 5
+        }).setOrigin(0.5).setScrollFactor(0).setAlpha(0);
+
+        // 깜빡이는 트윈 효과
+        this.scene.tweens.add({
+          targets: warningText,
+          alpha: { from: 0, to: 1 },
+          duration: 300,
+          yoyo: true,
+          repeat: Math.floor(duration / 600), // 1회당 600ms로 계산
+          onComplete: () => warningText.destroy()
+        });
+
+        // 시각적 범위 표시 (선택적)
+        const graphics = this.scene.add.graphics();
+        graphics.fillStyle(0xff0000, 0.3);
+        graphics.fillRect(xMin, 0, xMax - xMin, camera.height);
+        graphics.setScrollFactor(0);
+
+        // 깜빡이는 트윈 효과
+        this.scene.tweens.add({
+          targets: graphics,
+          alpha: { from: 0, to: 1 },
+          duration: 300,
+          yoyo: true,
+          repeat: Math.floor(duration / 600), // 1회당 600ms로 계산
+          onComplete: () => graphics.destroy()
+        });
+
+        // 경고 사운드
+        this.scene.game.audioManager.playSFX('sfx_warning');
+
+      }, null, this);      
+    });
+
+  }  
 
   update() {
     this.enemyBulletManager.update();

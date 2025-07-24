@@ -41,7 +41,7 @@ export default class GroundEnemyManager {
 
       cannon.rotation = angle + Phaser.Math.DegToRad(90);
 
-      this.enemyTanks.push({ base, cannon, hp: 15, lastFired: 0 }); // 원하는 체력 설정
+      this.enemyTanks.push({ base, cannon, hp: 30, lastFired: 0 }); // 원하는 체력 설정
     });
   }
 
@@ -111,6 +111,40 @@ export default class GroundEnemyManager {
       this.scene.enemyBaseGroup.remove(tank.base, true, true); 
     }
   }  
+
+  clearAll(){
+    const camera = this.scene.cameras.main;
+
+    this.enemyTanks.slice().forEach(tank => {
+      if (!tank.base || !tank.base.active) return;
+
+      const baseBounds = tank.base.getBounds();
+
+      // 💡 탱크와 카메라가 겹치는지 검사
+      if (Phaser.Geom.Intersects.RectangleToRectangle(baseBounds, camera.worldView)) {
+        // 폭발 이펙트
+        const explosion = this.scene.add.sprite(tank.base.x, tank.base.y, 'enemy_explosion_small');
+        explosion.play('enemy_explosion_small');
+        explosion.once('animationcomplete', () => explosion.destroy());
+
+        const explosioncannon = this.scene.add.sprite(tank.cannon.x, tank.cannon.y, 'enemy_explosion_small');
+        explosioncannon.play('enemy_explosion_small');
+        explosioncannon.once('animationcomplete', () => explosioncannon.destroy());
+
+        this.scene.game.audioManager.playSFX('sfx_enemy_explosion');
+
+        // 제거 처리
+        this.scene.backgroundContainer.remove(tank.base, true);
+        this.scene.backgroundContainer.remove(tank.cannon, true);
+
+        tank.base.destroy();
+        tank.cannon.destroy();
+
+        Phaser.Utils.Array.Remove(this.enemyTanks, tank);
+        this.scene.enemyBaseGroup.remove(tank.base, true, true); 
+      }
+    });
+  }
 
   update(time, delta) {
     this.enemyTanks.forEach(tank => {

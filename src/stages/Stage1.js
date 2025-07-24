@@ -24,7 +24,7 @@ export default class Stage1 extends Phaser.Scene {
         // 배경 순서 배열
     const backgroundOrder = [
       'stage1_01', 'stage1_02', 'stage1_03', 'stage1_04', 'stage1_05', 'stage1_06', 'stage1_07', 'stage1_08',
-      'stage1_09', 'stage1_10', 'stage1_11', 'stage1_12', 'stage1_13', 'stage1_14', 'stage1_15', 'stage1_16',
+      'stage1_09', 'stage1_10', 'stage1_11', 'stage1_10', 'stage1_11', 'stage1_12', 'stage1_14', 'stage1_15',
       'stage1_17', 'stage1_18', 'stage1_19', 'stage1_20', 'stage1_21', 'stage1_22', 'stage1_23', 'stage1_24',
       'stage1_25', 'stage1_26', 'stage1_27', 'stage1_28', 'stage1_29', 'stage1_30', 'stage1_31'
     ];    
@@ -53,16 +53,63 @@ export default class Stage1 extends Phaser.Scene {
 
     // 스테이지 적 스폰 셋팅
     const spawnData = [
-      { key: 'stage1_01', type: 'bug1', x: 100, delay: 0 },
-      { key: 'stage1_01', type: 'bug1', x: 150, delay: 0 },
-      { key: 'stage1_01', type: 'bug1', x: 200, delay: 0 },
-      { key: 'stage1_01', type: 'bug1', x: 400, delay: 2000 },
-      { key: 'stage1_01', type: 'bug1', x: 450, delay: 2000 },
-      { key: 'stage1_01', type: 'bug1', x: 500, delay: 2000 },
+      { key: 'stage1_01', type: 'bug3', x: 100, delay: 0 },
+      { key: 'stage1_01', type: 'bug3', x: 150, delay: 0 },
+      { key: 'stage1_01', type: 'bug3', x: 200, delay: 0 },
+      { key: 'stage1_01', type: 'bug3', x: 400, delay: 2000 },
+      { key: 'stage1_01', type: 'bug3', x: 450, delay: 2000 },
+      { key: 'stage1_01', type: 'bug3', x: 500, delay: 2000 },
+
+      { key: 'stage1_04', type: 'danger2', x: 100, delay: 2000 },
+      { key: 'stage1_04', type: 'danger2', x: 100, delay: 2200 },
+      { key: 'stage1_04', type: 'danger2', x: 100, delay: 2400 },
+      { key: 'stage1_04', type: 'danger2', x: 500, delay: 2000 },
+      { key: 'stage1_04', type: 'danger2', x: 500, delay: 2200 },
+      { key: 'stage1_04', type: 'danger2', x: 500, delay: 2400 },
+
+      { key: 'stage1_04', type: 'danger2', x: 100, delay: 5000 },
+      { key: 'stage1_04', type: 'danger2', x: 100, delay: 5200 },
+      { key: 'stage1_04', type: 'danger2', x: 100, delay: 5400 },
+      { key: 'stage1_04', type: 'danger2', x: 500, delay: 5000 },
+      { key: 'stage1_04', type: 'danger2', x: 500, delay: 5200 },
+      { key: 'stage1_04', type: 'danger2', x: 500, delay: 5400 },
+
+      { key: 'stage1_06', type: 'danger2', x: 100, delay: 6000 },
+      { key: 'stage1_06', type: 'danger2', x: 100, delay: 6200 },
+      { key: 'stage1_06', type: 'danger2', x: 100, delay: 6400 },
+      { key: 'stage1_06', type: 'danger2', x: 500, delay: 6000 },
+      { key: 'stage1_06', type: 'danger2', x: 500, delay: 6200 },
+      { key: 'stage1_06', type: 'danger2', x: 500, delay: 6400 },
+      
+      { key: 'stage1_08', type: 'danger2', x: 100, delay: 7000 },
+      { key: 'stage1_08', type: 'danger2', x: 100, delay: 7200 },
+      { key: 'stage1_08', type: 'danger2', x: 100, delay: 7400 },
+      { key: 'stage1_08', type: 'danger2', x: 500, delay: 7000 },
+      { key: 'stage1_08', type: 'danger2', x: 500, delay: 7200 },
+      { key: 'stage1_08', type: 'danger2', x: 500, delay: 7400 },
+
+      { key: 'stage1_06', type: 'emperor4_1', x: 250, delay: 11000 },
+      { key: 'stage1_06', type: 'emperor4_1', x: 350, delay: 11000 },
+
+      { key: 'stage1_08', type: 'emperor3_1', x: 250, delay: 15000 },
+      { key: 'stage1_08', type: 'emperor3_1', x: 350, delay: 15000 },
+
+      { key: 'stage1_08', type: 'emperor1_1', x: 300, delay: 20000 },
+
+      { key: 'stage1_09', type: 'emperor4', x: 200,  delay: 30000 },
+      { key: 'stage1_09', type: 'emperor4', x: 400,  delay: 30000 },
     ];
 
     this.enemyManager.spawnEnemies(spawnData);    
 
+    // 경고음
+    const warningData = [
+      {key: 'stage1_06', delay: 13500, duration: 2000, xMin: 200, xMax: 400 },
+      {key: 'stage1_08', delay: 19500, duration: 2000, xMin: 200, xMax: 400 },
+      {key: 'stage1_08', delay: 24500, duration: 2000, xMin: 200, xMax: 400 }
+    ]
+    // 2초 후에 배경 이름에 sample_01이 포함된 경우, x: 200~400 사이에 경고 표시
+    this.enemyManager.showEnemyWarning(warningData);
 
     // 적 -> 플레이어 bullets 충돌처리
     this.physics.add.overlap(
@@ -148,10 +195,10 @@ export default class Stage1 extends Phaser.Scene {
       { key: 'stage1_12', x: 90, y: 250, b:'tankbase_5', c:'tankcannon_3a' },
       { key: 'stage1_12', x: 90, y: 450, b:'tankbase_5', c:'tankcannon_3a' },
       { key: 'stage1_12', x: 90, y: 650, b:'tankbase_5', c:'tankcannon_3a' },
-      { key: 'stage1_13', x: 90, y: 50,  b:'tankbase_5', c:'tankcannon_3a' },
-      { key: 'stage1_13', x: 90, y: 250, b:'tankbase_5', c:'tankcannon_3a' },
-      { key: 'stage1_13', x: 90, y: 450, b:'tankbase_5', c:'tankcannon_3a' },
-      { key: 'stage1_13', x: 90, y: 650, b:'tankbase_5', c:'tankcannon_3a' },
+      //{ key: 'stage1_13', x: 90, y: 50,  b:'tankbase_5', c:'tankcannon_3a' },
+      //{ key: 'stage1_13', x: 90, y: 250, b:'tankbase_5', c:'tankcannon_3a' },
+      //{ key: 'stage1_13', x: 90, y: 450, b:'tankbase_5', c:'tankcannon_3a' },
+      //{ key: 'stage1_13', x: 90, y: 650, b:'tankbase_5', c:'tankcannon_3a' },
       { key: 'stage1_14', x: 90, y: 50,  b:'tankbase_5', c:'tankcannon_3a' },
       { key: 'stage1_14', x: 90, y: 250, b:'tankbase_5', c:'tankcannon_3a' },
       { key: 'stage1_14', x: 90, y: 450, b:'tankbase_5', c:'tankcannon_3a' },
@@ -161,10 +208,10 @@ export default class Stage1 extends Phaser.Scene {
       { key: 'stage1_15', x: 510, y: 250, b:'tankbase_5', c:'tankcannon_3a' },
       { key: 'stage1_15', x: 510, y: 450, b:'tankbase_5', c:'tankcannon_3a' },
       { key: 'stage1_15', x: 510, y: 650, b:'tankbase_5', c:'tankcannon_3a' },
-      { key: 'stage1_16', x: 510, y: 50,  b:'tankbase_5', c:'tankcannon_3a' },
-      { key: 'stage1_16', x: 510, y: 250, b:'tankbase_5', c:'tankcannon_3a' },
-      { key: 'stage1_16', x: 510, y: 450, b:'tankbase_5', c:'tankcannon_3a' },
-      { key: 'stage1_16', x: 510, y: 650, b:'tankbase_5', c:'tankcannon_3a' },
+      //{ key: 'stage1_16', x: 510, y: 50,  b:'tankbase_5', c:'tankcannon_3a' },
+      //{ key: 'stage1_16', x: 510, y: 250, b:'tankbase_5', c:'tankcannon_3a' },
+      //{ key: 'stage1_16', x: 510, y: 450, b:'tankbase_5', c:'tankcannon_3a' },
+      //{ key: 'stage1_16', x: 510, y: 650, b:'tankbase_5', c:'tankcannon_3a' },
       { key: 'stage1_17', x: 510, y: 50,  b:'tankbase_5', c:'tankcannon_3a' },
       { key: 'stage1_17', x: 510, y: 250, b:'tankbase_5', c:'tankcannon_3a' },
       { key: 'stage1_17', x: 510, y: 450, b:'tankbase_5', c:'tankcannon_3a' },
@@ -196,13 +243,13 @@ export default class Stage1 extends Phaser.Scene {
       { key: 'stage1_12', x: 400, y: 450, type : 'passive'},
       { key: 'stage1_12', x: 500, y: 300, type : 'passive'},
 
-      { key: 'stage1_13', x: 300, y: 0,   type : 'passive'},
-      { key: 'stage1_13', x: 400, y: 150, type : 'passive'},
-      { key: 'stage1_13', x: 500, y: 0,   type : 'passive'},
+      //{ key: 'stage1_13', x: 300, y: 0,   type : 'passive'},
+      //{ key: 'stage1_13', x: 400, y: 150, type : 'passive'},
+      //{ key: 'stage1_13', x: 500, y: 0,   type : 'passive'},
 
-      { key: 'stage1_13', x: 300, y: 300, type : 'passive'},
-      { key: 'stage1_13', x: 400, y: 450, type : 'passive'},
-      { key: 'stage1_13', x: 500, y: 300, type : 'passive'},
+      //{ key: 'stage1_13', x: 300, y: 300, type : 'passive'},
+      //{ key: 'stage1_13', x: 400, y: 450, type : 'passive'},
+      //{ key: 'stage1_13', x: 500, y: 300, type : 'passive'},
       
       { key: 'stage1_14', x: 300, y: 0,   type : 'passive'},
       { key: 'stage1_14', x: 400, y: 150, type : 'passive'},
@@ -220,13 +267,13 @@ export default class Stage1 extends Phaser.Scene {
       { key: 'stage1_15', x: 200, y: 450, type : 'suicide'},
       { key: 'stage1_15', x: 300, y: 300, type : 'suicide'},
 
-      { key: 'stage1_16', x: 100, y: 0,   type : 'suicide'},
-      { key: 'stage1_16', x: 200, y: 150, type : 'suicide'},
-      { key: 'stage1_16', x: 300, y: 0,   type : 'suicide'},
+      //{ key: 'stage1_16', x: 100, y: 0,   type : 'suicide'},
+      //{ key: 'stage1_16', x: 200, y: 150, type : 'suicide'},
+      //{ key: 'stage1_16', x: 300, y: 0,   type : 'suicide'},
 
-      { key: 'stage1_16', x: 100, y: 300, type : 'suicide'},
-      { key: 'stage1_16', x: 200, y: 450, type : 'suicide'},
-      { key: 'stage1_16', x: 300, y: 300, type : 'suicide'},
+      //{ key: 'stage1_16', x: 100, y: 300, type : 'suicide'},
+      //{ key: 'stage1_16', x: 200, y: 450, type : 'suicide'},
+      //{ key: 'stage1_16', x: 300, y: 300, type : 'suicide'},
       
       { key: 'stage1_17', x: 100, y: 0,   type : 'suicide'},
       { key: 'stage1_17', x: 200, y: 150, type : 'suicide'},

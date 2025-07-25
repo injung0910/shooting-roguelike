@@ -68,22 +68,22 @@ export default class OptionScene extends Phaser.Scene {
     // 🔽 버튼 클릭 이벤트 연결
     this.bgmLeftBtn.on('pointerdown', () => {
         this.setSelection('bgm');
-        this.adjustVolume('bgm', -0.1);
+        this.adjustVolume('bgm', -0.05);
     });
 
     this.bgmRightBtn.on('pointerdown', () => {
         this.setSelection('bgm');
-        this.adjustVolume('bgm', 0.1);
+        this.adjustVolume('bgm', 0.05);
     });
 
     this.sfxLeftBtn.on('pointerdown', () => {
         this.setSelection('sfx');
-        this.adjustVolume('sfx', -0.1);
+        this.adjustVolume('sfx', -0.05);
     });
 
     this.sfxRightBtn.on('pointerdown', () => {
         this.setSelection('sfx');
-        this.adjustVolume('sfx', 0.1);
+        this.adjustVolume('sfx', 0.05);
     });    
 
     // 음소거 버튼

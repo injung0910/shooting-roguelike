@@ -8,7 +8,8 @@ export default class SelectScene extends Phaser.Scene {
   }
 
   create() {
-    
+    this.inputEnabled = true;
+
     // bgm 설정
     this.game.audioManager.scene = this;
     this.game.audioManager.playBGM('bgm_shipselect', { loop: true, volume: this.game.audioManager.bgmVolume }, true);
@@ -127,6 +128,7 @@ export default class SelectScene extends Phaser.Scene {
 
     // 조작설정
     this.input.keyboard.on('keydown-LEFT', () => {
+      if (!this.inputEnabled) return;
       this.game.audioManager.playSFX('sfx_ship_select');
       this.selectedIndex = (this.selectedIndex - 1 + this.planeData.length) % this.planeData.length;
       this.updateSelection();
@@ -134,6 +136,7 @@ export default class SelectScene extends Phaser.Scene {
     });
 
     this.input.keyboard.on('keydown-RIGHT', () => {
+      if (!this.inputEnabled) return;
       this.game.audioManager.playSFX('sfx_ship_select');
       this.selectedIndex = (this.selectedIndex + 1) % this.planeData.length;
       this.updateSelection();
@@ -179,13 +182,17 @@ export default class SelectScene extends Phaser.Scene {
     // 클릭 시 실행
     this.startBtn.on('pointerdown', () => {
       if (this.selectedIndex !== null) {
+        if (!this.inputEnabled) return;
+        this.inputEnabled = false;
         this.flashAndStart(this.selectedIndex);
       }
     });
 
-    // 스페이스바로 파워업 상태 전환
+    //
     this.input.keyboard.on('keydown-ENTER', () => {
-        this.flashAndStart(this.selectedIndex);
+      if (!this.inputEnabled) return;  
+      this.inputEnabled = false;
+      this.flashAndStart(this.selectedIndex);
     });
 
   }

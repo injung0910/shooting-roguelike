@@ -14,7 +14,10 @@ export default class ItemManager {
       }
 
       collectedItem.destroy();
-    });
+    },
+    null, // 📌 조건 함수에서 항상 true 반환 (무적 여부 상관없이 작동)
+    this    
+  );
   }
 
   spawn(x, y, type) {

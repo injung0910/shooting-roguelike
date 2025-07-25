@@ -46,7 +46,7 @@ export default class GroundEnemyManager {
   }
 
   fireBullet(cannon) {
-    const bullet = this.scene.physics.add.image(cannon.x, cannon.y, 'bullet4'); // 미사일 이미지 키
+    const bullet = this.scene.physics.add.image(cannon.x, cannon.y, 'bullet4_1'); // 미사일 이미지 키
     bullet.setDepth(5);
     
     const angle = cannon.rotation;
@@ -74,14 +74,7 @@ export default class GroundEnemyManager {
     tank.hp  -= bullet.damage || 10;
 
     // 데미지 반응 (선택: 깜빡임 효과 등)
-    this.scene.tweens.add({
-      targets: tank.base,
-      alpha: 0.5,
-      duration: 100,
-      yoyo: true,
-      repeat: 1,
-      onComplete: () => tank.base.setAlpha(1)
-    });
+    this.flashRed(tank.base);
 
     // 체력이 0 이하일 때 파괴
     if (tank.hp <= 0) {
@@ -125,17 +118,9 @@ export default class GroundEnemyManager {
 
         tank.hp -= damage;
 
-        this.scene.tweens.add({
-          targets: [tank.base, tank.cannon],
-          alpha: 0.3,
-          yoyo: true,
-          duration: 100,
-          repeat: 1,
-          onComplete: () => {
-            tank.base.setAlpha(1);
-            tank.cannon.setAlpha(1);
-          }
-        });
+        // 데미지 반응 (선택: 깜빡임 효과 등)
+        this.flashRed(tank.base);
+
         if (tank.hp <= 0) {
           // 폭발 이펙트
           const explosion = this.scene.add.sprite(tank.base.x, tank.base.y, 'enemy_explosion_small');
@@ -161,6 +146,32 @@ export default class GroundEnemyManager {
       }
     });
   }
+
+  // 적이 맞았을 때 붉게 깜빡이는 처리
+  flashRed(enemy) {
+    const flashCount = 4;
+    let count = 0;
+    const flashInterval = 100; // 100ms 간격
+
+    const flashTimer = enemy.scene.time.addEvent({
+      delay: flashInterval,
+      repeat: flashCount * 2 - 1,
+      callback: () => {
+        if (!enemy.active) {
+          flashTimer.remove();
+          return;
+        }
+
+        if (count % 2 === 0) {
+          enemy.setTint(0xff0000);
+        } else {
+          enemy.clearTint();
+        }
+
+        count++;
+      }
+    });
+  }    
 
   update(time, delta) {
     this.enemyTanks.forEach(tank => {
@@ -195,7 +206,7 @@ export default class GroundEnemyManager {
           cannonWorldX,
           cannonWorldY,
           angle,
-          'bullets4',
+          'bullets4_1',
           300
         );
       }

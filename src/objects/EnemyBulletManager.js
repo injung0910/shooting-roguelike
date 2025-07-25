@@ -32,7 +32,7 @@ export default class EnemyBulletManager {
     }
   }
 
-  fireWithAngle(x, y, angle, bulletKey = 'bullets4', speed = 150) {
+  fireWithAngle(x, y, angle, bulletKey = 'bullets4_1', speed = 150) {
     const bullet = this.bullets.get(x, y, bulletKey);
     if (bullet) {
       bullet.setActive(true);
@@ -49,7 +49,7 @@ export default class EnemyBulletManager {
     }
   }
 
-  fireAtPlayer(x, y, bulletKey, speed = 300) {
+  fireAtPlayer(x, y, bulletKey = 'bullets4_2', speed = 500) {
     if (!this.scene.player || !this.bullets) return;
 
     // 📌 카메라 안에 있는지 확인
@@ -82,7 +82,7 @@ export default class EnemyBulletManager {
     }
   }  
 
-  fireSpread(x, y, baseAngle, count, bulletKey = 'bullets4', speed) {
+  fireSpread(x, y, baseAngle, count, bulletKey = 'bullets4_3', speed) {
    // 📌 카메라 안에 있는지 확인
     const camera = this.scene.cameras.main;
     if (
@@ -117,7 +117,7 @@ export default class EnemyBulletManager {
     }
   }
 
-  fireTripleBurstAtPlayer(x, y, bulletKey = 'bullets4', speed = 300, delay = 150) {
+  fireTripleBurstAtPlayer(x, y, bulletKey = 'bullets4_4', speed = 300, delay = 100) {
     for (let i = 0; i < 3; i++) {
       this.scene.time.delayedCall(delay * i, () => {
         this.fireAtPlayer(x, y, bulletKey, speed);

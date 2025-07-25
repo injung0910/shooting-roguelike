@@ -280,6 +280,10 @@ function loadBullets(scene) {
 
   // 불릿4 스프라이트 시트 로드 2프레임
   scene.load.spritesheet('bullets4', '/assets/bullets/Projectiles/projectile-04.png', {frameWidth: 12,frameHeight: 12,});
+  scene.load.spritesheet('bullets4_1', '/assets/bullets/Projectiles/projectile-04.png', {frameWidth: 12,frameHeight: 12,});
+  scene.load.spritesheet('bullets4_2', '/assets/bullets/Projectiles/projectile-04.png', {frameWidth: 12,frameHeight: 12,});
+  scene.load.spritesheet('bullets4_3', '/assets/bullets/Projectiles/projectile-04.png', {frameWidth: 12,frameHeight: 12,});
+  scene.load.spritesheet('bullets4_4', '/assets/bullets/Projectiles/projectile-04.png', {frameWidth: 12,frameHeight: 12,});
   
   // 불릿5 스프라이트 시트 로드 2프레임
   scene.load.spritesheet('bullets5', '/assets/bullets/Projectiles/projectile-05.png', {frameWidth: 6,frameHeight: 25,});
@@ -473,7 +477,7 @@ function loadSupportUnits(scene) {
 function loadBosses(scene) {
 
   // boss01 스프라이트 시트 로드 8프레임
-  scene.load.spritesheet('boss01', '/assets/enemies/Boss Enemies/Boss 01/boss-01-spritesheet.png', {frameWidth: 120,frameHeight: 480,});
+  scene.load.spritesheet('boss01', '/assets/enemies/Boss Enemies/Boss 01/boss-01-spritesheet.png', {frameWidth: 240,frameHeight: 240,});
   // boss01_bot 
   scene.load.image('boss01_bot', '/assets/enemies/Boss Enemies/Boss 01/boss-01-support-bot.png');
 
@@ -525,6 +529,8 @@ function loadAllSFX(scene) {
   scene.load.audio('sfx_Hawk_down', '/assets/audio/sfx/sfx_hawk_down.wav');
   scene.load.audio('sfx_warning', '/assets/audio/sfx/sfx_warning.wav');
   scene.load.audio('sfx_mine_explosion', '/assets/audio/sfx/sfx_mine_explosion.wav');
+  scene.load.audio('sfx_mid1_explosion', '/assets/audio/sfx/sfx_mid1_explosion.wav');
+  scene.load.audio('sfx_mid2_explosion', '/assets/audio/sfx/sfx_mid2_explosion.wav');
 }
 
 // 애니메이션 생성은 여기서
@@ -743,6 +749,13 @@ export function createAllAnimations(scene) {
       hideOnComplete: true
     });    
 
+    scene.anims.create({
+      key: 'explosion_large',
+      frames: scene.anims.generateFrameNumbers('explosion_large', { start: 0, end: 11 }),
+      frameRate: 11,
+      hideOnComplete: true
+    });     
+
     // bug 1~6
     for (let i = 1; i <= 6; i++) {
       const key = `bug${i}`;
@@ -869,6 +882,16 @@ export function createAllAnimations(scene) {
       frames: scene.anims.generateFrameNumbers('mini_5_explosion', { start: 0, end: 1 }),
       frameRate: 6,
       repeat: 0
+    });
+
+    scene.anims.create({
+      key: 'boss01_anim',
+      frames: scene.anims.generateFrameNumbers('boss01', {
+        start: 0,
+        end: 7 // 0~7 총 8프레임
+      }),
+      frameRate: 10, // 초당 프레임
+      repeat: 0 //
     });
 
 }

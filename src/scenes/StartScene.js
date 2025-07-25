@@ -5,7 +5,8 @@ export default class StartScene extends Phaser.Scene {
   }
 
   create() {
-    
+    this.inputEnabled = true;
+
     // bgm 설정
     if (!this.sys.settings.data?.fromOption) {
       this.sound.stopAll();
@@ -67,20 +68,25 @@ export default class StartScene extends Phaser.Scene {
 
     // 키 입력 처리
     this.input.keyboard.on('keydown-UP', () => {
+      if (!this.inputEnabled) return;
       this.game.audioManager.playSFX('sfx_ui_select');
       this.selectedIndex = (this.selectedIndex - 1 + this.menuItems.length) % this.menuItems.length;
       this.updateSelection();
     });
 
     this.input.keyboard.on('keydown-DOWN', () => {
+      if (!this.inputEnabled) return;
       this.game.audioManager.playSFX('sfx_ui_select');
       this.selectedIndex = (this.selectedIndex + 1) % this.menuItems.length;
       this.updateSelection();
     });
 
     this.input.keyboard.on('keydown-ENTER', () => {
+      if (!this.inputEnabled) return;
       this.game.audioManager.playSFX('sfx_ui_success');
       const selected = this.menuItems[this.selectedIndex].text;
+
+      this.inputEnabled = false;
 
       this.cameras.main.fadeOut(500, 0, 0, 0);
       this.cameras.main.once('camerafadeoutcomplete', () => {
@@ -99,7 +105,9 @@ export default class StartScene extends Phaser.Scene {
       this.menuItems.push(item);
 
       item.on('pointerdown', () => {
+        if (!this.inputEnabled) return;
         this.game.audioManager.playSFX('sfx_ui_success');
+        this.inputEnabled = false;
         this.selectedIndex = menuOptions.indexOf(item);
         this.updateSelection();
         this.handleMenuSelection(item.text);

@@ -124,7 +124,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.bulletManager.destroyAura();
 
     // 무적 상태 및 시각 효과
-    this.body.checkCollision.none = true;
+    //this.body.checkCollision.none = true;
+
+    this.body.checkCollision.up = false;
+    this.body.checkCollision.down = false;
+    this.body.checkCollision.left = false;
+    this.body.checkCollision.right = false;
+    
 
     // 🔸 깜빡이는 효과 시작
     let blink = true;
@@ -141,7 +147,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.scene.time.delayedCall(2000, () => {
       this.setAlpha(1);
       this.clearTint();
-      this.body.checkCollision.none = false;
+      //this.body.checkCollision.none = false;
+      this.body.checkCollision.up = true;
+      this.body.checkCollision.down = true;
+      this.body.checkCollision.left = true;
+      this.body.checkCollision.right = true;      
       blinkTimer.remove(); // 타이머 정지
     });
   }  

@@ -21,6 +21,42 @@ export default class StageIntroScene extends Phaser.Scene {
     // 배경(선택 사항: Stage1의 배경 일부를 미리 보여줄 수도 있음)
     this.add.rectangle(0, 0, this.scale.width, this.scale.height, 0x000000).setOrigin(0);
 
+    // 🔼 Move (↑ ↓ ← →)
+    this.add.text(centerX - 100, centerY + 70, '↑ ↓ ← → : ', {
+      fontFamily: 'ThaleahFat',
+      fontSize: '32px',
+      color: '#ffffff'
+    });
+    this.add.text(centerX + 40, centerY + 70, 'Move', {
+      fontFamily: 'ThaleahFat',      
+      fontSize: '24px',
+      color: '#ffffff'
+    });
+
+    // 🔫 Shot (Space)
+    this.add.text(centerX - 100, centerY + 100, 'Space    : ', {
+      fontFamily: 'ThaleahFat',      
+      fontSize: '32px',
+      color: '#ffffff'
+    });
+    this.add.text(centerX + 40, centerY + 105, 'Shot', {
+      fontFamily: 'ThaleahFat',      
+      fontSize: '24px',
+      color: '#ffffff'
+    });
+
+    // 💣 Bomb (Shift)
+    this.add.text(centerX - 100, centerY + 130, 'Shift     : ', {
+      fontFamily: 'ThaleahFat',
+      fontSize: '32px',
+      color: '#ffffff'
+    });
+    this.add.text(centerX + 40, centerY + 135, 'Bomb', {
+      fontFamily: 'ThaleahFat',
+      fontSize: '24px',
+      color: '#ffffff'
+    });    
+
     let stage;
 
     if(this.stageKey === 'Stage1') stage = 'STAGE 1'
@@ -49,5 +85,12 @@ export default class StageIntroScene extends Phaser.Scene {
         });
       }
     });
+
+    // Stage 제목 텍스트
+    const controlText = this.add.text(centerX, centerY, '', {
+      fontFamily: 'ThaleahFat',
+      fontSize: '48px',
+      color: '#ffffff'
+    }).setOrigin(0.5);    
   }
 }

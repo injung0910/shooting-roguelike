@@ -5,7 +5,7 @@ export default class GameStatusManager {
     this.player = player;
 
     this.score = 0;
-    this.lives = 2;
+    this.lives = 40;
     this.bombs = 2;
 
     this.bombDamage = 50;
@@ -94,8 +94,7 @@ export default class GameStatusManager {
     }
   }
 
-  updateBombUI() {
-    console.log('🔁 updateBombUI 호출됨', this.bombs, this.bombIcons.length);    
+  updateBombUI() { 
     
     // 아이콘 수가 폭탄 수보다 많으면 숨기기
     this.bombIcons.forEach((icon, index) => {

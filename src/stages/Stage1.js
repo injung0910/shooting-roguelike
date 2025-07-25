@@ -3,6 +3,7 @@ import EnemyManager from '../objects/EnemyManager.js';
 import ItemManager from '../objects/ItemManager';
 import GroundEnemyManager from '../objects/GroundEnemyManager.js';
 import MineEnemyManager from '../objects/MineEnemyManager.js';
+import Boss1 from '../bosses/Boss1.js'; // 경로 확인
 
 
 export default class Stage1 extends Phaser.Scene {
@@ -98,16 +99,20 @@ export default class Stage1 extends Phaser.Scene {
       { key: 'stage1_08', type: 'danger2', x: 500, delay: 7200 },
       { key: 'stage1_08', type: 'danger2', x: 500, delay: 7400 },
 
-      { key: 'stage1_06', type: 'emperor4_1', x: 250, delay: 11000 },
-      { key: 'stage1_06', type: 'emperor4_1', x: 350, delay: 11000 },
+      { key: 'stage1_06', type: 'emperor_4', x: 250, delay: 11000 },
+      { key: 'stage1_06', type: 'emperor_4', x: 350, delay: 11000 },
 
-      { key: 'stage1_08', type: 'emperor3_1', x: 250, delay: 15000 },
-      { key: 'stage1_08', type: 'emperor3_1', x: 350, delay: 15000 },
+      { key: 'stage1_08', type: 'emperor_3', x: 250, delay: 15000 },
+      { key: 'stage1_08', type: 'emperor_3', x: 350, delay: 15000 },
 
-      { key: 'stage1_08', type: 'emperor1_1', x: 300, delay: 20000 },
+      { key: 'stage1_08', type: 'emperor_1', x: 300, delay: 20000 },
 
       { key: 'stage1_09', type: 'emperor4', x: 200,  delay: 30000 },
-      { key: 'stage1_09', type: 'emperor4', x: 400,  delay: 30000 }
+      { key: 'stage1_09', type: 'emperor4', x: 400,  delay: 30000 },
+
+      { key: 'stage1_21', type: 'emperor3', x: 100,  delay: 75000 },
+      { key: 'stage1_21', type: 'emperor1', x: 300,  delay: 75000 },
+      { key: 'stage1_21', type: 'emperor3', x: 500,  delay: 75000 }
     ];
 
     this.enemyManager.spawnEnemies(spawnData);    
@@ -311,23 +316,14 @@ export default class Stage1 extends Phaser.Scene {
       this
     );
 
-    // 구름
-    //this.cloudGroup = this.add.group();
-
-    // 일정 간격으로 구름 생성
-    /*
-    this.time.addEvent({
-      delay: 3000, // 1.5초마다 생성
-      callback: this.spawnRandomCloud,
-      callbackScope: this,
-      loop: true
-    });
-    */
+    // create 등에서 한 번 선언
+    this.boss = new Boss1(this);
+    // 보스 등장
+    this.boss.spawn(); // 보스 등장!    
   }
 
   triggerBossWarning() {
     this.game.audioManager.stopBGM(); // 기존 배경음 끄기
-
 
     // 화면 깜빡임 연출, 텍스트 경고 등 원하면 추가
     this.warningText = this.add.text(300, 400, 'WARNING!', {
@@ -363,74 +359,10 @@ export default class Stage1 extends Phaser.Scene {
       }
 
       this.game.audioManager.playBGM('bgm_boss01'); // 보스 음악 재생
-
-      // 필요 시 보스 등장
-      //this.startBossBattle(); // 또는 this.scene.start('BossScene') 등
-    });
-  }
-
-  spawnRandomCloud() {
-    const cloudKeys = ['cloud-1', 'cloud-2', 'cloud-3'];
-    const key = Phaser.Utils.Array.GetRandom(cloudKeys);
-
-    const x = Phaser.Math.Between(0, 600); // 화면 가로 랜덤
-    const y = -50; // 위에서 시작
-    const speed = Phaser.Math.Between(20, 60); // 천천히
-
-    const cloud = this.add.image(x, y, key).setDepth(10); // 배경 뒤에
-    cloud.speed = speed;
-    cloud.setAlpha(Phaser.Math.FloatBetween(0.3, 0.5));
-    cloud.setScale(Phaser.Math.FloatBetween(0.5, 1.2));
-
-    // ✅ 랜덤 각도 추가
-    const angle = Phaser.Math.Between(-30, 30); // -30도 ~ +30도
-    cloud.setAngle(angle);
-
-    this.cloudGroup.add(cloud);
-  }
-
-  spawnEnemies(time) {
-    const camera = this.cameras.main;
-    const backgrounds = this.backgroundGroup.getChildren();
-
-    this.spawnData.forEach(config => {
-      if (config.spawned) return;
-
-      const bg = backgrounds.find(bg => bg.texture.key === config.key);
-      if (!bg) return;
-
-      // 카메라 안에 해당 배경이 들어왔을 때만
-      const inView =
-        bg.y > camera.worldView.y &&
-        bg.y < camera.worldView.y + camera.height;
-
-      if (inView && time > config.delay) {
-        const x = bg.x + config.x;
-        const y = bg.y + (config.y || 0);
-
-        this.enemyManager.spawnEnemies(config.type, x, y); // 적 생성
-        config.spawned = true;
-
-        console.log(`🚀 spawn 시도: ${config.type} at ${config.key} (delay: ${config.delay})`);
-      }
     });
   }
 
   update(time, delta){
-
-    // 구름
-    /*
-    this.cloudGroup.children.iterate(cloud => {
-      if (!cloud) return;
-
-      cloud.y += cloud.speed * (delta / 1000);
-
-      // 화면 아래로 벗어나면 제거
-      if (cloud.y > 850) {
-        this.cloudGroup.remove(cloud, true, true); // remove + destroy
-      }
-    });
-    */
 
     // 배경
     if (this.backgroundContainer && !this.stopScroll) {

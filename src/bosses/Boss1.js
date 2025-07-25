@@ -1,72 +1,36 @@
-import BossPatternHelper from './BossPatternHelper.js';
-
-export default class Boss1 {
+export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y) {
-    this.scene = scene;
+    super(scene, x, y, 'boss01', 0); // 기본은 0프레임
 
-    this.sprite = scene.physics.add.sprite(x, y, 'boss01');
-    this.sprite.setScale(1.5);
-    this.sprite.setCollideWorldBounds(true);
+    scene.physics.add.existing(this);
+    this.setDepth(20);
 
-    this.hp = 300;
-
-    this.initMovement();
-    this.initAnimations();
-
-    this.helper = new BossPatternHelper(this.scene);
-
-    // 예: 보스가 원형 총알 패턴 사용
-    this.helper.fireCirclePattern(this.sprite.x, this.sprite.y, 12, 200);
   }
 
-  initMovement() {
-    // 아래로 내려오다 멈춤
-    this.sprite.setVelocityY(50);
-    this.scene.time.delayedCall(3000, () => {
-      this.sprite.setVelocity(0);
-      // 이후 공격 패턴 진입
-      this.startAttackPattern();
-    });
-  }
+  spawn() {
+    const backgrounds = this.scene.backgroundGroup.getChildren();
+    const bg = backgrounds.find(bg => bg.texture.key === 'stage1_30'); // 강제로 stage1_01 사용
 
-  initAnimations() {
-    if (!this.scene.anims.exists('boss01_fly')) {
-      this.scene.anims.create({
-        key: 'boss01_fly',
-        frames: this.scene.anims.generateFrameNumbers('boss01', { start: 0, end: 5 }),
-        frameRate: 6,
-        repeat: -1
-      });
+    if (!bg) {
+      console.warn('stage1_01 배경이 존재하지 않습니다.');
+      return;
     }
-    this.sprite.play('boss01_fly');
+
+    const x = this.scene.scale.width / 2;
+    const y = bg.y + 150;
+
+    this.setPosition(x, y);
+    this.setActive(true);
+    this.setVisible(true);
+    this.play('boss01_anim');
+
+    this.scene.physics.add.existing(this);
+    this.scene.backgroundContainer.add(this);
+
+    console.log('[보스 테스트 소환] 위치:', x, y);
   }
 
-  startAttackPattern() {
-    // 간단한 총알 발사 패턴 예시
-    this.attackTimer = this.scene.time.addEvent({
-      delay: 1000,
-      callback: () => {
-        this.fireBullet();
-      },
-      loop: true
-    });
-  }
-
-  fireBullet() {
-    // 추후 BulletManager에서 보스용 총알 추가할 수 있음
-    console.log('Boss fires a bullet!');
-  }
-
-  takeDamage(damage) {
-    this.hp -= damage;
-    if (this.hp <= 0) {
-      this.die();
-    }
-  }
-
-  die() {
-    this.sprite.destroy();
-    if (this.attackTimer) this.attackTimer.remove(false);
-    // 보스 죽은 후 이벤트 등
+  update() {
+    // 추후 이동 및 패턴 정의 가능
   }
 }

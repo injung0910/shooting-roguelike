@@ -27,7 +27,7 @@ export default class Stage1 extends Phaser.Scene {
       'stage1_01', 'stage1_02', 'stage1_03', 'stage1_04', 'stage1_05', 'stage1_06', 'stage1_07', 'stage1_08',
       'stage1_09', 'stage1_10', 'stage1_11', 'stage1_12', 'stage1_13', 'stage1_14', 'stage1_15', 'stage1_16',
       'stage1_17', 'stage1_18', 'stage1_19', 'stage1_20', 'stage1_21', 'stage1_22', 'stage1_23', 'stage1_24',
-      'stage1_25', 'stage1_26', 'stage1_27', 'stage1_28', 'stage1_29', 'stage1_30', 'stage1_31'
+      'stage1_25', 'stage1_26', 'stage1_27', 'stage1_28', 'stage1_29', 'stage1_30'
     ];    
 
     // 배경 그룹 생성
@@ -316,10 +316,11 @@ export default class Stage1 extends Phaser.Scene {
       this
     );
 
+    // 보스 전용 배경
+    this.bossBackgroundGroup = this.add.group();
+
     // create 등에서 한 번 선언
     this.boss = new Boss1(this);
-    // 보스 등장
-    this.boss.spawn(); // 보스 등장!    
   }
 
   triggerBossWarning() {
@@ -351,6 +352,9 @@ export default class Stage1 extends Phaser.Scene {
       loop: true
     });
 
+    // 보스 등장
+    this.boss.spawn(); // 보스 등장!    
+
     // 3초 후 보스 BGM 전환
     this.time.delayedCall(5000, () => {
       // 경고음 반복 중지
@@ -359,7 +363,25 @@ export default class Stage1 extends Phaser.Scene {
       }
 
       this.game.audioManager.playBGM('bgm_boss01'); // 보스 음악 재생
+      
+      // 2. stage1_30 배경 찾기
+      const targetBg = this.backgroundGroup.getChildren().find(bg => bg.texture.key === 'stage1_30');
+
+      // 3. 내려가는 트윈
+      this.tweens.add({
+        targets: targetBg,
+        y: this.scale.height, // 화면 아래로 이동
+        duration: 5000,
+        ease: 'Sine.easeInOut',
+        onComplete: () => {
+          // 4. 기존 배경 제거
+          targetBg.destroy();
+          // 5. 보스 배경 설정
+          this.boss.setupBossBackground();
+        }
+      });
     });
+
   }
 
   update(time, delta){
@@ -380,6 +402,21 @@ export default class Stage1 extends Phaser.Scene {
         this.triggerBossWarning();
       }
     }
+
+    // 기존 update 로직 유지하면서 아래 코드 추가
+    if (this.bossBackgroundGroup) {
+        if (this.bossBackgroundGroup) {
+          this.bossBackgroundGroup.getChildren().forEach(bg => {
+            bg.y += 1;
+
+            if (bg.y >= this.scale.height) {
+              const minY = Math.min(...this.bossBackgroundGroup.getChildren().map(b => b.y));
+              bg.y = minY - bg.height;
+            }
+          });
+        }
+    }
+
 
     if (this.player) {
       this.player.update();

@@ -96,8 +96,13 @@ function loadBackgrounds(scene) {
 
 // stage1
 function loadStage1(scene) {
-  for (let i = 1; i <= 31; i++) {
+  for (let i = 1; i <= 30; i++) {
     const key = `stage1_${String(i).padStart(2, '0')}`;
+    scene.load.image(key, `/assets/backgrounds/stage1/${key}.png`);
+  }  
+
+  for (let i = 0; i <= 5; i++) {
+    const key = `stage1_boss${String(i).padStart(2, '0')}`;
     scene.load.image(key, `/assets/backgrounds/stage1/${key}.png`);
   }  
 }
@@ -891,7 +896,7 @@ export function createAllAnimations(scene) {
         end: 7 // 0~7 총 8프레임
       }),
       frameRate: 10, // 초당 프레임
-      repeat: 0 //
+      repeat: 0//
     });
 
 }

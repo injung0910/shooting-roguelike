@@ -5,7 +5,7 @@ export default class GameStatusManager {
     this.player = player;
 
     this.score = 0;
-    this.lives = 40;
+    this.lives = 2;
     this.bombs = 2;
 
     this.bombDamage = 50;

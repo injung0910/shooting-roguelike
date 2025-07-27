@@ -28,7 +28,5 @@ export default class BootScene extends Phaser.Scene {
       this.scene.start('StartScene');
     }
 
-    console.log('[BootScene] 폰트 로딩 완료');
-    //this.scene.start('StartScene');
   }
 }

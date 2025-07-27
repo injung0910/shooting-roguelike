@@ -5,26 +5,26 @@ import GameStatusManager from '../ui/GameStatusManager.js';
 const SHIP_STATS = {
   Falcon: {
     key: 'plane2',
-    name : 'Falcon',
-    damage : 5,
+    name: 'Falcon',
+    damage: 5,
     speed: 220,
-    fireRate : 300,
+    fireRate: 300,
     hitbox: { width: 19.2, height: 38.4, offsetX: 38.4, offsetY: 38.4 }
   },
   Cryphix: {
     key: 'plane9',
-    name : 'Cryphix',
-    damage : 10,
+    name: 'Cryphix',
+    damage: 10,
     speed: 250,
-    fireRate : 350,
+    fireRate: 350,
     hitbox: { width: 46.08, height: 24, offsetX: 24, offsetY: 43.2 }
   },
   Hawk: {
     key: 'plane6',
-    name : 'Hawk',
-    damage : 5,
+    name: 'Hawk',
+    damage: 5,
     speed: 200,
-    fireRate : 200,
+    fireRate: 200,
     hitbox: { width: 19.2, height: 38.4, offsetX: 38.4, offsetY: 38.4 }
   }
 };
@@ -32,7 +32,7 @@ const SHIP_STATS = {
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, data) {
     super(scene, 300, 700, data);
-    
+
     this.scene = scene;
     this.playerData = data; // key, name 등 전체 저장
 
@@ -41,7 +41,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     scene.add.existing(this);
     scene.physics.add.existing(this);
     this.setDepth(20); // 다른 오브젝트보다 위로
-    
+
     // 히트박스 설정
     this.setSize(stats.hitbox.width, stats.hitbox.height);
     this.setOffset(stats.hitbox.offsetX, stats.hitbox.offsetY);
@@ -88,7 +88,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.touchTarget = null;
     });
 
-    
+
   }
 
   handleHit(bullet) {
@@ -112,7 +112,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.gameStatusManager.loseLife();
 
     // 파워 초기화
-    this.bulletManager.powerLevel = 1;    
+    this.bulletManager.powerLevel = 1;
 
     // Support Unit 제거
     this.bulletManager.supportUnits.forEach(unit => {
@@ -130,7 +130,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.body.checkCollision.down = false;
     this.body.checkCollision.left = false;
     this.body.checkCollision.right = false;
-    
+
 
     // 🔸 깜빡이는 효과 시작
     let blink = true;
@@ -151,10 +151,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.body.checkCollision.up = true;
       this.body.checkCollision.down = true;
       this.body.checkCollision.left = true;
-      this.body.checkCollision.right = true;      
+      this.body.checkCollision.right = true;
       blinkTimer.remove(); // 타이머 정지
     });
-  }  
+  }
 
   takeHitFromEnemy() {
     if (!this.body.enable) return; // 이미 무적 상태면 무시
@@ -178,7 +178,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.bulletManager.supportUnits.forEach(unit => {
       unit.destroy();
     });
-    
+
     this.bulletManager.supportUnits = [];
 
     this.bulletManager.destroyAura();
@@ -204,7 +204,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.body.checkCollision.none = false;
       blinkTimer.remove(); // 타이머 정지
     });
-  }  
+  }
 
   useBomb() {
     if (this.gameStatusManager.bombs <= 0) return;
@@ -235,11 +235,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.falconBomb();
         break;
     }
-    
+
   }
 
   falconBomb() {
-    
+
     const centerX = this.scene.scale.width / 2;
     const centerY = this.scene.scale.height / 2;
 
@@ -273,10 +273,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       callback: () => {
         this.scene.enemyManager.bombDamage(this.gameStatusManager.bombDamage); // 적과 총알
         this.scene.groundEnemyManager.bombDamage(this.gameStatusManager.bombDamage); // 지상 적
-        this.scene.boss.bombDamage(this.gameStatusManager.bombDamage); // boss
+        if (this.scene.boss) {
+          this.scene.boss.bombDamage(this.gameStatusManager.bombDamage); // boss
+        }
       },
       repeat: Math.floor(bombDuration / interval) - 1 // 총 몇 번 반복할지
-    });    
+    });
 
     explosion200.on('animationcomplete', () => explosion200.destroy());
   }
@@ -309,10 +311,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.scene.enemyManager.bombDamage(this.gameStatusManager.bombDamage); // 적과 총알
     this.scene.groundEnemyManager.bombDamage(this.gameStatusManager.bombDamage); // 지상 적
-    this.scene.boss.bombDamage(this.gameStatusManager.bombDamage); // boss
+    if (this.scene.boss) {
+      this.scene.boss.bombDamage(this.gameStatusManager.bombDamage); // boss
+    }
 
     thunder200.on('animationcomplete', () => thunder200.destroy());
-  }  
+  }
 
   hawkBomb() {
 
@@ -327,7 +331,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         const fireCircle200 = this.scene.physics.add.sprite(x, y, 'fireCircle200');
         fireCircle200.setDepth(30);
         fireCircle200.setAlpha(0.7);
-        fireCircle200.setVelocityY(-1000); 
+        fireCircle200.setVelocityY(-1000);
         fireCircle200.play('fireCircle200');
         fireCircle200.on('animationcomplete', () => fireCircle200.destroy());
       });
@@ -355,21 +359,23 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       callback: () => {
         this.scene.enemyManager.bombDamage(this.gameStatusManager.bombDamage); // 적과 총알
         this.scene.groundEnemyManager.bombDamage(this.gameStatusManager.bombDamage); // 지상 적
-        this.scene.boss.bombDamage(this.gameStatusManager.bombDamage); // boss
+        if (this.scene.boss) {
+          this.scene.boss.bombDamage(this.gameStatusManager.bombDamage); // boss
+        }
       },
       repeat: Math.floor(bombDuration / interval) - 1 // 총 몇 번 반복할지
-    });    
+    });
   }
 
   update() {
 
-    const key = this.bulletManager.powerLevel >= 4 
-    ? `${this.playerData.ship.key}_powerup`
-    : this.playerData.ship.key;
+    const key = this.bulletManager.powerLevel >= 4
+      ? `${this.playerData.ship.key}_powerup`
+      : this.playerData.ship.key;
 
     // 화면 경계 제한
     this.x = Phaser.Math.Clamp(this.x, 0, this.scene.scale.width);
-    this.y = Phaser.Math.Clamp(this.y, 0, this.scene.scale.height);      
+    this.y = Phaser.Math.Clamp(this.y, 0, this.scene.scale.height);
 
     // 키보드 입력 우선
     if (!this.isTouching) {
@@ -397,7 +403,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       }
 
       if (Phaser.Input.Keyboard.JustDown(this.bombKey)) {
-         this.useBomb(); 
+        this.useBomb();
       }
 
     }
@@ -421,17 +427,17 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.setVelocity(0);
         if (this.anims.currentAnim?.key !== `${key}_idle`) this.anims.play(`${key}_idle`);
       }
-     
+
       this.bulletManager.fire(this.x, this.y - 30);
     }
-    
+
     this.bulletManager.update();
 
     // supportUnits 따라다님
     this.bulletManager.supportUnits?.forEach((unit, index) => {
       const offset = index === 0 ? -40 : 40;
       unit.update(this.x, this.y, offset);
-    });    
+    });
 
   }
 }

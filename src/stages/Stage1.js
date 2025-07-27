@@ -6,7 +6,7 @@ import MineEnemyManager from '../objects/MineEnemyManager.js';
 import Boss1 from '../bosses/Boss1.js'; // 경로 확인
 
 // Stage1.js 상단
-const DEBUG_BOSS_ONLY = true;
+const DEBUG_BOSS_ONLY = false;
 
 export default class Stage1 extends Phaser.Scene {
   constructor(scene) {
@@ -357,11 +357,6 @@ export default class Stage1 extends Phaser.Scene {
       this
     );
 
-    // 보스 전용 배경
-    this.bossBackgroundGroup = this.add.group();
-
-    // create 등에서 한 번 선언
-    this.boss = new Boss1(this);
   }
 
   triggerBossWarning() {
@@ -392,6 +387,23 @@ export default class Stage1 extends Phaser.Scene {
       callbackScope: this,
       loop: true
     });
+
+    // 보스 전용 배경
+    this.bossBackgroundGroup = this.add.group();
+
+    this.bossGroup = this.physics.add.group();
+    // create 등에서 한 번 선언
+    this.boss = new Boss1(this);
+
+    this.physics.add.overlap(
+      this.player.bulletManager.bullets,
+      this.bossGroup,
+      (bullet, bossGroup) => {
+        this.boss.handleBossHit(bullet, bossGroup);
+      },
+      null,
+      this
+    );
 
     // 보스 등장
     this.boss.spawn(); // 보스 등장!    
@@ -471,9 +483,9 @@ export default class Stage1 extends Phaser.Scene {
 
     if (this.mineEnemyManager) {
       this.mineEnemyManager.update();
-    } 
+    }
 
-    if(this.boss && this.boss.active) {
+    if (this.boss && this.boss.active) {
       this.boss.update();
     }
 

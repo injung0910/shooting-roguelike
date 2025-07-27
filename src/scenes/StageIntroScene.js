@@ -4,7 +4,6 @@ export default class StageIntroScene extends Phaser.Scene {
   }
 
   init(data) {
-    console.log('[StageIntroScene] 받은 데이터:', data);
     this.ship = data; // 선택된 기체 정보 받기
     this.stageKey = data.stageKey;
   }

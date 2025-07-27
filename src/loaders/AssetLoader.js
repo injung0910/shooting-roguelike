@@ -321,11 +321,11 @@ function loadEffects(scene) {
   // charging50 121프레임
   scene.load.spritesheet('charging50', '/assets/effects/charging_50x50px.png', {frameWidth: 50,frameHeight: 50,});
   // charging100 121프레임
-  scene.load.spritesheet('charging100', '/assets/effects/charging_50x50px.png', {frameWidth: 100,frameHeight: 100,});
+  scene.load.spritesheet('charging100', '/assets/effects/charging_100x100px.png', {frameWidth: 100,frameHeight: 100,});
   // charging200 121프레임
-  scene.load.spritesheet('charging200', '/assets/effects/charging_50x50px.png', {frameWidth: 200,frameHeight: 200,});
+  scene.load.spritesheet('charging200', '/assets/effects/charging_200x200px.png', {frameWidth: 200,frameHeight: 200,});
   // charging400 121프레임
-  scene.load.spritesheet('charging400', '/assets/effects/charging_50x50px.png', {frameWidth: 400,frameHeight: 400,});
+  scene.load.spritesheet('charging400', '/assets/effects/charging_400x400px.png', {frameWidth: 400,frameHeight: 400,});
 
   // fireCircle50 62프레임
   scene.load.spritesheet('fireCircle50', '/assets/effects/fire_circles_50x50px.png', {frameWidth: 50,frameHeight: 50,});
@@ -416,6 +416,9 @@ function loadEffects(scene) {
   scene.load.spritesheet('snow200', '/assets/effects/top_snow_200x200px.png', {frameWidth: 200,frameHeight: 200,});  
   // snow400 40프레임
   scene.load.spritesheet('snow400', '/assets/effects/top_snow_400x400px.png', {frameWidth: 400,frameHeight: 400,});
+
+  // boss_laser 13프레임
+  scene.load.spritesheet('boss_laser', '/assets/effects/boss_laser.png', {frameWidth: 100,frameHeight: 1100,});
 
 }
 
@@ -536,6 +539,9 @@ function loadAllSFX(scene) {
   scene.load.audio('sfx_mine_explosion', '/assets/audio/sfx/sfx_mine_explosion.wav');
   scene.load.audio('sfx_mid1_explosion', '/assets/audio/sfx/sfx_mid1_explosion.wav');
   scene.load.audio('sfx_mid2_explosion', '/assets/audio/sfx/sfx_mid2_explosion.wav');
+  scene.load.audio('sfx_boss_charge', '/assets/audio/sfx/sfx_boss_charge.wav');
+  scene.load.audio('sfx_boss_laser', '/assets/audio/sfx/sfx_boss_laser.wav');
+  scene.load.audio('sfx_boss_missile', '/assets/audio/sfx/sfx_boss_missile.wav');
 }
 
 // 애니메이션 생성은 여기서
@@ -898,12 +904,22 @@ export function createAllAnimations(scene) {
 
     scene.anims.create({
       key: 'boss01_anim',
-      frames: scene.anims.generateFrameNumbers('boss01', {
-        start: 0,
-        end: 7 // 0~7 총 8프레임
-      }),
+      frames: scene.anims.generateFrameNumbers('boss01', {start: 0,end: 7 }),
       frameRate: 8, // 초당 프레임
-      repeat: 0//
+      repeat: 0
     });
 
+    scene.anims.create({
+      key: 'charging100',
+      frames: scene.anims.generateFrameNumbers('charging100', { start: 0, end: 120 }),
+      frameRate: 120,
+      repeat: -1
+    });
+
+    scene.anims.create({
+      key: 'boss_laser_anim',
+      frames: scene.anims.generateFrameNumbers('boss_laser', { start: 0, end: 15 }),
+      frameRate: 16,
+      repeat: 0
+    });
 }

@@ -61,7 +61,7 @@ const enemyTypes = {
     name: 'emperor1',
     speed: 400,
     fireRate: 1000,
-    hp: 2500,
+    hp: 2000,
     bulletKey: 'bullets4',
     pattern: 'straight'
   },
@@ -77,7 +77,7 @@ const enemyTypes = {
     name: 'emperor3',
     speed: 800,
     fireRate: 1000,
-    hp: 800,
+    hp: 550,
     bulletKey: 'bullets4',
     pattern: 'straight'
   },

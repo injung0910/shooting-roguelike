@@ -105,7 +105,7 @@ export default class GroundEnemyManager {
     }
   }  
 
-  clearAll(damage){
+  bombDamage(damage){
     const camera = this.scene.cameras.main;
 
     this.enemyTanks.slice().forEach(tank => {

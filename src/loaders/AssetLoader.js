@@ -829,6 +829,13 @@ export function createAllAnimations(scene) {
 
     // preview용 missile 생성
     scene.anims.create({
+      key: 'missile2_anim',
+      frames: scene.anims.generateFrameNumbers('missile02', { start: 0, end: 2 }),
+      frameRate: 8,
+      repeat: -1
+    });
+
+    scene.anims.create({
       key: 'missile3_anim',
       frames: scene.anims.generateFrameNumbers('missile03', { start: 0, end: 2 }),
       frameRate: 8,
@@ -895,7 +902,7 @@ export function createAllAnimations(scene) {
         start: 0,
         end: 7 // 0~7 총 8프레임
       }),
-      frameRate: 10, // 초당 프레임
+      frameRate: 8, // 초당 프레임
       repeat: 0//
     });
 

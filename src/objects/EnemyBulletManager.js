@@ -12,7 +12,7 @@ export default class EnemyBulletManager {
   }
 
   fire(x, y, bulletKey = 'bullets4', speed = this.defaultSpeed) {
-   
+
     // 📌 카메라 안에 있는지 확인
     const camera = this.scene.cameras.main;
     if (
@@ -80,18 +80,18 @@ export default class EnemyBulletManager {
       bullet.setVelocity(velocityX, velocityY);
       bullet.setRotation(angle); // 총알 방향 시각화
     }
-  }  
+  }
 
   fireSpread(x, y, baseAngle, count, bulletKey = 'bullets4_3', speed) {
-   // 📌 카메라 안에 있는지 확인
+    // 📌 카메라 안에 있는지 확인
     const camera = this.scene.cameras.main;
     if (
       x < camera.worldView.x || x > camera.worldView.x + camera.width ||
       y < camera.worldView.y || y > camera.worldView.y + camera.height
     ) {
       return; // 화면 밖이면 발사 안 함
-    }    
-    
+    }
+
     const spread = Phaser.Math.DegToRad(15); // 탄 간격 (각도)
     const half = Math.floor(count / 2);
 
@@ -127,7 +127,16 @@ export default class EnemyBulletManager {
 
   update() {
     this.bullets.children.iterate(bullet => {
-      if (bullet && bullet.active && bullet.y > this.scene.scale.height + 50) {
+      if (!bullet || !bullet.active) return;
+
+      const outOfBounds =
+        bullet.y < -50 ||
+        bullet.y > this.scene.scale.height + 50 ||
+        bullet.x < -50 ||
+        bullet.x > this.scene.scale.width + 50;
+
+      if (outOfBounds) {
+        bullet.disableBody(true, true);
         this.bullets.killAndHide(bullet);
         bullet.body.enable = false;
       }

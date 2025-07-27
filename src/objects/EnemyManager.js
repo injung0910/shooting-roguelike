@@ -61,7 +61,7 @@ const enemyTypes = {
     name: 'emperor1',
     speed: 400,
     fireRate: 1000,
-    hp: 3000,
+    hp: 2500,
     bulletKey: 'bullets4',
     pattern: 'straight'
   },
@@ -77,7 +77,7 @@ const enemyTypes = {
     name: 'emperor3',
     speed: 800,
     fireRate: 1000,
-    hp: 1000,
+    hp: 800,
     bulletKey: 'bullets4',
     pattern: 'straight'
   },
@@ -93,7 +93,7 @@ const enemyTypes = {
     name: 'emperor4',
     speed: 200,
     fireRate: 1000,
-    hp: 600,
+    hp: 550,
     bulletKey: 'bullets4',
     pattern: 'straight'
   }
@@ -436,7 +436,7 @@ export default class EnemyManager {
     player.takeHitFromEnemy();  // Player.js에 정의한 함수 호출
   }
 
-  clearAll(damage) {
+  bombDamage(damage) {
     // 적 제거
     this.enemies.children.each(enemy => {
       if (enemy.active) {

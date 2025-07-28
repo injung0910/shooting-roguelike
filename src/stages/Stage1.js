@@ -6,7 +6,7 @@ import MineEnemyManager from '../objects/MineEnemyManager.js';
 import Boss1 from '../bosses/Boss1.js'; // 경로 확인
 
 // Stage1.js 상단
-const DEBUG_BOSS_ONLY = true;
+const DEBUG_BOSS_ONLY = false;
 
 export default class Stage1 extends Phaser.Scene {
   constructor(scene) {
@@ -18,6 +18,8 @@ export default class Stage1 extends Phaser.Scene {
   }
 
   create() {
+
+    this.inputEnabled = true;
 
     // 고정 배경 3종
     this.fixedBG1 = this.add.image(0, 0, 'purple_background').setOrigin(0).setDisplaySize(600, 800).setScrollFactor(0);
@@ -74,6 +76,11 @@ export default class Stage1 extends Phaser.Scene {
         .setDisplaySize(600, 800);
       this.backgroundGroup.add(bg);
     });
+
+    // 오류로 존재할 경우 삭제
+    if (this.backgroundContainer) {
+      this.backgroundContainer.destroy(true);
+    }
 
     // 컨테이너에 배경 묶기
     this.backgroundContainer = this.add.container(0, 0, this.backgroundGroup.getChildren());
@@ -364,6 +371,8 @@ export default class Stage1 extends Phaser.Scene {
   }
 
   triggerBossWarning() {
+    this.inputEnabled = false; // 조작 비활성화
+
     this.game.audioManager.stopBGM(); // 기존 배경음 끄기
 
     // 화면 깜빡임 연출, 텍스트 경고 등 원하면 추가
@@ -381,6 +390,13 @@ export default class Stage1 extends Phaser.Scene {
       repeat: 5,
     });
 
+    // 화면 중앙으로
+    this.tweens.add({
+      targets: this.player,
+      x: 300, // 화면 중앙
+      duration: 2000, // 2초 동안 이동
+      ease: 'Power2',
+    });
 
     // 🔁 1초마다 경고음 반복 (5초 동안)
     this.warningSFXTimer = this.time.addEvent({
@@ -465,6 +481,19 @@ export default class Stage1 extends Phaser.Scene {
       player.takeHitFromEnemy();
     }, null, this);
 
+    this.minibotGroup = this.physics.add.group();
+
+    this.physics.add.overlap(
+      this.player.bulletManager.bullets,
+      this.minibotGroup,
+      (bullet, minibot) => {
+        bullet.disableBody(true, true);
+        minibot.takeDamage?.(bullet.damage || 10); // 미니봇에게 데미지 전달
+      },
+      null,
+      this
+    );
+
     // 3초 후 보스 BGM 전환
     this.time.delayedCall(5000, () => {
       // 경고음 반복 중지
@@ -473,6 +502,8 @@ export default class Stage1 extends Phaser.Scene {
       }
 
       this.game.audioManager.playBGM('bgm_boss01'); // 보스 음악 재생
+
+      this.inputEnabled = true; // ✅ 조작 다시 활성화
 
       // 보스전 시작
       this.boss.executePattern();
@@ -514,6 +545,8 @@ export default class Stage1 extends Phaser.Scene {
       }
     }
 
+    // 조작 제한 중이면 아무 것도 하지 않음
+    if (!this.inputEnabled) return;
 
     if (this.player) {
       this.player.update();

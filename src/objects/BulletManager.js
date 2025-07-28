@@ -257,7 +257,7 @@ export default class BulletManager {
 
     missile.setVelocityY(-300); // 위로 직진
     missile.setAngle(0);        // 회전 보정
-    missile.damage = 1;         // 데미지 설정 (관통탄용)
+    missile.damage = 0.5;         // 데미지 설정 (관통탄용)
 
     // 애니메이션 재생 (missile03에 대한 anim이 정의되어 있어야 함)
     if (missile.anims && typeof missile.play === 'function') {

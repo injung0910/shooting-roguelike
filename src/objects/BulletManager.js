@@ -16,7 +16,7 @@ export default class BulletManager {
 
     this.missileGroup = this.scene.physics.add.group({
       classType: Phaser.Physics.Arcade.Sprite,
-      maxSize : 100,
+      maxSize: 100,
       runChildUpdate: true
     });
 
@@ -46,21 +46,21 @@ export default class BulletManager {
 
     if (bulletKey === 'bullets3') {
       const levels = {
-        1: [ { offsetX: 0, angle: 0 } ],
-        2: [ { offsetX: -10, angle: -0.1 }, { offsetX: 10, angle: 0.1 } ],
-        3: [ { offsetX: 0, angle: 0 }, { offsetX: -10, angle: -0.3 }, { offsetX: 10, angle: 0.3 } ],
-        4: [ 
-          { offsetX: 0, angle: 0 }, 
-          { offsetX: -10, angle: -0.3 }, 
-          { offsetX: 10, angle: 0.3 }, 
-          { offsetX: -30, angle: -0.6 }, 
+        1: [{ offsetX: 0, angle: 0 }],
+        2: [{ offsetX: -10, angle: -0.1 }, { offsetX: 10, angle: 0.1 }],
+        3: [{ offsetX: 0, angle: 0 }, { offsetX: -10, angle: -0.3 }, { offsetX: 10, angle: 0.3 }],
+        4: [
+          { offsetX: 0, angle: 0 },
+          { offsetX: -10, angle: -0.3 },
+          { offsetX: 10, angle: 0.3 },
+          { offsetX: -30, angle: -0.6 },
           { offsetX: 30, angle: 0.6 }
         ],
-        5: [ 
-          { offsetX: 0, angle: 0 }, 
-          { offsetX: -10, angle: -0.3 }, 
-          { offsetX: 10, angle: 0.3 }, 
-          { offsetX: -30, angle: -0.6 }, 
+        5: [
+          { offsetX: 0, angle: 0 },
+          { offsetX: -10, angle: -0.3 },
+          { offsetX: 10, angle: 0.3 },
+          { offsetX: -30, angle: -0.6 },
           { offsetX: 30, angle: 0.6 }
         ]
       };
@@ -69,21 +69,21 @@ export default class BulletManager {
     } else if (bulletKey === 'bullets5') {
       // bullets5
       const levels = {
-        1: [ { offsetX: 0, angle: 0 } ],
-        2: [ { offsetX: -5, angle: 0 }, { offsetX: 5, angle: 0 } ],
-        3: [ { offsetX: 0, angle: 0 }, { offsetX: -10, angle: 0 }, { offsetX: 10, angle: 0 } ],
-        4: [ 
-          { offsetX: 0, angle: 0 }, 
-          { offsetX: -10, angle: 0 }, 
-          { offsetX: 10, angle: 0 }, 
-          { offsetX: -20, angle: 0 }, 
+        1: [{ offsetX: 0, angle: 0 }],
+        2: [{ offsetX: -5, angle: 0 }, { offsetX: 5, angle: 0 }],
+        3: [{ offsetX: 0, angle: 0 }, { offsetX: -10, angle: 0 }, { offsetX: 10, angle: 0 }],
+        4: [
+          { offsetX: 0, angle: 0 },
+          { offsetX: -10, angle: 0 },
+          { offsetX: 10, angle: 0 },
+          { offsetX: -20, angle: 0 },
           { offsetX: 20, angle: 0 }
         ],
-        5: [ 
-          { offsetX: 0, angle: 0 }, 
-          { offsetX: -10, angle: 0 }, 
-          { offsetX: 10, angle: 0 }, 
-          { offsetX: -20, angle: 0 }, 
+        5: [
+          { offsetX: 0, angle: 0 },
+          { offsetX: -10, angle: 0 },
+          { offsetX: 10, angle: 0 },
+          { offsetX: -20, angle: 0 },
           { offsetX: 20, angle: 0 }
         ]
       };
@@ -91,11 +91,11 @@ export default class BulletManager {
     } else if (bulletKey === 'bullets1') {
       // bullets1
       const levels = {
-        1: [ { offsetX: 0, angle: 0 } ],
-        2: [ { offsetX: -5, angle: 0 }, { offsetX: 5, angle: 0 } ],
-        3: [ { offsetX: 0, angle: 0 }, { offsetX: -10, angle: 0 }, { offsetX: 10, angle: 0 } ],
-        4: [ { offsetX: -5, angle: 0 }, { offsetX: 5, angle: 0 }, { offsetX: -15, angle: 0 }, { offsetX: 15, angle: 0 } ],
-        5: [ { offsetX: -5, angle: 0 }, { offsetX: 5, angle: 0 }, { offsetX: -15, angle: 0 }, { offsetX: 15, angle: 0 } ]
+        1: [{ offsetX: 0, angle: 0 }],
+        2: [{ offsetX: -5, angle: 0 }, { offsetX: 5, angle: 0 }],
+        3: [{ offsetX: 0, angle: 0 }, { offsetX: -10, angle: 0 }, { offsetX: 10, angle: 0 }],
+        4: [{ offsetX: -5, angle: 0 }, { offsetX: 5, angle: 0 }, { offsetX: -15, angle: 0 }, { offsetX: 15, angle: 0 }],
+        5: [{ offsetX: -5, angle: 0 }, { offsetX: 5, angle: 0 }, { offsetX: -15, angle: 0 }, { offsetX: 15, angle: 0 }]
       };
       config = levels[this.powerLevel] || levels[1];
     }
@@ -130,13 +130,13 @@ export default class BulletManager {
       case 'bullets1': return 5;
       default: return 5;
     }
-  }    
+  }
 
   increasePowerLevel() {
     if (this.powerLevel < 5) {
       this.scene.game.audioManager.playSFX('sfx_powerup');
       this.powerLevel++;
-    }else{
+    } else {
       this.scene.game.audioManager.playSFX('sfx_powerup_etc');
     }
   }
@@ -153,14 +153,14 @@ export default class BulletManager {
     bullet.setVelocityY(speed);
     bullet.setVelocityX(Math.sin(angle) * 150); // 지그재그 각도
     bullet.setAngle(Phaser.Math.RadToDeg(angle));
-    
-    if(key === 'bullets3'){
+
+    if (key === 'bullets3') {
       if (this.powerLevel === 5 && this.supportUnits.length === 0) {
         const unit1 = new SupportUnit(this.scene, this.scene.player.x - 10, this.scene.player.y + 25);
         const unit2 = new SupportUnit(this.scene, this.scene.player.x + 10, this.scene.player.y + 25);
         this.supportUnits.push(unit1, unit2);
-      }    
-    }else if(key === 'bullets5'){
+      }
+    } else if (key === 'bullets5') {
       if (this.powerLevel < 5) {
         bullet.setScale(1 + this.powerLevel * 0.2, 1 + this.powerLevel * 0.2);
       }
@@ -176,8 +176,8 @@ export default class BulletManager {
           loop: true
         });
       }
-      
-    }else if (key === 'bullets1'){
+
+    } else if (key === 'bullets1') {
       let baseFireRate = this.playerData.fireRate;
       if (this.powerLevel >= 4) this.fireRate = baseFireRate - 25;
       else this.fireRate = baseFireRate;
@@ -195,7 +195,7 @@ export default class BulletManager {
     }
 
     bullet.damage = this.getDamageByBulletKey(key);
-  }  
+  }
 
   createElectricAura() {
     if (this.electricAura) return; // 이미 생성되어 있으면 무시
@@ -271,23 +271,45 @@ export default class BulletManager {
   }
 
   update() {
+    const camera = this.scene.cameras.main;
+    const buffer = 50; // 화면 밖 여유 범위
+
     this.bullets.children.iterate(bullet => {
-      if (bullet && bullet.active && bullet.y < -100) {
+      if (
+        bullet &&
+        bullet.active &&
+        (
+          bullet.y < camera.worldView.top - buffer ||
+          bullet.y > camera.worldView.bottom + buffer ||
+          bullet.x < camera.worldView.left - buffer ||
+          bullet.x > camera.worldView.right + buffer
+        )
+      ) {
         this.bullets.killAndHide(bullet);
         bullet.body.enable = false;
       }
     });
 
     this.missileGroup.children.iterate(missile => {
-      if (missile && missile.active && missile.y < -100) {
+      if (
+        missile &&
+        missile.active &&
+        (
+          missile.y < camera.worldView.top - buffer ||
+          missile.y > camera.worldView.bottom + buffer ||
+          missile.x < camera.worldView.left - buffer ||
+          missile.x > camera.worldView.right + buffer
+        )
+      ) {
         this.missileGroup.killAndHide(missile);
         missile.body.enable = false;
       }
     });
 
+    // 전기 오라 위치 갱신
     if (this.electricAura) {
       this.electricAura.x = this.scene.player.x;
       this.electricAura.y = this.scene.player.y;
-    }    
+    }
   }
 }

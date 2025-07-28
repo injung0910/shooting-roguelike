@@ -6,7 +6,7 @@ import MineEnemyManager from '../objects/MineEnemyManager.js';
 import Boss1 from '../bosses/Boss1.js'; // 경로 확인
 
 // Stage1.js 상단
-const DEBUG_BOSS_ONLY = false;
+const DEBUG_BOSS_ONLY = true;
 
 export default class Stage1 extends Phaser.Scene {
   constructor(scene) {
@@ -14,10 +14,7 @@ export default class Stage1 extends Phaser.Scene {
   }
 
   init(data) {
-
     this.ship = data;
-
-
   }
 
   create() {
@@ -39,12 +36,15 @@ export default class Stage1 extends Phaser.Scene {
     // 지상 적
     this.groundEnemyManager = new GroundEnemyManager(this);
 
-    // 잘하
+    // 지뢰
     this.mineEnemyManager = new MineEnemyManager(this);
 
-    //아이템 처리
+    // 아이템 처리
     this.itemManager = new ItemManager(this);
     this.itemManager.initCollision(this.player);
+
+    // 서포트
+    this.supportBulletGroup = this.physics.add.group();
 
     if (DEBUG_BOSS_ONLY) {
 
@@ -54,24 +54,6 @@ export default class Stage1 extends Phaser.Scene {
         const bg = this.add.image(0, -800 * index, key).setOrigin(0, 0);
         this.backgroundGroup.add(bg);
       });
-
-      // 보스 전용 배경
-      this.bossBackgroundGroup = this.add.group();
-
-      this.bossGroup = this.physics.add.group();
-      // create 등에서 한 번 선언
-      this.boss = new Boss1(this);
-      this.bossGroup.add(this.boss);
-
-      this.physics.add.overlap(
-        this.player.bulletManager.bullets,
-        this.bossGroup,
-        (bullet, bossGroup) => {
-          this.boss.handleBossHit(bullet, bossGroup);
-        },
-        null,
-        this
-      );
 
       this.triggerBossWarning();
       return; // 나머지 스폰 무시
@@ -98,22 +80,36 @@ export default class Stage1 extends Phaser.Scene {
 
     // 스테이지 적 스폰 셋팅
     const spawnData = [
-      { key: 'stage1_01', type: 'bug3', x: 100, delay: 0 },
-      { key: 'stage1_01', type: 'bug3', x: 150, delay: 0 },
-      { key: 'stage1_01', type: 'bug3', x: 200, delay: 0 },
-      { key: 'stage1_01', type: 'bug3', x: 400, delay: 2000 },
-      { key: 'stage1_01', type: 'bug3', x: 450, delay: 2000 },
-      { key: 'stage1_01', type: 'bug3', x: 500, delay: 2000 },
+      { key: 'stage1_01', type: 'bug1', x: 100, delay: 0 },
+      { key: 'stage1_01', type: 'bug1', x: 150, delay: 0 },
+      { key: 'stage1_01', type: 'bug1', x: 200, delay: 0 },
+      { key: 'stage1_01', type: 'bug1', x: 400, delay: 2000 },
+      { key: 'stage1_01', type: 'bug1', x: 450, delay: 2000 },
+      { key: 'stage1_01', type: 'bug1', x: 500, delay: 2000 },
 
-      { key: 'stage1_05', type: 'bug3', x: 50, delay: 0 },
-      { key: 'stage1_05', type: 'bug3', x: 100, delay: 0 },
-      { key: 'stage1_05', type: 'bug3', x: 500, delay: 0 },
-      { key: 'stage1_05', type: 'bug3', x: 550, delay: 0 },
+      { key: 'stage1_05', type: 'bug2', x: 50, delay: 0 },
+      { key: 'stage1_05', type: 'bug2', x: 100, delay: 0 },
+      { key: 'stage1_05', type: 'bug2', x: 500, delay: 0 },
+      { key: 'stage1_05', type: 'bug2', x: 550, delay: 0 },
 
-      { key: 'stage1_06', type: 'bug3', x: 50, delay: 0 },
-      { key: 'stage1_06', type: 'bug3', x: 100, delay: 0 },
-      { key: 'stage1_06', type: 'bug3', x: 500, delay: 0 },
-      { key: 'stage1_06', type: 'bug3', x: 550, delay: 0 },
+      { key: 'stage1_06', type: 'bug2', x: 50, delay: 0 },
+      { key: 'stage1_06', type: 'bug2', x: 100, delay: 0 },
+      { key: 'stage1_06', type: 'bug2', x: 500, delay: 0 },
+      { key: 'stage1_06', type: 'bug2', x: 550, delay: 0 },
+
+      { key: 'stage1_10', type: 'bug3', x: 100, delay: 3000 },
+      { key: 'stage1_10', type: 'bug3', x: 150, delay: 3000 },
+      { key: 'stage1_10', type: 'bug3', x: 200, delay: 3000 },
+      { key: 'stage1_10', type: 'bug3', x: 400, delay: 3000 },
+      { key: 'stage1_10', type: 'bug3', x: 450, delay: 3000 },
+      { key: 'stage1_10', type: 'bug3', x: 500, delay: 3000 },
+
+      { key: 'stage1_14', type: 'bug3', x: 100, delay: 3000 },
+      { key: 'stage1_14', type: 'bug3', x: 150, delay: 3000 },
+      { key: 'stage1_14', type: 'bug3', x: 200, delay: 3000 },
+      { key: 'stage1_14', type: 'bug3', x: 400, delay: 3000 },
+      { key: 'stage1_14', type: 'bug3', x: 450, delay: 3000 },
+      { key: 'stage1_14', type: 'bug3', x: 500, delay: 3000 },
 
       { key: 'stage1_04', type: 'danger2', x: 100, delay: 2000 },
       { key: 'stage1_04', type: 'danger2', x: 100, delay: 2200 },
@@ -201,8 +197,6 @@ export default class Stage1 extends Phaser.Scene {
       this.enemyManager
     );
 
-    // 서포트
-    this.supportBulletGroup = this.physics.add.group();
 
     this.physics.add.overlap(
       this.supportBulletGroup,
@@ -284,6 +278,16 @@ export default class Stage1 extends Phaser.Scene {
 
     this.physics.add.overlap(
       this.player.bulletManager.bullets,
+      this.enemyBaseGroup,
+      (bullet, base) => {
+        this.groundEnemyManager.handleGroundEnemyHit(bullet, base);
+      },
+      null,
+      this
+    );
+
+    this.physics.add.overlap(
+      this.supportBulletGroup,
       this.enemyBaseGroup,
       (bullet, base) => {
         this.groundEnemyManager.handleGroundEnemyHit(bullet, base);
@@ -394,6 +398,7 @@ export default class Stage1 extends Phaser.Scene {
     this.bossGroup = this.physics.add.group();
     // create 등에서 한 번 선언
     this.boss = new Boss1(this);
+    this.bossGroup.add(this.boss);
 
     this.physics.add.overlap(
       this.player.bulletManager.bullets,
@@ -405,8 +410,60 @@ export default class Stage1 extends Phaser.Scene {
       this
     );
 
+    this.physics.add.overlap(
+      this.supportBulletGroup,
+      this.bossGroup,
+      (bullet, bossGroup) => {
+        this.boss.handleBossHit(bullet, bossGroup);
+      },
+      null,
+      this
+    );
+
+    this.physics.add.overlap(
+      this.player.bulletManager.missileGroup,
+      this.bossGroup,
+      (bullet, bossGroup) => {
+        this.boss.handleBossHit(bullet, bossGroup);
+      },
+      null,
+      this
+    );
+
     // 보스 등장
     this.boss.spawn(); // 보스 등장!    
+
+    // 보스 총알과 플레이어 충돌 처리
+    this.physics.add.overlap(
+      this.boss.bossBulletManager.bullets, // 보스가 발사한 총알
+      this.player,
+      (player, bullet) => {
+        bullet.disableBody(true, true); // 총알 제거
+        player.takeHitFromEnemy();      // 플레이어 데미지 처리
+      },
+      null,
+      this
+    );
+
+    // 보스 미사일과 플레이어 충돌 처리
+    this.physics.add.overlap(
+      this.boss.missiles,
+      this.player,
+      (player, missile) => {
+        missile.disableBody(true, true); // 미사일 제거
+        player.takeHitFromEnemy();      // 플레이어 데미지 처리
+      },
+      null,
+      this
+    );
+
+    // Stage1.js에서 그룹 생성
+    this.bossLaserGroup = this.physics.add.group();
+
+    // 충돌 처리
+    this.physics.add.overlap(this.player, this.bossLaserGroup, (player, laser) => {
+      player.takeHitFromEnemy();
+    }, null, this);
 
     // 3초 후 보스 BGM 전환
     this.time.delayedCall(5000, () => {
@@ -417,24 +474,9 @@ export default class Stage1 extends Phaser.Scene {
 
       this.game.audioManager.playBGM('bgm_boss01'); // 보스 음악 재생
 
-      // 2. stage1_30 배경 찾기
-      const targetBg = this.backgroundGroup.getChildren().find(bg => bg.texture.key === 'stage1_30');
+      // 보스전 시작
+      this.boss.executePattern();
 
-      // 3. 내려가는 트윈
-      this.tweens.add({
-        targets: targetBg,
-        y: this.scale.height, // 화면 아래로 이동
-        duration: 5000,
-        ease: 'Sine.easeInOut',
-        onComplete: () => {
-          // 4. 기존 배경 제거
-          targetBg.destroy();
-          // 5. 보스 배경 설정
-          this.boss.setupBossBackground();
-          // 6. 보스전 시작
-          this.boss.executePattern();
-        }
-      });
     });
 
   }

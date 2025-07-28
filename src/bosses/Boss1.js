@@ -6,7 +6,7 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
-    this.hp = 10000; // 전체 체력
+    this.hp = 8000; // 전체 체력
     this.phase2Triggered = false; // 2페이즈 진입 여부
 
     this.body.setSize(180, 180); // 폭, 높이
@@ -123,108 +123,179 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
   }
 
   executePattern() {
-    if (this.hp > 2500) {
-      this.patternPhase1_1();
-      this.patternPhase1_2();
-      this.patternPhase1_3();
-    } else {
-      if (!this.phase2Triggered) {
-        this.phase2Triggered = true;
-      }
-      //this.patternPhase2();
+    this.pattern1();
+    this.pattern2();
+    if (this.hp <= 6000) {
+      this.pattern3();
+      //this.pattern4();
     }
   }
 
-  patternPhase1_1() {
+  pattern1() {
     // 이미 타이머가 있으면 다시 만들지 않도록
-    if (this.pattern1_1Timer) return;
+    if (this.pattern1Timer) return;
 
-    this.pattern1_1Timer = this.scene.time.addEvent({
+    this.pattern1Timer = this.scene.time.addEvent({
       delay: 1000,
       callback: () => {
         //const baseAngle = Phaser.Math.DegToRad(90);
         const baseAngle = Phaser.Math.Angle.Between(this.x, this.y, this.scene.player.x, this.scene.player.y);
         this.bossBulletManager.fireSpread(this.x + 75, this.y + 75, baseAngle, 6, 'bullets4_3', 400);
         this.bossBulletManager.fireSpread(this.x - 75, this.y + 75, baseAngle, 6, 'bullets4_3', 400);
+        //this.bossBulletManager.fireAtPlayer(this.x + 75, this.y + 75, 'bullets4_3', 200);
+        //this.bossBulletManager.fireAtPlayer(this.x - 75, this.y + 75, 'bullets4_3', 200);
       },
       callbackScope: this,
       loop: true
     });
   }
 
-  patternPhase1_2() {
-    if (this.pattern1_2Timer) return;
+  pattern2() {
+    if (this.pattern2Timer) return;
 
-    this.pattern1_2Timer = this.scene.time.addEvent({
+    this.pattern2Timer = this.scene.time.addEvent({
       delay: 5000,
       callback: () => {
         this.play('boss01_anim'); // 공격 애니메이션
-
-        if (!this.hasMissileListener) {
-          this.on('animationcomplete', () => {
-            this.missilePattern();
-          }, this);
-          this.hasMissileListener = true;
-        }
+        this.once('animationcomplete', () => {
+          this.missilePattern();
+        }, this);
       },
       callbackScope: this,
       loop: true
     });
   }
 
-  patternPhase1_3() {
-    if (this.pattern1_3Timer) return;
+  pattern3() {
+    if (this.pattern3Timer) return;
 
-    this.pattern1_3Timer = this.scene.time.addEvent({
-      delay: 10000,
+    this.pattern3Timer = this.scene.time.addEvent({
+      delay: 8000,
       callback: () => {
-        this.chargingEffect = this.scene.add.sprite(this.x - 3, this.y + 100, 'charging100');
-        this.chargingEffect.setOrigin(0.5, 0.5);
-        this.chargingEffect.setDepth(20);
-        this.chargingEffect.play('charging100');
+        this.stopHorizontalMovement();
+        
+        // 2. 잠깐 멈춤 후 차징 시작 (0.3초)
+        this.scene.time.delayedCall(1500, () => {
+          this.chargingEffect = this.scene.add.sprite(this.x - 3, this.y + 100, 'charging100');
+          this.chargingEffect.setOrigin(0.5, 0.5);
+          this.chargingEffect.setDepth(20);
+          this.chargingEffect.play('charging100');
 
 
-        // 2. 사운드 재생
-        const sfx = this.scene.game.audioManager.playSFX('sfx_boss_charge');
+          // 2. 사운드 재생
+          const sfx = this.scene.game.audioManager.playSFX('sfx_boss_charge');
 
-        // 3. 사운드가 끝나면 실행
-        if (sfx && sfx.once) {
-          sfx.once('complete', () => {
-            // 3-1. 이펙트 제거
-            if (this.chargingEffect) {
-              this.chargingEffect.destroy();
-              this.chargingEffect = null;
-            }
+          // 3. 사운드가 끝나면 실행
+          if (sfx && sfx.once) {
+            sfx.once('complete', () => {
+              // 3-1. 이펙트 제거
+              if (this.chargingEffect) {
+                this.chargingEffect.destroy();
+                this.chargingEffect = null;
+              }
 
-            // 3-2. 보스 레이저 발사
-            this.fireLaser();
-          });
-        } else {
-          // 혹시 사운드 객체가 없을 때 대비 - 예비 처리
-          this.scene.time.delayedCall(2000, () => {
-            if (this.chargingEffect) {
-              this.chargingEffect.destroy();
-              this.chargingEffect = null;
-            }
-            this.fireLaser();
-          });
-        }
+              // 3-2. 보스 레이저 발사
+              this.fireLaser();
+            });
+          } else {
+            // 혹시 사운드 객체가 없을 때 대비 - 예비 처리
+            this.scene.time.delayedCall(2000, () => {
+              if (this.chargingEffect) {
+                this.chargingEffect.destroy();
+                this.chargingEffect = null;
+              }
+              this.fireLaser();
+            });
+          }
+        });
+ 
       },
       callbackScope: this,
       loop: true
     });
   }
 
+  pattern4() {
+    // 이미 타이머가 있으면 다시 만들지 않도록
+    if (this.pattern4Timer) return;
+
+    this.pattern4Timer = this.scene.time.addEvent({
+      delay: 1000,
+      callback: () => {
+        this.bossBulletManager.fireAtPlayer(this.x + 75, this.y + 75, 'bullets4_3', 200);
+        this.bossBulletManager.fireAtPlayer(this.x - 75, this.y + 75, 'bullets4_3', 200);
+      },
+      callbackScope: this,
+      loop: true
+    });
+  }
+
+  moveRandomlyAfterLaser() {
+    if (!this.allowMove || this.isMoving) return;
+
+    this.isMoving = true;
+
+    // 1. 현재 방향 기준 랜덤 좌우 (-1 또는 1)
+    const direction = Phaser.Math.RND.pick([-1, 1]);
+
+    // 2. 이동 거리 (100~300px)
+    const distance = Phaser.Math.Between(100, 300);
+
+    // 3. 이동 속도 (500~1500ms)
+    const duration = Phaser.Math.Between(500, 1500);
+
+    // 4. 최종 목표 위치 계산
+    let targetX = this.x + direction * distance;
+
+    // 5. 화면 경계 검사
+    const minX = 120;
+    const maxX = this.scene.scale.width - 120;
+    targetX = Phaser.Math.Clamp(targetX, minX, maxX);
+
+    this.scene.tweens.add({
+      targets: this,
+      x: targetX,
+      duration: duration,
+      ease: 'Sine.easeInOut',
+      onComplete: () => {
+        this.isMoving = false;
+      }
+    });
+  }
+
+  stopHorizontalMovement() {
+    if (this.moveTimer) {
+      this.moveTimer.remove();
+      this.moveTimer = null;
+    }
+
+    if (this.activeTween) {
+      this.activeTween.stop();
+      this.activeTween = null;
+    }
+
+    this.isMoving = false;
+    this.setVelocity(0);
+  }
 
   fireLaser() {
+    // 이동 멈춤
+    this.allowMove = false;
+
     if (this.laser) {
       this.laser.destroy();
     }
 
-    this.laser = this.scene.add.sprite(this.x - 3, this.y + 400, 'boss_laser');
+    this.laser = this.scene.physics.add.sprite(this.x - 3, this.y + 400, 'boss_laser');
     this.laser.setDepth(19);
     this.laser.setScale(1, 0.6);
     this.laser.play('boss_laser_anim');
+
+    // ✅ 충돌 가능 설정
+    this.laser.body.setAllowGravity(false);
+    this.laser.body.setImmovable(true);  // 움직이지 않음
+
+    this.scene.bossLaserGroup.add(this.laser);
 
     // 사운드
     this.scene.game.audioManager.playSFX('sfx_boss_laser');
@@ -235,6 +306,9 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
         this.laser.destroy();
         this.laser = null;
       }
+
+      this.allowMove = true;
+      this.moveRandomlyAfterLaser();      
     });
   }
 
@@ -263,7 +337,7 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
         if (fireIndex >= total) {
           this.scene.time.delayedCall(500, () => {
             this.setFrame(0);
-            this.fireHomingMissilesFromTop()
+            this.fireMissilesFromTop()
           }, null, this);
         }
       },
@@ -273,6 +347,13 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
 
   spawnMissile(x, y, speedY) {
     const missile = this.missiles.get(x, y, 'missile02');
+
+    if (!missile) return;
+
+    missile.setActive(true);
+    missile.setVisible(true);
+    missile.enableBody(true, x, y, true, true);
+
     missile.play('missile2_anim');
     missile.setVelocityY(speedY);
     missile.setDepth(21);
@@ -281,13 +362,8 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
     this.scene.game.audioManager.playSFX('sfx_boss_missile');
   }
 
-  patternPhase2() {
-    // 예: 7방향 스프레드 샷
-    const baseAngle = Phaser.Math.DegToRad(90); // 아래 방향
-    this.bossBulletManager.fireSpread(this.x, this.y, baseAngle, 9, 'bullets4_3', 200);
-  }
 
-  fireHomingMissilesFromTop() {
+  fireMissilesFromTop() {
     const y = -50; // 화면 밖 위쪽
 
     const fireDelay = 500; // 각 미사일 간 딜레이 (ms)
@@ -299,11 +375,11 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
 
         // 좌측 그룹 (x: 10~300)
         const x = Phaser.Math.Between(10, 300);
-        this.fireHomingMissile(x, y);
+        this.fireMissile(x, y);
 
         // 우측 그룹 (x: 301~590)
         const x2 = Phaser.Math.Between(301, 590);
-        this.fireHomingMissile(x2, y);
+        this.fireMissile(x2, y);
       },
       callbackScope: this
     });
@@ -311,8 +387,15 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
 
   }
 
-  fireHomingMissile(x, y) {
+  fireMissile(x, y) {
     const missile = this.missiles.get(x, y, 'missile02');
+
+    if (!missile) return;
+
+    missile.setActive(true);
+    missile.setVisible(true);
+    missile.enableBody(true, x, y, true, true);
+
     missile.play('missile2_anim');
     missile.setDepth(21);
     missile.setVelocity(0, 600); // Y축 아래로만 이동
@@ -328,13 +411,13 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
       if (!missile || !missile.active) return;
 
       const outOfBounds =
-        missile.y < camera.worldView.y - 50 ||
         missile.y > camera.worldView.y + camera.height + 50 ||
         missile.x < camera.worldView.x - 50 ||
         missile.x > camera.worldView.x + camera.width + 50;
 
       if (outOfBounds) {
-        missile.destroy();
+        missile.disableBody(true, true);
+        this.missiles.killAndHide(missile);
       }
     });
   }
@@ -364,6 +447,27 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
     }
 
     this.updateMissiles();
+
+    if (this.hp <= 6000 && !this.phase2Triggered) {
+      this.phase2Triggered = true;
+
+      console.log('phase2');
+
+      const targetBg = this.scene.backgroundGroup.getChildren().find(bg => bg.texture.key === 'stage1_30');
+
+      this.scene.tweens.add({
+        targets: targetBg,
+        y: this.scene.scale.height,
+        duration: 5000,
+        ease: 'Sine.easeInOut',
+        onComplete: () => {
+          targetBg.destroy();
+          this.setupBossBackground();
+        }
+      });
+
+      this.executePattern();
+    }
 
   }
 }

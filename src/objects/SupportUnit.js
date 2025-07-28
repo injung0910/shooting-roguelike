@@ -32,29 +32,6 @@ export default class SupportUnit extends Phaser.Physics.Arcade.Sprite {
 
   }
 
-  update(playerX, playerY, offsetX) {
-    this.offsetX = offsetX;
-
-    // 플레이어 기준으로 좌우 유지, 약간 부드럽게 따라다님
-    this.x = Phaser.Math.Linear(this.x, playerX + offsetX, 0.1);
-    this.y = Phaser.Math.Linear(this.y, playerY + 25, 0.1);
-
-    // 자동 발사
-    const now = this.scene.time.now;
-    if (now > this.lastFired + this.fireRate) {
-      this.fire();
-      this.lastFired = now;
-    }
-
-    // 총알 정리
-    this.bullets.children.iterate(bullet => {
-      if (bullet && bullet.active && bullet.y < -50) {
-        this.bullets.killAndHide(bullet);
-        bullet.body.enable = false;
-      }
-    });    
-  }
-
   fire() {
     const bullet = this.bullets.get(this.x, this.y - 10, this.bulletKey);
 
@@ -72,6 +49,41 @@ export default class SupportUnit extends Phaser.Physics.Arcade.Sprite {
       bullet.play('missile4_anim'); // 애니메이션 재생
     }
 
+  }    
 
-  }  
+  update(playerX, playerY, offsetX) {
+    this.offsetX = offsetX;
+
+    // 플레이어 기준으로 좌우 유지, 약간 부드럽게 따라다님
+    this.x = Phaser.Math.Linear(this.x, playerX + offsetX, 0.1);
+    this.y = Phaser.Math.Linear(this.y, playerY + 25, 0.1);
+
+    // 자동 발사
+    const now = this.scene.time.now;
+    if (now > this.lastFired + this.fireRate) {
+      this.fire();
+      this.lastFired = now;
+    }
+
+    // 총알 정리 (카메라 밖이면 제거)
+    const camera = this.scene.cameras.main;
+    const buffer = 50;
+
+    this.bullets.children.iterate(bullet => {
+      if (
+        bullet &&
+        bullet.active &&
+        (
+          bullet.y < camera.worldView.top - buffer ||
+          bullet.y > camera.worldView.bottom + buffer ||
+          bullet.x < camera.worldView.left - buffer ||
+          bullet.x > camera.worldView.right + buffer
+        )
+      ) {
+        this.bullets.killAndHide(bullet);
+        bullet.body.enable = false;
+      }
+    });  
+  }
+
 }

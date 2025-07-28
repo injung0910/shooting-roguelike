@@ -94,7 +94,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   handleHit(bullet) {
     bullet.disableBody(true, true);
 
-    if (!this.body.enable) return;
+    if (this.isInvincible) return; // 📌 무적 상태면 무시
+    this.isInvincible = true;
 
     const shipName = this.playerData.ship.name;
     this.scene.game.audioManager.playSFX(`sfx_${shipName}_down`);
@@ -144,7 +145,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     });
 
     // 2초 후 정상 복귀
-    this.scene.time.delayedCall(2000, () => {
+    this.scene.time.delayedCall(3000, () => {
       this.setAlpha(1);
       this.clearTint();
       //this.body.checkCollision.none = false;
@@ -152,12 +153,14 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.body.checkCollision.down = true;
       this.body.checkCollision.left = true;
       this.body.checkCollision.right = true;
+      this.isInvincible = false; // 📌 무적 해제
       blinkTimer.remove(); // 타이머 정지
     });
   }
 
   takeHitFromEnemy() {
-    if (!this.body.enable) return; // 이미 무적 상태면 무시
+    if (this.isInvincible) return; // 📌 무적 상태면 무시
+    this.isInvincible = true;
 
     const explosion = this.scene.add.sprite(this.x, this.y, 'explosion_small');
     explosion.setScale(1);
@@ -184,7 +187,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.bulletManager.destroyAura();
 
     // 무적 상태 및 시각 효과
-    this.body.checkCollision.none = true;
+    //this.body.checkCollision.none = true;
+
+    this.body.checkCollision.up = false;
+    this.body.checkCollision.down = false;
+    this.body.checkCollision.left = false;
+    this.body.checkCollision.right = false;
 
     // 🔸 깜빡이는 효과 시작
     let blink = true;
@@ -198,10 +206,15 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     });
 
     // 2초 후 정상 복귀
-    this.scene.time.delayedCall(2000, () => {
+    this.scene.time.delayedCall(3000, () => {
       this.setAlpha(1);
       this.clearTint();
-      this.body.checkCollision.none = false;
+      //this.body.checkCollision.none = false;
+      this.body.checkCollision.up = true;
+      this.body.checkCollision.down = true;
+      this.body.checkCollision.left = true;
+      this.body.checkCollision.right = true;
+      this.isInvincible = false; // 📌 무적 해제
       blinkTimer.remove(); // 타이머 정지
     });
   }

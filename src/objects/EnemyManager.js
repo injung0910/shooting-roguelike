@@ -4,7 +4,7 @@ const enemyTypes = {
   bug1: {
     name: 'bug1',
     speed: 100,
-    fireRate: 2000,
+    fireRate: 3000,
     hp: 15,
     bulletKey: 'bullets4',
     pattern: 'straight'
@@ -12,7 +12,7 @@ const enemyTypes = {
   bug2: {
     name: 'bug2',
     speed: 100,
-    fireRate: 2000,
+    fireRate: 3000,
     hp: 15,
     bulletKey: 'bullets4',
     pattern: 'zigzag'
@@ -20,7 +20,7 @@ const enemyTypes = {
   bug3: {
     name: 'bug3',
     speed: 100,
-    fireRate: 2000,
+    fireRate: 3000,
     hp: 15,
     bulletKey: 'bullets4',
     pattern: 'straight'
@@ -61,7 +61,7 @@ const enemyTypes = {
     name: 'emperor1',
     speed: 400,
     fireRate: 1000,
-    hp: 2000,
+    hp: 2500,
     bulletKey: 'bullets4',
     pattern: 'straight'
   },
@@ -77,7 +77,7 @@ const enemyTypes = {
     name: 'emperor3',
     speed: 800,
     fireRate: 1000,
-    hp: 550,
+    hp: 700,
     bulletKey: 'bullets4',
     pattern: 'straight'
   },
@@ -410,14 +410,23 @@ export default class EnemyManager {
 
       // 적 제거
       enemy.disableBody(true, true);
-
-      if (Phaser.Math.Between(0, 100) < 30) { // 30% 확률로 드롭
+      
+      if (enemy.texture.key.startsWith('bug') && (enemy.x === 100 || enemy.x === 500)){
+        console.log(enemy.texture.key + enemy.x) ;
         this.scene.itemManager.spawn(enemy.x, enemy.y, 'power');
+      } else {
+        if (Phaser.Math.Between(0, 100) < 10) { // 10% 확률로 드롭
+          this.scene.itemManager.spawn(enemy.x, enemy.y, 'power');
+        }
       }
+
+
     }
   }
 
   handleEnemyPlayerCollision(player, enemy) {
+    // 📌 무적 상태면 아무 처리 안 함
+    if (player.isInvincible) return;
 
     if (!enemy.texture.key.startsWith("emperor")) {
       const explosion = this.scene.add.sprite(enemy.x, enemy.y, 'explosion_small');
@@ -600,7 +609,7 @@ export default class EnemyManager {
         count++;
       }
     });
-  }  
+  }
 
   update() {
     this.enemyBulletManager.update();

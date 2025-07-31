@@ -94,9 +94,8 @@ export default class MineEnemyManager {
     const worldX = matrix.translateX;
     const worldY = matrix.translateY;
 
-    const mineExplosion = this.scene.add.sprite(worldX, worldY, 'mini_5_explosion');
-    mineExplosion.play('mini_5_explosion');
-    mineExplosion.once('animationcomplete', () => mineExplosion.destroy());
+    // 이펙트
+    this.scene.game.effectManager.mineExplosion(worldX, worldY);    
 
     this.scene.game.audioManager.playSFX('sfx_mine_explosion');
     this.scene.game.audioManager.playSFX('sfx_enemy_explosion');

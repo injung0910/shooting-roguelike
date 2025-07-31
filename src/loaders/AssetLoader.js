@@ -299,6 +299,8 @@ function loadBullets(scene) {
   // 불릿6-2 스프라이트 시트 로드 2프레임
   scene.load.spritesheet('projectile06_02', '/assets/bullets/Projectiles/projectile-06-02.png', {frameWidth: 12,frameHeight: 26,});
 
+  scene.load.spritesheet('enemy_bullet1', '/assets/bullets/Projectiles/enemy_bullet.png', {frameWidth: 16,frameHeight: 16,});
+  scene.load.spritesheet('enemy_bullet2', '/assets/bullets/Projectiles/enemy_bullet2.png', {frameWidth: 16,frameHeight: 16,});
 }
 
 // 5. 이펙트 (폭발 등)
@@ -754,13 +756,6 @@ export function createAllAnimations(scene) {
     });
 
     scene.anims.create({
-      key: 'enemy_explosion_small',
-      frames: scene.anims.generateFrameNumbers('explosion_small', { start: 0, end: 11 }),
-      frameRate: 11,
-      hideOnComplete: true
-    });    
-
-    scene.anims.create({
       key: 'explosion_large',
       frames: scene.anims.generateFrameNumbers('explosion_large', { start: 0, end: 11 }),
       frameRate: 11,
@@ -794,10 +789,25 @@ export function createAllAnimations(scene) {
       hideOnComplete: true
     });
 
+    scene.anims.create({
+      key: 'explosion400',
+      frames: scene.anims.generateFrameNumbers('explosion400', { start: 0, end: 39 }),
+      frameRate: 20,
+      hideOnComplete: true
+    });
+
     // 
     scene.anims.create({
       key: 'thunder200',
       frames: scene.anims.generateFrameNumbers('thunder200', { start: 50, end: 89 }),
+      frameRate: 40,
+      hideOnComplete: true
+    });
+
+    //
+    scene.anims.create({
+      key: 'thunder400',
+      frames: scene.anims.generateFrameNumbers('thunder400', { start: 50, end: 89 }),
       frameRate: 40,
       hideOnComplete: true
     });

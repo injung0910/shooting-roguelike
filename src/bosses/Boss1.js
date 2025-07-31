@@ -53,7 +53,8 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
     // 적 체력 감소
     this.hp -= bullet.damage || 10;
 
-    this.flashRed(this);
+    // 피격
+    this.scene.game.effectManager.flashRed(this);
 
     if (this.hp <= 0) {
       this.onBossDefeated();
@@ -77,8 +78,9 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
 
       if (inCameraView) {
         this.hp -= damage;
-        
-        this.flashRed(this);
+
+        // 피격
+        this.scene.game.effectManager.flashRed(this);
 
         // 미니봇 처리
         if (this.scene.minibotGroup) {
@@ -112,32 +114,6 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
         }
       }
     }
-  }
-
-  // 적이 맞았을 때 붉게 깜빡이는 처리
-  flashRed(boss) {
-    const flashCount = 4;
-    let count = 0;
-    const flashInterval = 100; // 100ms 간격
-
-    const flashTimer = this.scene.time.addEvent({
-      delay: flashInterval,
-      repeat: flashCount * 2 - 1,
-      callback: () => {
-        if (!boss.active) {
-          flashTimer.remove();
-          return;
-        }
-
-        if (count % 2 === 0) {
-          boss.setTint(0xff0000);
-        } else {
-          boss.clearTint();
-        }
-
-        count++;
-      }
-    });
   }
 
   executePattern() {
@@ -546,14 +522,8 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
 
     explosionPositions.forEach((pos, index) => {
       this.scene.time.delayedCall(index * 400, () => {
-        const explosion = this.scene.add.sprite(pos.x, pos.y, 'explosion_large');
-        explosion.setScale(1.5);
-        explosion.play('explosion_large');
-        this.scene.game.audioManager.playSFX('sfx_mid1_explosion');
-
-        explosion.on('animationcomplete', () => {
-          explosion.destroy();
-        });
+        // 이펙트
+        this.scene.game.effectManager.largeExplosion(pos.x, pos.y);
       });
     });
 

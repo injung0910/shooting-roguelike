@@ -386,24 +386,19 @@ export default class EnemyManager {
     // 적 체력 감소
     enemy.hp -= bullet.damage || 10;
 
-    this.flashRed(enemy);
+    // 피격
+    this.scene.game.effectManager.flashRed(enemy);
 
     if (enemy.hp <= 0) {
 
       if (enemy.texture.key.startsWith("emperor")) {
-        const explosion = this.scene.add.sprite(enemy.x, enemy.y, 'explosion_large');
-        explosion.setScale(1);
-        explosion.play('explosion_large');
-        explosion.on('animationcomplete', () => explosion.destroy());
-
+        // 이펙트
+        this.scene.game.effectManager.largeExplosion(enemy.x, enemy.y);
         // 사운드
         this.scene.game.audioManager.playSFX('sfx_mid1_explosion');
       } else {
-        const explosion = this.scene.add.sprite(enemy.x, enemy.y, 'enemy_explosion_small');
-        explosion.setScale(1);
-        explosion.play('enemy_explosion_small');
-        explosion.on('animationcomplete', () => explosion.destroy());
-
+        // 이펙트
+        this.scene.game.effectManager.smallExplosion(enemy.x, enemy.y);
         // 사운드
         this.scene.game.audioManager.playSFX('sfx_enemy_explosion');
       }
@@ -429,10 +424,7 @@ export default class EnemyManager {
     if (player.isInvincible) return;
 
     if (!enemy.texture.key.startsWith("emperor")) {
-      const explosion = this.scene.add.sprite(enemy.x, enemy.y, 'explosion_small');
-      explosion.setScale(1);
-      explosion.play('enemy_explosion_small');
-      explosion.on('animationcomplete', () => explosion.destroy());
+      this.scene.game.effectManager.smallExplosion(enemy.x, enemy.y);
 
       // 사운드
       this.scene.game.audioManager.playSFX('sfx_enemy_explosion');
@@ -465,19 +457,14 @@ export default class EnemyManager {
 
           enemy.hp -= damage;
 
-          this.flashRed(enemy);
+          // 피격
+          this.scene.game.effectManager.flashRed(enemy);
 
           if (enemy.hp <= 0) {
             if (enemy.texture.key.startsWith("emperor")) {
-              const explosion = this.scene.add.sprite(enemy.x, enemy.y, 'explosion_large');
-              explosion.setScale(1);
-              explosion.play('explosion_large');
-              explosion.on('animationcomplete', () => explosion.destroy());
+              this.scene.game.effectManager.largeExplosion(enemy.x, enemy.y);
             } else {
-              const explosion = this.scene.add.sprite(enemy.x, enemy.y, 'enemy_explosion_small');
-              explosion.setScale(1);
-              explosion.play('enemy_explosion_small');
-              explosion.on('animationcomplete', () => explosion.destroy());
+              this.scene.game.effectManager.smallExplosion(enemy.x, enemy.y);
             }
 
             enemy.disableBody(true, true);
@@ -500,24 +487,19 @@ export default class EnemyManager {
   applyDamage(enemy, amount) {
 
     enemy.hp -= amount;
-
-    this.flashRed(enemy);
+    
+    // 피격
+    this.scene.game.effectManager.flashRed(enemy);
 
     if (enemy.hp <= 0) {
       if (enemy.texture.key.startsWith("emperor")) {
-        const explosion = this.scene.add.sprite(enemy.x, enemy.y, 'explosion_large');
-        explosion.setScale(1);
-        explosion.play('explosion_large');
-        explosion.on('animationcomplete', () => explosion.destroy());
-
+        // 이펙트
+        this.scene.game.effectManager.largeExplosion(enemy.x, enemy.y);
         // 사운드
         this.scene.game.audioManager.playSFX('sfx_mid1_explosion');
       } else {
-        const explosion = this.scene.add.sprite(enemy.x, enemy.y, 'enemy_explosion_small');
-        explosion.setScale(1);
-        explosion.play('enemy_explosion_small');
-        explosion.on('animationcomplete', () => explosion.destroy());
-
+        // 이펙트
+        this.scene.game.effectManager.smallExplosion(enemy.x, enemy.y);
         // 사운드
         this.scene.game.audioManager.playSFX('sfx_enemy_explosion');
       }
@@ -583,32 +565,6 @@ export default class EnemyManager {
       }, null, this);
     });
 
-  }
-
-  // 적이 맞았을 때 붉게 깜빡이는 처리
-  flashRed(enemy) {
-    const flashCount = 4;
-    let count = 0;
-    const flashInterval = 100; // 100ms 간격
-
-    const flashTimer = enemy.scene.time.addEvent({
-      delay: flashInterval,
-      repeat: flashCount * 2 - 1,
-      callback: () => {
-        if (!enemy.active) {
-          flashTimer.remove();
-          return;
-        }
-
-        if (count % 2 === 0) {
-          enemy.setTint(0xff0000);
-        } else {
-          enemy.clearTint();
-        }
-
-        count++;
-      }
-    });
   }
 
   update() {

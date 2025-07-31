@@ -8,6 +8,7 @@ import LoadingScene from './scenes/LoadingScene.js';
 import OptionScene from './scenes/OptionScene.js';
 import StageIntroScene from './scenes/StageIntroScene'; 
 import AudioManager from './audio/AudioManager.js';
+import EffectManager from './effect/EffectManager.js';
 import GameOverScene from './scenes/GameOverScene.js';
 
 import Stage1 from './stages/Stage1'; 
@@ -46,4 +47,6 @@ const config = {
 const game = new Phaser.Game(config);
 
 // 반드시 여기에 붙여줘야 다른 씬에서 사용할 수 있음
-game.audioManager = new AudioManager(null); //;
+game.audioManager = new AudioManager(null);
+// effect 
+game.effectManager = new EffectManager(null);

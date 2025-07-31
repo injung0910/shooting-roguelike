@@ -19,6 +19,8 @@ export default class Stage1 extends Phaser.Scene {
 
   create() {
 
+    this.game.effectManager.setScene(this);
+    
     this.inputEnabled = true;
 
     // 고정 배경 3종

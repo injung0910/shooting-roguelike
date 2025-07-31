@@ -100,14 +100,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     const shipName = this.playerData.ship.name;
     this.scene.game.audioManager.playSFX(`sfx_${shipName}_down`);
 
-    const explosion = this.scene.add.sprite(this.x, this.y, 'explosion_small');
-    explosion.play('explosion_small');
-    explosion.on('animationcomplete', () => {
-      // 2초 후 제거
-      this.scene.time.delayedCall(2000, () => {
-        explosion.destroy();
-      });
-    });
+    // 이펙트
+    this.scene.game.effectManager.smallExplosion(this.x, this.y);
 
     // 목숨잃음
     this.gameStatusManager.loseLife();
@@ -162,10 +156,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     if (this.isInvincible) return; // 📌 무적 상태면 무시
     this.isInvincible = true;
 
-    const explosion = this.scene.add.sprite(this.x, this.y, 'explosion_small');
-    explosion.setScale(1);
-    explosion.play('explosion_small');
-    explosion.on('animationcomplete', () => explosion.destroy());
+    // 이펙트
+    this.scene.game.effectManager.smallExplosion(this.x, this.y);
 
     // 사운드
     const shipName = this.playerData.ship.name;
@@ -256,11 +248,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     const centerX = this.scene.scale.width / 2;
     const centerY = this.scene.scale.height / 2;
 
-    const explosion200 = this.scene.add.sprite(centerX, centerY, 'explosion200');
-    explosion200.setDepth(30);
-    explosion200.setScale(4);
-    explosion200.setAlpha(0.7);
-    explosion200.play('explosion200');
+    // 이펙트
+    this.scene.game.effectManager.explosion4(centerX, centerY);    
 
     this.bombFlash = this.scene.add.rectangle(0, 0, this.scene.scale.width, this.scene.scale.height, 0xffffff)
       .setOrigin(0)
@@ -292,8 +281,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       },
       repeat: Math.floor(bombDuration / interval) - 1 // 총 몇 번 반복할지
     });
-
-    explosion200.on('animationcomplete', () => explosion200.destroy());
   }
 
   cryphixBomb() {
@@ -301,11 +288,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     const centerX = this.scene.scale.width / 2;
     const centerY = this.scene.scale.height / 2;
 
-    const thunder200 = this.scene.add.sprite(centerX, centerY, 'thunder200');
-    thunder200.setDepth(30);
-    thunder200.setScale(4);
-    thunder200.setAlpha(0.7);
-    thunder200.play('thunder200');
+    // 이펙트
+    this.scene.game.effectManager.thunder4(centerX, centerY);    
 
     this.bombFlash = this.scene.add.rectangle(0, 0, this.scene.scale.width, this.scene.scale.height, 0xffffff)
       .setOrigin(0)
@@ -327,8 +311,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     if (this.scene.boss) {
       this.scene.boss.bombDamage(this.gameStatusManager.bombDamage); // boss
     }
-
-    thunder200.on('animationcomplete', () => thunder200.destroy());
   }
 
   hawkBomb() {
@@ -339,14 +321,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
         const x = Phaser.Math.Between(50, this.scene.scale.width - 50); // 화면 좌우 여백 50
         const y = this.scene.scale.height + 50; // 화면 아래쪽 바깥
-
-        //const fireCircle200 = this.scene.add.sprite(this.x, this.y, 'fireCircle200');
-        const fireCircle200 = this.scene.physics.add.sprite(x, y, 'fireCircle200');
-        fireCircle200.setDepth(30);
-        fireCircle200.setAlpha(0.7);
-        fireCircle200.setVelocityY(-1000);
-        fireCircle200.play('fireCircle200');
-        fireCircle200.on('animationcomplete', () => fireCircle200.destroy());
+    
+        // 이펙트
+        this.scene.game.effectManager.fireCircle2(x, y);    
       });
     }
 

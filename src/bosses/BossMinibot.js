@@ -42,15 +42,13 @@ export default class BossMinibot extends Phaser.Physics.Arcade.Sprite {
 
   takeDamage(damage = 10) {
     this.hp -= damage;
-    this.setTint(0xff0000);
 
-    this.scene.time.delayedCall(100, () => this.clearTint());
+    // 피격
+    this.scene.game.effectManager.flashRed(this);
 
     if (this.hp <= 0) {
-        const explosion = this.scene.add.sprite(this.x, this.y, 'enemy_explosion_small');
-        explosion.setScale(1);
-        explosion.play('enemy_explosion_small');
-        explosion.on('animationcomplete', () => explosion.destroy());
+        // 이펙트
+        this.scene.game.effectManager.smallExplosion(this.x, this.y);
 
         // 사운드
         this.scene.game.audioManager.playSFX('sfx_enemy_explosion');

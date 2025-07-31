@@ -36,7 +36,7 @@ const enemyTypes = {
   danger2: {
     name: 'danger2',
     speed: 300,
-    fireRate: 1000,
+    fireRate: 2000,
     hp: 20,
     bulletKey: 'bullets4',
     pattern: 'straight'
@@ -44,7 +44,7 @@ const enemyTypes = {
   danger6: {
     name: 'danger6',
     speed: 800,
-    fireRate: 1000,
+    fireRate: 2000,
     hp: 1000,
     bulletKey: 'bullets4',
     pattern: 'straight'
@@ -119,7 +119,6 @@ export default class EnemyManager {
 
       const status = enemyTypes[type];
       if (!status) {
-        console.warn(`Unknown enemy type: ${type}`);
         return;
       }
 
@@ -405,16 +404,10 @@ export default class EnemyManager {
 
       // 적 제거
       enemy.disableBody(true, true);
-      
-      if (enemy.texture.key.startsWith('bug') && (enemy.x === 100 || enemy.x === 500)){
-        console.log(enemy.texture.key + enemy.x) ;
-        this.scene.itemManager.spawn(enemy.x, enemy.y, 'power');
-      } else {
-        if (Phaser.Math.Between(0, 100) < 10) { // 10% 확률로 드롭
-          this.scene.itemManager.spawn(enemy.x, enemy.y, 'power');
-        }
-      }
 
+      if (enemy.texture.key.startsWith('bug') && (enemy.x === 100 || enemy.x === 500)) {
+        this.scene.itemManager.spawn(enemy.x, enemy.y, 'power');
+      }
 
     }
   }
@@ -471,6 +464,7 @@ export default class EnemyManager {
           }
 
         }
+
       }
     });
 
@@ -487,7 +481,7 @@ export default class EnemyManager {
   applyDamage(enemy, amount) {
 
     enemy.hp -= amount;
-    
+
     // 피격
     this.scene.game.effectManager.flashRed(enemy);
 
@@ -507,10 +501,12 @@ export default class EnemyManager {
       // 적 제거
       enemy.disableBody(true, true);
 
-      if (Phaser.Math.Between(0, 100) < 30) { // 30% 확률로 드롭
+      if (enemy.texture.key.startsWith('bug') && (enemy.x === 100 || enemy.x === 500)) {
         this.scene.itemManager.spawn(enemy.x, enemy.y, 'power');
       }
+
     }
+
   }
 
   showEnemyWarning(warningData) {

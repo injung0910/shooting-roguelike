@@ -167,7 +167,7 @@ export default class GroundEnemyManager {
         cannonWorldY > camera.worldView.y &&
         cannonWorldY < camera.worldView.y + camera.height;
 
-      if (inCameraView && time > tank.lastFired + 1500) {
+      if (inCameraView && time > tank.lastFired + 2500) {
         tank.lastFired = time;
         
         // 총알 발사

@@ -6,7 +6,7 @@ const enemyTypes = {
     speed: 100,
     fireRate: 3000,
     hp: 15,
-    bulletKey: 'bullets4',
+    bulletKey: 'enemy_bullet1',
     pattern: 'straight'
   },
   bug2: {
@@ -14,7 +14,7 @@ const enemyTypes = {
     speed: 100,
     fireRate: 3000,
     hp: 15,
-    bulletKey: 'bullets4',
+    bulletKey: 'enemy_bullet1',
     pattern: 'zigzag'
   },
   bug3: {
@@ -22,7 +22,7 @@ const enemyTypes = {
     speed: 100,
     fireRate: 3000,
     hp: 15,
-    bulletKey: 'bullets4',
+    bulletKey: 'enemy_bullet1',
     pattern: 'straight'
   },
   danger1: {
@@ -30,7 +30,7 @@ const enemyTypes = {
     speed: 200,
     fireRate: 2000,
     hp: 20,
-    bulletKey: 'bullets4',
+    bulletKey: 'enemy_bullet1',
     pattern: 'straight'
   },
   danger2: {
@@ -38,7 +38,7 @@ const enemyTypes = {
     speed: 300,
     fireRate: 2000,
     hp: 20,
-    bulletKey: 'bullets4',
+    bulletKey: 'enemy_bullet1',
     pattern: 'straight'
   },
   danger6: {
@@ -46,7 +46,7 @@ const enemyTypes = {
     speed: 800,
     fireRate: 2000,
     hp: 1000,
-    bulletKey: 'bullets4',
+    bulletKey: 'enemy_bullet1',
     pattern: 'straight'
   },
   emperor_1: {
@@ -54,7 +54,7 @@ const enemyTypes = {
     speed: 800,
     fireRate: 1000,
     hp: 20000,
-    bulletKey: 'bullets4',
+    bulletKey: 'enemy_bullet1',
     pattern: 'straight'
   },
   emperor1: {
@@ -62,7 +62,7 @@ const enemyTypes = {
     speed: 400,
     fireRate: 1000,
     hp: 2500,
-    bulletKey: 'bullets4',
+    bulletKey: 'enemy_bullet1',
     pattern: 'straight'
   },
   emperor_3: {
@@ -70,7 +70,7 @@ const enemyTypes = {
     speed: 800,
     fireRate: 1000,
     hp: 20000,
-    bulletKey: 'bullets4',
+    bulletKey: 'enemy_bullet1',
     pattern: 'straight'
   },
   emperor3: {
@@ -78,7 +78,7 @@ const enemyTypes = {
     speed: 800,
     fireRate: 1000,
     hp: 700,
-    bulletKey: 'bullets4',
+    bulletKey: 'enemy_bullet1',
     pattern: 'straight'
   },
   emperor_4: {
@@ -86,7 +86,7 @@ const enemyTypes = {
     speed: 800,
     fireRate: 1000,
     hp: 20000,
-    bulletKey: 'bullets4',
+    bulletKey: 'enemy_bullet1',
     pattern: 'straight'
   },
   emperor4: {
@@ -94,7 +94,7 @@ const enemyTypes = {
     speed: 200,
     fireRate: 1000,
     hp: 550,
-    bulletKey: 'bullets4',
+    bulletKey: 'enemy_bullet1',
     pattern: 'straight'
   }
 };
@@ -316,7 +316,7 @@ export default class EnemyManager {
                   case 'emperor1':
                     angle = Phaser.Math.Angle.Between(enemy.x, enemy.y, this.scene.player.x, this.scene.player.y);
 
-                    this.enemyBulletManager.fireSpread(enemy.x, enemy.y, angle, 7, 'bullets4_3', 300);
+                    this.enemyBulletManager.fireSpread(enemy.x, enemy.y, angle, 7, 'enemy_bullet1', 0, 300);
                     break;
 
                   case 'emperor_1':
@@ -326,7 +326,7 @@ export default class EnemyManager {
 
                     this.scene.time.delayedCall(3000, () => {
                       if (enemy.active) {
-                        this.enemyBulletManager.fireTripleBurstAtPlayer(enemy.x, enemy.y, 'bullets4_4', 300, 100);
+                        this.enemyBulletManager.fireTripleBurstAtPlayer(enemy.x, enemy.y, 'enemy_bullet1', 1, 300, 100);
                       }
                     });
                     break;
@@ -337,34 +337,34 @@ export default class EnemyManager {
                   case 'emperor4':
                     angle = Phaser.Math.Angle.Between(enemy.x, enemy.y, this.scene.player.x, this.scene.player.y);
 
-                    this.enemyBulletManager.fireSpread(enemy.x, enemy.y, angle, 5, 'bullets4_3', 300);
+                    this.enemyBulletManager.fireSpread(enemy.x, enemy.y, angle, 5, 'enemy_bullet1', 0, 300);
                     break;
 
                   case 'emperor_4':
                     break;
 
                   case 'bug1':
-                    this.enemyBulletManager.fire(enemy.x, enemy.y + 20, enemy.bulletKey, 200);
+                    this.enemyBulletManager.fire(enemy.x, enemy.y + 20, enemy.bulletKey, 1, 200);
                     break;
 
                   case 'bug2':
-                    this.enemyBulletManager.fire(enemy.x, enemy.y + 20, enemy.bulletKey, 200);
+                    this.enemyBulletManager.fire(enemy.x, enemy.y + 20, enemy.bulletKey, 1, 200);
                     break;
 
                   case 'bug3':
-                    this.enemyBulletManager.fire(enemy.x, enemy.y + 20, enemy.bulletKey, 200);
+                    this.enemyBulletManager.fire(enemy.x, enemy.y + 20, enemy.bulletKey, 1, 200);
                     break;
 
                   case 'danger1':
-                    this.enemyBulletManager.fireAtPlayer(enemy.x, enemy.y + 20, 'bullets4_2', 300);
+                    this.enemyBulletManager.fireAtPlayer(enemy.x, enemy.y + 20, 'enemy_bullet1', 1, 300);
                     break;
 
                   case 'danger2':
-                    this.enemyBulletManager.fireAtPlayer(enemy.x, enemy.y + 20, 'bullets4_2', 300);
+                    this.enemyBulletManager.fireAtPlayer(enemy.x, enemy.y + 20, 'enemy_bullet1', 1, 300);
                     break;
 
                   case 'danger6':
-                    this.enemyBulletManager.fireAtPlayer(enemy.x, enemy.y + 20, 'bullets4_2', 300);
+                    this.enemyBulletManager.fireAtPlayer(enemy.x, enemy.y + 20, 'enemy_bullet1', 1, 300);
                     break;
                 }
 

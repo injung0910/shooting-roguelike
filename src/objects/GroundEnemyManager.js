@@ -175,7 +175,8 @@ export default class GroundEnemyManager {
           cannonWorldX,
           cannonWorldY,
           angle,
-          'bullets4_1',
+          'enemy_bullet1',
+          0, // 기본 프레임
           300
         );
       }

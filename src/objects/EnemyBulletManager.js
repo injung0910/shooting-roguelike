@@ -3,7 +3,7 @@ export default class EnemyBulletManager {
     this.scene = scene;
 
     this.bullets = this.scene.physics.add.group({
-      classType: Phaser.Physics.Arcade.Image,
+      classType: Phaser.Physics.Arcade.Sprite,
       maxSize: 100,
       runChildUpdate: true
     });
@@ -11,7 +11,7 @@ export default class EnemyBulletManager {
     this.defaultSpeed = 400;
   }
 
-  fire(x, y, bulletKey = 'bullets4', speed = this.defaultSpeed) {
+  fire(x, y, bulletKey = 'enemy_bullet1', frame = 1, speed = this.defaultSpeed) {
 
     // 📌 카메라 안에 있는지 확인
     const camera = this.scene.cameras.main;
@@ -29,10 +29,11 @@ export default class EnemyBulletManager {
       bullet.body.enable = true;
       bullet.setVelocityY(speed);
       bullet.setDepth(10);
+      bullet.setFrame(frame); // 기본 프레임 설정
     }
   }
 
-  fireWithAngle(x, y, angle, bulletKey = 'bullets4_1', speed = 150) {
+  fireWithAngle(x, y, angle, bulletKey = 'enemy_bullet1', frame = 1, speed = 150) {
     const bullet = this.bullets.get(x, y, bulletKey);
     if (bullet) {
       bullet.setActive(true);
@@ -46,10 +47,11 @@ export default class EnemyBulletManager {
 
       bullet.setRotation(angle); // 시각적으로 방향 맞추기
       bullet.setDepth(10);
+      bullet.setFrame(frame); // 기본 프레임 설정
     }
   }
 
-  fireAtPlayer(x, y, bulletKey = 'bullets4_2', speed = 500) {
+  fireAtPlayer(x, y, bulletKey = 'enemy_bullet1', frame = 1, speed = 500) {
     if (!this.scene.player || !this.bullets) return;
 
     // 📌 카메라 안에 있는지 확인
@@ -79,11 +81,12 @@ export default class EnemyBulletManager {
 
       bullet.setVelocity(velocityX, velocityY);
       bullet.setRotation(angle); // 총알 방향 시각화
+      bullet.setFrame(frame); // 기본 프레임 설정
     }
   }
 
-  fireSpread(x, y, baseAngle, count, bulletKey = 'bullets4_3', speed) {
-    // 📌 카메라 안에 있는지 확인
+  fireSpread(x, y, baseAngle, count, bulletKey = 'enemy_bullet1', frame = 0, speed) {
+    // 📌 카메라 안에 있는지 확인enemy_bullet1
     const camera = this.scene.cameras.main;
     if (
       x < camera.worldView.x || x > camera.worldView.x + camera.width ||
@@ -113,14 +116,15 @@ export default class EnemyBulletManager {
 
         bullet.setRotation(angle); // 총알 방향
         bullet.setDepth(10);       // z-index
+        bullet.setFrame(frame); // 기본 프레임 설정
       }
     }
   }
 
-  fireTripleBurstAtPlayer(x, y, bulletKey = 'bullets4_4', speed = 300, delay = 100) {
+  fireTripleBurstAtPlayer(x, y, bulletKey = 'enemy_bullet1', frame = 1, speed = 300, delay = 100) {
     for (let i = 0; i < 3; i++) {
       this.scene.time.delayedCall(delay * i, () => {
-        this.fireAtPlayer(x, y, bulletKey, speed);
+        this.fireAtPlayer(x, y, bulletKey, frame, speed);
       });
     }
   }

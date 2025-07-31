@@ -137,8 +137,8 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
       delay: 1000,
       callback: () => {
         const baseAngle = Phaser.Math.Angle.Between(this.x, this.y, this.scene.player.x, this.scene.player.y);
-        this.bossBulletManager.fireSpread(this.x + 75, this.y + 75, baseAngle, 6, 'bullets4_3', 400);
-        this.bossBulletManager.fireSpread(this.x - 75, this.y + 75, baseAngle, 6, 'bullets4_3', 400);
+        this.bossBulletManager.fireSpread(this.x + 75, this.y + 75, baseAngle, 6, 'enemy_bullet1', 0, 400);
+        this.bossBulletManager.fireSpread(this.x - 75, this.y + 75, baseAngle, 6, 'enemy_bullet1', 0, 400);
       },
       callbackScope: this,
       loop: true

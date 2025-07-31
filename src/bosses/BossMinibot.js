@@ -37,7 +37,7 @@ export default class BossMinibot extends Phaser.Physics.Arcade.Sprite {
 
   fire() {
     if (!this.scene || !this.active) return;
-    this.scene.boss.bossBulletManager.fireAtPlayer(this.x, this.y, 'bullets4_3', 200);
+    this.scene.boss.bossBulletManager.fireAtPlayer(this.x, this.y, 'enemy_bullet1', 1,200);
   }
 
   takeDamage(damage = 10) {

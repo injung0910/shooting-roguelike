@@ -151,7 +151,7 @@ export default class EnemyManager {
                 }
               });
 
-              this.scene.time.delayedCall(30000, () => {
+              this.scene.time.delayedCall(20000, () => {
                 this.scene.tweens.add({
                   targets: enemy,
                   y: this.scene.cameras.main.scrollY + this.scene.cameras.main.height + 200, // 화면 아래로 퇴장
@@ -166,8 +166,10 @@ export default class EnemyManager {
 
             case 'emperor_1':
               enemy = this.enemies.create(bg.x + x, bg.y - 64, status.name);
+              enemy.play(type);
               enemy.setScale(3);
               enemy.setVelocityY(status.speed);
+
               break;
 
             case 'emperor3':
@@ -194,7 +196,7 @@ export default class EnemyManager {
               });
 
 
-              this.scene.time.delayedCall(30000, () => {
+              this.scene.time.delayedCall(20000, () => {
                 this.scene.tweens.add({
                   targets: enemy,
                   y: this.scene.cameras.main.scrollY + this.scene.cameras.main.height + 200, // 화면 아래로 퇴장
@@ -209,6 +211,7 @@ export default class EnemyManager {
 
             case 'emperor_3':
               enemy = this.enemies.create(bg.x + x, bg.y - 64, status.name);
+              enemy.play(type);
               enemy.setScale(1.5);
               enemy.setVelocityY(status.speed);
               break;
@@ -236,7 +239,7 @@ export default class EnemyManager {
                 }
               });
 
-              this.scene.time.delayedCall(16000, () => {
+              this.scene.time.delayedCall(15000, () => {
                 const direction = (enemy.x < 300) ? -800 : 800; // 왼쪽에 있으면 왼쪽으로, 오른쪽에 있으면 오른쪽으로
 
                 this.scene.tweens.add({
@@ -254,6 +257,7 @@ export default class EnemyManager {
 
             case 'emperor_4':
               enemy = this.enemies.create(bg.x + x, bg.y - 64, status.name);
+              enemy.play(type);
               enemy.setScale(1.5);
               enemy.setVelocityY(status.speed);
               break;
@@ -407,8 +411,11 @@ export default class EnemyManager {
 
       if (enemy.texture.key.startsWith('bug2')) {
         this.scene.itemManager.spawn(enemy.x, enemy.y, 'power');
-      } else if (enemy.texture.key.startsWith('emperor1') || (enemy.texture.key.startsWith('emperor4') && enemy.x === 400)) {
+      } else if (enemy.texture.key.startsWith('emperor4') && enemy.x === 400) {
         this.scene.itemManager.spawn(enemy.x, enemy.y, 'bomb');
+      } else if (enemy.texture.key.startsWith('emperor1')) {
+        this.scene.itemManager.spawn(enemy.x, enemy.y, 'bomb');
+        this.scene.itemManager.spawn(enemy.x, enemy.y, 'power');
       }
 
     }
@@ -466,8 +473,11 @@ export default class EnemyManager {
 
             if (enemy.texture.key.startsWith('bug2')) {
               this.scene.itemManager.spawn(enemy.x, enemy.y, 'power');
-            } else if (enemy.texture.key.startsWith('emperor1') || (enemy.texture.key.startsWith('emperor4') && enemy.x === 400)) {
+            } else if (enemy.texture.key.startsWith('emperor4') && enemy.x === 400) {
               this.scene.itemManager.spawn(enemy.x, enemy.y, 'bomb');
+            } else if (enemy.texture.key.startsWith('emperor1')) {
+              this.scene.itemManager.spawn(enemy.x, enemy.y, 'bomb');
+              this.scene.itemManager.spawn(enemy.x, enemy.y, 'power');
             }
           }
 
@@ -510,6 +520,11 @@ export default class EnemyManager {
       enemy.disableBody(true, true);
 
       if (enemy.texture.key.startsWith('bug2')) {
+        this.scene.itemManager.spawn(enemy.x, enemy.y, 'power');
+      } else if (enemy.texture.key.startsWith('emperor4') && enemy.x === 400) {
+        this.scene.itemManager.spawn(enemy.x, enemy.y, 'bomb');
+      } else if (enemy.texture.key.startsWith('emperor1')) {
+        this.scene.itemManager.spawn(enemy.x, enemy.y, 'bomb');
         this.scene.itemManager.spawn(enemy.x, enemy.y, 'power');
       }
 
@@ -566,6 +581,20 @@ export default class EnemyManager {
         // 경고 사운드
         this.scene.game.audioManager.playSFX('sfx_warning');
 
+        if(text === 'ENEMY APPROACHING'){
+          this.scene.time.delayedCall(2000, () => {
+              // ✅ 부스터 효과음
+              this.scene.game.audioManager.playSFX('sfx_enemy_boost');
+          }, null, this);
+        }
+        if(text === 'ASTEROID APPROACHING'){
+          this.scene.game.audioManager.playSFX('sfx_warning');
+          console.log('Spawning asteroids due to enemy warning');
+          this.scene.time.delayedCall(2000, () => {
+            this.spawnAsteroids();
+          });
+        }
+
       }, null, this);
     });
 
@@ -594,12 +623,22 @@ export default class EnemyManager {
 
   spawnAsteroids() {
     console.log('spawnAsteroids called');
-    this.scene.time.addEvent({
-      delay: 800, // 0.8초마다
+
+    this.asteroidTimer = this.scene.time.addEvent({
+      delay: 100,
       loop: true,
       callback: () => {
-        const x = Phaser.Math.Between(50, this.scene.scale.width - 50);
-        const y = -50;
+        const backgrounds = this.scene.backgroundGroup.getChildren();
+        const cameraY = this.scene.cameras.main.scrollY;
+
+        // 현재 화면에 보이는 배경 찾기
+        const bg = backgrounds.find(bg => {
+          return bg.y <= cameraY + this.scene.scale.height &&
+                bg.y + bg.height >= cameraY;
+        });
+
+        if (!bg) return;
+
         const textureKey = Phaser.Utils.Array.GetRandom([
           'asteroid_01',
           'asteroid_02',
@@ -607,14 +646,25 @@ export default class EnemyManager {
           'asteroid_04'
         ]);
 
-        const asteroid = this.scene.asteroidGroup.get(x, y, textureKey);
-        if (!asteroid) return;
+        const x = Phaser.Math.Between(50, this.scene.scale.width - 50);
+        const enemy = this.enemies.create(x, bg.y - 64, textureKey);
 
-        asteroid.setActive(true);
-        asteroid.setVisible(true);
-        asteroid.setDepth(10);
-        asteroid.setVelocityY(Phaser.Math.Between(200, 400));
-        asteroid.setScale(Phaser.Math.FloatBetween(0.8, 1.5));
+        if (!enemy) return;
+
+        enemy.setActive(true);
+        enemy.setVisible(true);
+        enemy.setDepth(10);
+        enemy.setVelocity(0, Phaser.Math.Between(600, 800));
+        enemy.hp = 10;
+        enemy.enemyType = 'asteroid';
+        enemy.setAngle(Phaser.Math.Between(-10, 10));
+      }
+    });
+
+    // 15초 후 타이머 제거
+    this.scene.time.delayedCall(14000, () => {
+      if (this.asteroidTimer) {
+        this.asteroidTimer.remove(false);
       }
     });
   }

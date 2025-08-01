@@ -200,6 +200,10 @@ function loadEnemies(scene) {
     scene.load.image(`emperor${i}`, `/assets/enemies/07 Emperor/emperor_${index}.png`);
   }
   
+  scene.load.spritesheet('emperor_1', '/assets/enemies/07 Emperor/emperor_1.png', {frameWidth: 64,frameHeight: 75,});
+  scene.load.spritesheet('emperor_3', '/assets/enemies/07 Emperor/emperor_3.png', {frameWidth: 64,frameHeight: 72,});
+  scene.load.spritesheet('emperor_4', '/assets/enemies/07 Emperor/emperor_4.png', {frameWidth: 64,frameHeight: 72,});
+
   // minibeam 3프레임
   scene.load.spritesheet('minibeam', '/assets/enemies/05 Mini/Beam/minibeam_sheet.png', {frameWidth: 64,frameHeight: 64,});
 
@@ -318,7 +322,7 @@ function loadEffects(scene) {
   scene.load.spritesheet('shield', '/assets/effects/Shield/shield.png', {frameWidth: 96,frameHeight: 96,});
 
   // large-thrusters 스프라이트 시트 로드 3프레임
-  scene.load.spritesheet('large-thrusters', '/assets/effects/Large Thrusters/large-thrusters1-sheet.png', {frameWidth: 48,frameHeight: 32,});
+  scene.load.spritesheet('enemy_boost', '/assets/effects/Large Thrusters/large-thrusters1-sheet.png', {frameWidth: 48,frameHeight: 32,});
 
   // charging50 121프레임
   scene.load.spritesheet('charging50', '/assets/effects/charging_50x50px.png', {frameWidth: 50,frameHeight: 50,});
@@ -523,10 +527,12 @@ function loadAllSFX(scene) {
   scene.load.audio('sfx_bullets3', '/assets/audio/sfx/sfx_bullet3.wav');
   scene.load.audio('sfx_bullets5', '/assets/audio/sfx/sfx_bullet5.wav');
   scene.load.audio('sfx_enemy_explosion', '/assets/audio/sfx/sfx_enemy_explosion.wav');
+  scene.load.audio('sfx_enemy_boost', '/assets/audio/sfx/sfx_enemy_boost.wav');
   scene.load.audio('sfx_ship_select', '/assets/audio/sfx/sfx_ship_select.wav');
   scene.load.audio('sfx_player_explosion', '/assets/audio/sfx/sfx_player_explosion.wav');
   scene.load.audio('sfx_powerup', '/assets/audio/sfx/sfx_powerup.wav');
   scene.load.audio('sfx_powerup_etc', '/assets/audio/sfx/sfx_powerup_etc.wav');
+  scene.load.audio('sfx_powerup_bomb', '/assets/audio/sfx/sfx_powerup_bomb.wav');
   scene.load.audio('sfx_support_powerup', '/assets/audio/sfx/sfx_support_powerup.wav');
   scene.load.audio('sfx_ui_select', '/assets/audio/sfx/sfx_ui_select.wav');
   scene.load.audio('sfx_ui_success', '/assets/audio/sfx/sfx_ui_success.wav');
@@ -912,6 +918,27 @@ export function createAllAnimations(scene) {
     scene.anims.create({
       key: 'minibeam',
       frames: scene.anims.generateFrameNumbers('minibeam', { start: 0, end: 2 }),
+      frameRate: 6,
+      repeat: -1
+    });
+
+    scene.anims.create({
+      key: 'emperor_1',
+      frames: scene.anims.generateFrameNumbers('emperor_1', { start: 0, end: 2 }),
+      frameRate: 6,
+      repeat: -1
+    });
+
+    scene.anims.create({
+      key: 'emperor_3',
+      frames: scene.anims.generateFrameNumbers('emperor_3', { start: 0, end: 2 }),
+      frameRate: 6,
+      repeat: -1
+    });
+
+    scene.anims.create({
+      key: 'emperor_4',
+      frames: scene.anims.generateFrameNumbers('emperor_4', { start: 0, end: 2 }),
       frameRate: 6,
       repeat: -1
     });

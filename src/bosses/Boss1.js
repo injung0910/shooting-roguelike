@@ -532,7 +532,7 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
     // 2. 폭발이 끝나고 텍스트 등장
     this.scene.time.delayedCall(3000, () => {
       
-      this.scene.game.audioManager.playBGM('bgm_clear', { loop: true, volume: this.scene.game.audioManager.bgmVolume }, true);
+      this.scene.game.audioManager.playBGM('bgm_clear');
 
       const clearText = this.scene.add.text(
         this.scene.scale.width / 2,

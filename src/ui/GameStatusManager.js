@@ -5,8 +5,8 @@ export default class GameStatusManager {
     this.player = player;
 
     this.score = 0;
-    this.lives = 10;
-    this.bombs = 5;
+    this.lives = 3;
+    this.bombs = 2;
 
     this.bombDamage = 50;
     
@@ -130,6 +130,8 @@ export default class GameStatusManager {
       .setInteractive({ useHandCursor: true });
 
     icon.on('pointerdown', () => this.useBomb());
+
+    this.scene.game.audioManager.playSFX('sfx_powerup_bomb');
 
     this.bombIcons.push(icon);
   }

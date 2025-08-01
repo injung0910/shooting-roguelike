@@ -104,8 +104,7 @@ export default class EffectManager {
             ease: 'Sine.easeOut',
         });
     }
-
-
+    
     // 적이 맞았을 때 붉게 깜빡이는 처리
     flashRed(target, flashCount = 4, flashInterval = 100) {
         if (!target || !target.setTint || !target.clearTint) return;

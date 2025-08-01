@@ -50,18 +50,6 @@ export default class Stage1 extends Phaser.Scene {
     // 서포트
     this.supportBulletGroup = this.physics.add.group();
 
-    // 소행성
-    this.asteroidGroup = this.physics.add.group({
-      maxSize: 30,
-      runChildUpdate: true,
-    });
-
-    this.physics.add.overlap(this.player, this.asteroidGroup, (player, asteroid) => {
-      this.asteroidGroup.killAndHide(asteroid);
-      asteroid.body.enable = false;
-      player.takeHitFromEnemy(); // 예시 메서드
-    });    
-
     if (DEBUG_BOSS_ONLY) {
 
       const bgKeys = ['stage1_30']; // 🔹 테스트용: 이 배열에 필요한 배경만 추가
@@ -108,13 +96,6 @@ export default class Stage1 extends Phaser.Scene {
       { key: 'stage1_01', type: 'bug1', x: 450, delay: 2000 },
       { key: 'stage1_01', type: 'bug2', x: 500, delay: 2000 },
 
-      //{ key: 'stage1_05', type: 'bug2', x: 50, delay: 0 },
-      //{ key: 'stage1_05', type: 'bug2', x: 100, delay: 0 },
-      //{ key: 'stage1_05', type: 'bug2', x: 150, delay: 0 },
-      //{ key: 'stage1_05', type: 'bug2', x: 450, delay: 0 },
-      //{ key: 'stage1_05', type: 'bug2', x: 500, delay: 0 },
-      //{ key: 'stage1_05', type: 'bug2', x: 550, delay: 0 },
-
       { key: 'stage1_06', type: 'bug3', x: 50, delay: 0 },
       { key: 'stage1_06', type: 'bug2', x: 100, delay: 0 },
       { key: 'stage1_06', type: 'bug3', x: 150, delay: 0 },
@@ -129,16 +110,6 @@ export default class Stage1 extends Phaser.Scene {
       { key: 'stage1_10', type: 'bug3', x: 450, delay: 0 },
       { key: 'stage1_10', type: 'bug2', x: 500, delay: 0 },
 
-      //{ key: 'stage1_14', type: 'bug3', x: 100, delay: 3000 },
-      //{ key: 'stage1_14', type: 'bug3', x: 150, delay: 3000 },
-      //{ key: 'stage1_14', type: 'bug3', x: 200, delay: 3000 },
-      //{ key: 'stage1_14', type: 'bug3', x: 400, delay: 3000 },
-      //{ key: 'stage1_14', type: 'bug3', x: 450, delay: 3000 },
-      //{ key: 'stage1_14', type: 'bug3', x: 500, delay: 3000 },
-
-      //{ key: 'stage1_04', type: 'danger2', x: 100, delay: 2000 },
-      //{ key: 'stage1_04', type: 'danger2', x: 100, delay: 2200 },
-      //{ key: 'stage1_04', type: 'danger2', x: 100, delay: 2400 },
       { key: 'stage1_04', type: 'danger2', x: 500, delay: 2000 },
       { key: 'stage1_04', type: 'danger2', x: 500, delay: 2200 },
       { key: 'stage1_04', type: 'danger2', x: 500, delay: 2400 },
@@ -146,9 +117,6 @@ export default class Stage1 extends Phaser.Scene {
       { key: 'stage1_04', type: 'danger2', x: 100, delay: 5000 },
       { key: 'stage1_04', type: 'danger2', x: 100, delay: 5200 },
       { key: 'stage1_04', type: 'danger2', x: 100, delay: 5400 },
-      //{ key: 'stage1_04', type: 'danger2', x: 500, delay: 5000 },
-      //{ key: 'stage1_04', type: 'danger2', x: 500, delay: 5200 },
-      //{ key: 'stage1_04', type: 'danger2', x: 500, delay: 5400 },
 
       { key: 'stage1_06', type: 'danger2', x: 100, delay: 6000 },
       { key: 'stage1_06', type: 'danger2', x: 100, delay: 6200 },
@@ -187,7 +155,7 @@ export default class Stage1 extends Phaser.Scene {
       { key: 'stage1_06', delay: 13500, duration: 2000, xMin: 200, xMax: 400, text: 'ENEMY APPROACHING' },
       { key: 'stage1_08', delay: 19500, duration: 2000, xMin: 200, xMax: 400, text: 'ENEMY APPROACHING' },
       { key: 'stage1_08', delay: 24500, duration: 2000, xMin: 200, xMax: 400, text: 'ENEMY APPROACHING' },
-      { key: 'stage1_25', delay: 90000, duration: 2000, xMin: 0,   xMax: 600, text: 'ASTEROID APPROACHING' }
+      { key: 'stage1_25', delay: 95000, duration: 2000, xMin: 0,   xMax: 600, text: 'ASTEROID APPROACHING' }
     ]
     // 2초 후에 배경 이름에 sample_01이 포함된 경우, x: 200~400 사이에 경고 표시
     this.enemyManager.showEnemyWarning(warningData);
@@ -251,7 +219,6 @@ export default class Stage1 extends Phaser.Scene {
     // 스크롤 속도 및 상태 초기화
     this.scrollSpeed = 202;
     this.backgroundHeight = 800 * 30; // 전체 배경 길이
-    this.stopScroll = false;
     this.stopScroll = false;
     this.bossTriggered = false; // 경고/보스 음악 중복 방지
 
@@ -587,39 +554,19 @@ export default class Stage1 extends Phaser.Scene {
       }
     }
 
-    // 기존 update 로직 유지하면서 아래 코드 추가
-    if (this.bossBackgroundGroup) {
-      if (this.bossBackgroundGroup) {
-        this.bossBackgroundGroup.getChildren().forEach(bg => {
-          bg.y += 1;
+    // 보스 배경 스크롤
+    if (this.bossBackgroundGroup && this.boss && this.boss.active) {
+      const bossScrollSpeed = 400; // px/sec 원하는 보스 배경 스피드
 
-          if (bg.y >= this.scale.height) {
-            const minY = Math.min(...this.bossBackgroundGroup.getChildren().map(b => b.y));
-            bg.y = minY - bg.height;
-          }
-        });
-      }
-    }
+      this.bossBackgroundGroup.getChildren().forEach(bg => {
+        bg.y += bossScrollSpeed * (delta / 1000);
 
-    const currentBg = this.backgroundGroup.getChildren().find(bg => {
-      return bg.y <= this.cameras.main.scrollY + this.scale.height &&
-            bg.y + bg.height >= this.cameras.main.scrollY;
-    });
-    const currentKey = currentBg?.texture?.key;
-    //console.log('Current Background Key:', currentKey);
-    if (!this.asteroidStarted && currentKey === 'stage1_25') {
-      this.asteroidStarted = true;
-      this.enemyManager.spawnAsteroids();
-    }
-
-    this.physics.world.on('worldstep', () => {
-      this.asteroidGroup.getChildren().forEach(asteroid => {
-        if (asteroid.active && asteroid.y > this.scale.height + 50) {
-          this.asteroidGroup.killAndHide(asteroid);
-          asteroid.body.enable = false;
+        if (bg.y >= this.scale.height) {
+          const minY = Math.min(...this.bossBackgroundGroup.getChildren().map(b => b.y));
+          bg.y = minY - bg.height;
         }
       });
-    });    
+    }
 
     // 조작 제한 중이면 아무 것도 하지 않음
     if (!this.inputEnabled) return;

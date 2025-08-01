@@ -61,7 +61,7 @@ const enemyTypes = {
     name: 'emperor1',
     speed: 400,
     fireRate: 1000,
-    hp: 2500,
+    hp: 1000,
     bulletKey: 'enemy_bullet1',
     pattern: 'straight'
   },
@@ -77,7 +77,7 @@ const enemyTypes = {
     name: 'emperor3',
     speed: 800,
     fireRate: 1000,
-    hp: 700,
+    hp: 500,
     bulletKey: 'enemy_bullet1',
     pattern: 'straight'
   },
@@ -93,7 +93,7 @@ const enemyTypes = {
     name: 'emperor4',
     speed: 200,
     fireRate: 1000,
-    hp: 550,
+    hp: 200,
     bulletKey: 'enemy_bullet1',
     pattern: 'straight'
   }
@@ -405,8 +405,10 @@ export default class EnemyManager {
       // 적 제거
       enemy.disableBody(true, true);
 
-      if (enemy.texture.key.startsWith('bug') && (enemy.x === 100 || enemy.x === 500)) {
+      if (enemy.texture.key.startsWith('bug2')) {
         this.scene.itemManager.spawn(enemy.x, enemy.y, 'power');
+      } else if (enemy.texture.key.startsWith('emperor1') || (enemy.texture.key.startsWith('emperor4') && enemy.x === 400)) {
+        this.scene.itemManager.spawn(enemy.x, enemy.y, 'bomb');
       }
 
     }
@@ -461,6 +463,12 @@ export default class EnemyManager {
             }
 
             enemy.disableBody(true, true);
+
+            if (enemy.texture.key.startsWith('bug2')) {
+              this.scene.itemManager.spawn(enemy.x, enemy.y, 'power');
+            } else if (enemy.texture.key.startsWith('emperor1') || (enemy.texture.key.startsWith('emperor4') && enemy.x === 400)) {
+              this.scene.itemManager.spawn(enemy.x, enemy.y, 'bomb');
+            }
           }
 
         }
@@ -501,7 +509,7 @@ export default class EnemyManager {
       // 적 제거
       enemy.disableBody(true, true);
 
-      if (enemy.texture.key.startsWith('bug') && (enemy.x === 100 || enemy.x === 500)) {
+      if (enemy.texture.key.startsWith('bug2')) {
         this.scene.itemManager.spawn(enemy.x, enemy.y, 'power');
       }
 
@@ -512,7 +520,7 @@ export default class EnemyManager {
   showEnemyWarning(warningData) {
     const backgrounds = this.scene.backgroundGroup.getChildren();
 
-    warningData.forEach(({ key, delay, duration, xMin, xMax }) => {
+    warningData.forEach(({ key, delay, duration, xMin, xMax, text }) => {
       const bg = backgrounds.find(bg => bg.texture.key === key);
       if (!bg) return;
 
@@ -521,7 +529,7 @@ export default class EnemyManager {
       this.scene.time.delayedCall(delay, () => {
         const centerX = (xMin + xMax) / 2;
 
-        const warningText = this.scene.add.text(centerX, 100, 'ENEMY APPROACHING', {
+        const warningText = this.scene.add.text(centerX, 100, text, {
           fontSize: '48px',
           fill: '#ff0000',
           fontFamily: 'ThaleahFat',
@@ -561,6 +569,54 @@ export default class EnemyManager {
       }, null, this);
     });
 
+  }
+
+  spawnEnemiesFromPlayerDeath() {
+    const currentBg = this.scene.backgroundGroup.getChildren().find(bg => {
+      return bg.y <= this.scene.cameras.main.scrollY + this.scene.scale.height &&
+        bg.y + bg.height >= this.scene.cameras.main.scrollY;
+    });
+
+    const currentKey = currentBg?.texture?.key;
+    if (!currentKey) return;
+
+    const spawnData = [
+      { key: currentKey, type: 'bug3', x: 50, delay: 500 },
+      { key: currentKey, type: 'bug2', x: 100, delay: 500 },
+      { key: currentKey, type: 'bug3', x: 150, delay: 500 },
+      { key: currentKey, type: 'bug3', x: 450, delay: 500 },
+      { key: currentKey, type: 'bug2', x: 500, delay: 500 },
+      { key: currentKey, type: 'bug3', x: 550, delay: 500 },
+    ];
+
+    this.spawnEnemies(spawnData);
+  }
+
+  spawnAsteroids() {
+    console.log('spawnAsteroids called');
+    this.scene.time.addEvent({
+      delay: 800, // 0.8초마다
+      loop: true,
+      callback: () => {
+        const x = Phaser.Math.Between(50, this.scene.scale.width - 50);
+        const y = -50;
+        const textureKey = Phaser.Utils.Array.GetRandom([
+          'asteroid_01',
+          'asteroid_02',
+          'asteroid_03',
+          'asteroid_04'
+        ]);
+
+        const asteroid = this.scene.asteroidGroup.get(x, y, textureKey);
+        if (!asteroid) return;
+
+        asteroid.setActive(true);
+        asteroid.setVisible(true);
+        asteroid.setDepth(10);
+        asteroid.setVelocityY(Phaser.Math.Between(200, 400));
+        asteroid.setScale(Phaser.Math.FloatBetween(0.8, 1.5));
+      }
+    });
   }
 
   update() {

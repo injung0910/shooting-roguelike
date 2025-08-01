@@ -429,6 +429,9 @@ function loadIcons(scene) {
   // 파워 아이콘 스프라이트 시트 로드 5프레임
   scene.load.spritesheet('item-power', '/assets/Icons/Power-Ups/icon-a-power.png', {frameWidth: 32,frameHeight: 32,});
 
+  // 폭탄 아이콘 스프라이트 시트 로드 5프레임
+  scene.load.spritesheet('item-bomb', '/assets/Icons/Power-Ups/icon-a-bomb.png', {frameWidth: 32,frameHeight: 32,});
+
   // 헬스 아이콘 스프라이트 시트 로드 5프레임
   scene.load.spritesheet('item-health', '/assets/Icons/Power-Ups/icon-a-health.png', {frameWidth: 32,frameHeight: 32,});
 
@@ -511,7 +514,6 @@ function loadAllBGM(scene) {
   scene.load.audio('bgm_score', '/assets/audio/bgm/bgm_score.ogg');
   scene.load.audio('bgm_shipselect', '/assets/audio/bgm/bgm_shipselect.ogg');
   scene.load.audio('bgm_title', '/assets/audio/bgm/bgm_title.ogg');
-
   scene.load.audio('bgm_Stage1', '/assets/audio/bgm/bgm_stage01.ogg');
 }
 
@@ -781,7 +783,15 @@ export function createAllAnimations(scene) {
       repeat: -1
     });
 
-    // 
+    // 폭탄 아이템
+    scene.anims.create({
+      key: 'item-bomb-anim',
+      frames: scene.anims.generateFrameNumbers('item-bomb', { start: 0, end: 4 }),
+      frameRate: 6,
+      repeat: -1
+    });
+
+    // 폭발 애니메이션
     scene.anims.create({
       key: 'explosion200',
       frames: scene.anims.generateFrameNumbers('explosion200', { start: 0, end: 39 }),
@@ -789,6 +799,7 @@ export function createAllAnimations(scene) {
       hideOnComplete: true
     });
 
+    // 폭발 애니메이션
     scene.anims.create({
       key: 'explosion400',
       frames: scene.anims.generateFrameNumbers('explosion400', { start: 0, end: 39 }),
@@ -796,7 +807,7 @@ export function createAllAnimations(scene) {
       hideOnComplete: true
     });
 
-    // 
+    // 번개 애니메이션
     scene.anims.create({
       key: 'thunder200',
       frames: scene.anims.generateFrameNumbers('thunder200', { start: 50, end: 89 }),

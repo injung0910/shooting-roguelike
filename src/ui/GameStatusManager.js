@@ -10,7 +10,7 @@ export default class GameStatusManager {
 
     this.bombDamage = 50;
     
-    this.cryphixBombDamage = 150;
+    this.cryphixBombDamage = 500;
 
     this.createUI();
   }
@@ -123,8 +123,14 @@ export default class GameStatusManager {
 
   addBomb() {
     this.bombs++;
-    const icon = this.scene.add.image(20 + (this.bombs - 1) * 40, this.scene.scale.height - 40, 'bombIcon')
-      .setScale(0.5).setDepth(10);
+    const icon = this.scene.add.image(20 + (this.bombs - 1) * 40, this.scene.scale.height - 80, 'icon-bomb')
+      .setScale(3)
+      .setOrigin(0, 0)
+      .setDepth(100)
+      .setInteractive({ useHandCursor: true });
+
+    icon.on('pointerdown', () => this.useBomb());
+
     this.bombIcons.push(icon);
   }
 

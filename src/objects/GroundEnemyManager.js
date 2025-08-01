@@ -41,7 +41,7 @@ export default class GroundEnemyManager {
 
       cannon.rotation = angle + Phaser.Math.DegToRad(90);
 
-      this.enemyTanks.push({ base, cannon, hp: 30, lastFired: 0 }); // 원하는 체력 설정
+      this.enemyTanks.push({ base, cannon, hp: 20, lastFired: 0 }); // 원하는 체력 설정
     });
   }
 

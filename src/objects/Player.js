@@ -150,6 +150,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.isInvincible = false; // 📌 무적 해제
       blinkTimer.remove(); // 타이머 정지
     });
+
+    this.scene.enemyManager.spawnEnemiesFromPlayerDeath();
+
   }
 
   takeHitFromEnemy() {
@@ -209,6 +212,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.isInvincible = false; // 📌 무적 해제
       blinkTimer.remove(); // 타이머 정지
     });
+
+    this.scene.enemyManager.spawnEnemiesFromPlayerDeath();
   }
 
   useBomb() {

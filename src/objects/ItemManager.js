@@ -11,6 +11,8 @@ export default class ItemManager {
 
       if (collectedItem.type === 'power') {
         actualPlayer.bulletManager.increasePowerLevel(); // bulletManager가 Player 내부에 있어야 함
+      } else if (collectedItem.type === 'bomb') {
+        actualPlayer.gameStatusManager.addBomb(); // GameStatusManager가 Player 내부에 있어야 함
       }
 
       collectedItem.destroy();
@@ -27,6 +29,8 @@ export default class ItemManager {
     // 애니메이션 재생
     if (type === 'power') {
       item.play('item-power-anim');
+    }else if (type === 'bomb') {
+      item.play('item-bomb-anim');
     }
 
     item.amplitude = Phaser.Math.Between(30, 60);

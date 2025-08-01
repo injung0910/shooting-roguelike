@@ -351,6 +351,7 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
     missile.setVisible(true);
     missile.enableBody(true, x, y, true, true);
 
+    missile.setScale(1.5);
     missile.play('missile2_anim');
     missile.setVelocityY(speedY);
     missile.setDepth(21);
@@ -394,6 +395,7 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
     missile.enableBody(true, x, y, true, true);
 
     missile.play('missile2_anim');
+    missile.setScale(1.5);
     missile.setDepth(21);
     missile.setVelocity(0, 600); // Y축 아래로만 이동
     missile.setAngle(180); // 시각적 회전

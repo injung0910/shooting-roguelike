@@ -137,6 +137,7 @@ export default class BulletManager {
       this.scene.game.audioManager.playSFX('sfx_powerup');
       this.powerLevel++;
     } else {
+      this.scene.player.gameStatusManager.addScore(300);
       this.scene.game.audioManager.playSFX('sfx_powerup_etc');
     }
   }

@@ -239,7 +239,7 @@ export default class EnemyManager {
                 }
               });
 
-              this.scene.time.delayedCall(15000, () => {
+              this.scene.time.delayedCall(13000, () => {
                 const direction = (enemy.x < 300) ? -800 : 800; // 왼쪽에 있으면 왼쪽으로, 오른쪽에 있으면 오른쪽으로
 
                 this.scene.tweens.add({
@@ -406,9 +406,22 @@ export default class EnemyManager {
         this.scene.game.audioManager.playSFX('sfx_enemy_explosion');
       }
 
-      // 적 제거
-      enemy.disableBody(true, true);
+      // 점수
+      if (enemy.texture.key.startsWith("emperor1")) {
+        this.scene.player.gameStatusManager.addScore(1000);
+      } else if (enemy.texture.key.startsWith('emperor3')) {
+        this.scene.player.gameStatusManager.addScore(500);
+      } else if (enemy.texture.key.startsWith('emperor4')) {
+        this.scene.player.gameStatusManager.addScore(300);
+      } else if (enemy.texture.key.startsWith('bug')) {
+        this.scene.player.gameStatusManager.addScore(100);
+      } else if (enemy.texture.key.startsWith('danger')) {
+        this.scene.player.gameStatusManager.addScore(100);
+      } else {
+        this.scene.player.gameStatusManager.addScore(10);
+      }
 
+      // 아이템
       if (enemy.texture.key.startsWith('bug2')) {
         this.scene.itemManager.spawn(enemy.x, enemy.y, 'power');
       } else if (enemy.texture.key.startsWith('emperor4') && enemy.x === 400) {
@@ -417,6 +430,9 @@ export default class EnemyManager {
         this.scene.itemManager.spawn(enemy.x, enemy.y, 'bomb');
         this.scene.itemManager.spawn(enemy.x, enemy.y, 'power');
       }
+
+      // 적 제거
+      enemy.disableBody(true, true);
 
     }
   }
@@ -469,8 +485,22 @@ export default class EnemyManager {
               this.scene.game.effectManager.smallExplosion(enemy.x, enemy.y);
             }
 
-            enemy.disableBody(true, true);
+            // 점수
+            if (enemy.texture.key.startsWith("emperor1")) {
+              this.scene.player.gameStatusManager.addScore(1000);
+            } else if (enemy.texture.key.startsWith('emperor3')) {
+              this.scene.player.gameStatusManager.addScore(500);
+            } else if (enemy.texture.key.startsWith('emperor4')) {
+              this.scene.player.gameStatusManager.addScore(300);
+            } else if (enemy.texture.key.startsWith('bug')) {
+              this.scene.player.gameStatusManager.addScore(100);
+            } else if (enemy.texture.key.startsWith('danger')) {
+              this.scene.player.gameStatusManager.addScore(100);
+            } else {
+              this.scene.player.gameStatusManager.addScore(10);
+            }
 
+            // 아이템
             if (enemy.texture.key.startsWith('bug2')) {
               this.scene.itemManager.spawn(enemy.x, enemy.y, 'power');
             } else if (enemy.texture.key.startsWith('emperor4') && enemy.x === 400) {
@@ -479,6 +509,8 @@ export default class EnemyManager {
               this.scene.itemManager.spawn(enemy.x, enemy.y, 'bomb');
               this.scene.itemManager.spawn(enemy.x, enemy.y, 'power');
             }
+
+            enemy.disableBody(true, true);
           }
 
         }
@@ -516,9 +548,22 @@ export default class EnemyManager {
         this.scene.game.audioManager.playSFX('sfx_enemy_explosion');
       }
 
-      // 적 제거
-      enemy.disableBody(true, true);
+      // 점수
+      if (enemy.texture.key.startsWith("emperor1")) {
+        this.scene.player.gameStatusManager.addScore(1000);
+      } else if (enemy.texture.key.startsWith('emperor3')) {
+        this.scene.player.gameStatusManager.addScore(500);
+      } else if (enemy.texture.key.startsWith('emperor4')) {
+        this.scene.player.gameStatusManager.addScore(300);
+      } else if (enemy.texture.key.startsWith('bug')) {
+        this.scene.player.gameStatusManager.addScore(100);
+      } else if (enemy.texture.key.startsWith('danger')) {
+        this.scene.player.gameStatusManager.addScore(100);
+      } else {
+        this.scene.player.gameStatusManager.addScore(10);
+      }
 
+      // 아이템
       if (enemy.texture.key.startsWith('bug2')) {
         this.scene.itemManager.spawn(enemy.x, enemy.y, 'power');
       } else if (enemy.texture.key.startsWith('emperor4') && enemy.x === 400) {
@@ -528,6 +573,8 @@ export default class EnemyManager {
         this.scene.itemManager.spawn(enemy.x, enemy.y, 'power');
       }
 
+      // 적 제거
+      enemy.disableBody(true, true);
     }
 
   }
@@ -581,13 +628,13 @@ export default class EnemyManager {
         // 경고 사운드
         this.scene.game.audioManager.playSFX('sfx_warning');
 
-        if(text === 'ENEMY APPROACHING'){
+        if (text === 'ENEMY APPROACHING') {
           this.scene.time.delayedCall(2000, () => {
-              // ✅ 부스터 효과음
-              this.scene.game.audioManager.playSFX('sfx_enemy_boost');
+            // ✅ 부스터 효과음
+            this.scene.game.audioManager.playSFX('sfx_enemy_boost');
           }, null, this);
         }
-        if(text === 'ASTEROID APPROACHING'){
+        if (text === 'ASTEROID APPROACHING') {
           this.scene.game.audioManager.playSFX('sfx_warning');
           console.log('Spawning asteroids due to enemy warning');
           this.scene.time.delayedCall(2000, () => {
@@ -625,7 +672,7 @@ export default class EnemyManager {
     console.log('spawnAsteroids called');
 
     this.asteroidTimer = this.scene.time.addEvent({
-      delay: 100,
+      delay: 50,
       loop: true,
       callback: () => {
         const backgrounds = this.scene.backgroundGroup.getChildren();
@@ -634,7 +681,7 @@ export default class EnemyManager {
         // 현재 화면에 보이는 배경 찾기
         const bg = backgrounds.find(bg => {
           return bg.y <= cameraY + this.scene.scale.height &&
-                bg.y + bg.height >= cameraY;
+            bg.y + bg.height >= cameraY;
         });
 
         if (!bg) return;

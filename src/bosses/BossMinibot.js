@@ -50,6 +50,9 @@ export default class BossMinibot extends Phaser.Physics.Arcade.Sprite {
         // 이펙트
         this.scene.game.effectManager.smallExplosion(this.x, this.y);
 
+        // 점수
+        this.scene.player.gameStatusManager.addScore(500);
+
         // 사운드
         this.scene.game.audioManager.playSFX('sfx_enemy_explosion');
 

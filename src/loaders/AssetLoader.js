@@ -835,33 +835,7 @@ export function createAllAnimations(scene) {
       frames: scene.anims.generateFrameNumbers('lightningShield', { start: 0, end: 2 }),
       frameRate: 15,
       repeat: -1
-    });
-
-        // 
-    scene.anims.create({
-      key: 'rotating_flame_sheet',
-      frames: scene.anims.generateFrameNumbers('rotating_flame_sheet', { start: 0, end: 5 }),
-      frameRate: 30,
-      hideOnComplete: true,
-      repeat: -1,
-    });
-
-
-    scene.anims.create({
-      key: 'dust50',
-      frames: scene.anims.generateFrameNumbers('dust50', { start: 60, end: 120 }),
-      frameRate: 60,
-      hideOnComplete: true,
-      repeat: 3,
-    });
-
-    scene.anims.create({
-      key: 'fireFloor100',
-      frames: scene.anims.generateFrameNumbers('fireFloor100', { start: 0, end: 58 }),
-      frameRate: 60,
-      hideOnComplete: true,
-      repeat: 3,
-    });    
+    }); 
 
     scene.anims.create({
       key: 'minibeam',

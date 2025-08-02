@@ -55,11 +55,6 @@ export default class GameStatusManager {
     }
 
   }
-
-  addScore(amount) {
-    this.score += amount;
-    this.scoreText.setText(`SCORE: ${this.score}`);
-  }
   
   loseLife() {
     console.log('lostlife');
@@ -141,6 +136,14 @@ export default class GameStatusManager {
     this.scene.scene.pause();  
 
     // GameOverScene 실행 (겹쳐서 실행됨)
-    this.scene.scene.launch('GameOverScene');
+    this.scene.scene.launch('GameOverScene', {score: this.score});
+
+
+  }
+
+  addScore(amount) {
+    this.score += amount;
+    const paddedScore = this.score.toString().padStart(6, '0');
+    this.scoreText.setText(`SCORE: ${paddedScore}`);
   }
 }

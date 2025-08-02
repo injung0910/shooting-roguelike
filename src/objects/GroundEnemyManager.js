@@ -87,6 +87,9 @@ export default class GroundEnemyManager {
 
       // 사운드
       this.scene.game.audioManager.playSFX('sfx_enemy_explosion');
+      
+      //점수
+      this.scene.player.gameStatusManager.addScore(100);
 
       // Container에서 제거
       this.scene.backgroundContainer.remove(tank.base, true);

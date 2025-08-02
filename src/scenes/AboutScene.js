@@ -4,60 +4,64 @@ export default class AboutScene extends Phaser.Scene {
   }
 
   create() {
-    
-    this.cameras.main.fadeIn(500, 0, 0, 0);
-    
-    // 1. iframe 생성
-    const iframe = document.createElement('iframe');
-    iframe.src = 'about.html';
-    iframe.width = '600';
-    iframe.height = '800';
-    iframe.style.border = '2px solid #ffffff';
-    iframe.style.borderRadius = '12px';
-    iframe.style.backgroundColor = '#000000';
+    const centerX = this.scale.width / 2;
+    let startY = 60;
+    const gap = 24;
 
-    const iframeObj = this.add.dom(this.scale.width / 2, this.scale.height / 2, iframe).setOrigin(0.5);
+    this.add.text(centerX, startY, 'ABOUT THIS GAME', {
+      fontFamily: 'ThaleahFat',
+      fontSize: '32px',
+      color: '#ffcc00'
+    }).setOrigin(0.5);
 
-    // 2. back 버튼 (DOM 요소로 생성)
-    const backButton = document.createElement('button');
-    backButton.innerText = '⬅ Back';
-    backButton.style.fontSize = '20px';
-    backButton.style.padding = '6px 16px';
-    backButton.style.borderRadius = '8px';
-    backButton.style.border = 'none';
-    backButton.style.background = '#ffcc00';
-    backButton.style.color = '#000';
-    backButton.style.fontWeight = 'bold';
-    backButton.style.cursor = 'pointer';
+    const lines = [
+      'Pixel-style space shooting game made with Phaser 3.',
+      '',
+      'Fonts:',
+      'ThaleahFat by Rick Hoppmann (CC BY 4.0)',
+      '',
+      'Audio:',
+      'BGM by doranarasi (Commercial use OK)',
+      'SFX/FX by Kronbits (Purchased via itch.io)',
+      '',
+      'Pixel Art:',
+      'Assets from SHMUP Bundle by Dylest (LivingTheIndie)',
+      'Leonardo AI-generated (commercial license)',
+      '',
+      'Framework: Phaser 3',
+      'GitHub: injung0910/shooting-roguelike',
+      '',
+      'If you are an asset creator and wish to clarify usage,',
+      'please contact us.',
+      '',
+      'Special Thanks:',
+      'My family – for their endless love and support'
+    ];
 
-    const backDom = this.add.dom(this.scale.width - 100, 40, backButton).setOrigin(0.5);
-
-    // 3. 항상 위에 보이도록 zIndex 설정
-    iframeObj.node.style.zIndex = '1';
-    backDom.node.style.zIndex = '2'; // back 버튼을 더 위로
-
-    // 4. 클릭 이벤트
-    backButton.addEventListener('click', () => {
-      this.cameras.main.fadeOut(500, 0, 0, 0);
-      this.cameras.main.once('camerafadeoutcomplete', () => {
-        this.scene.start('BootScene');
-      });
+    lines.forEach((line, index) => {
+      this.add.text(centerX, startY + (gap * (index + 2)), line, {
+        fontFamily: 'Arial',
+        fontSize: '14px',
+        color: '#dddddd',
+        align: 'center',
+        wordWrap: { width: 540 }
+      }).setOrigin(0.5);
     });
 
-    // 5. ESC / Backspace 키도 처리
-    this.input.keyboard.on('keydown', (event) => {
-      this.cameras.main.fadeOut(500, 0, 0, 0);
-      this.cameras.main.once('camerafadeoutcomplete', () => {
-        this.scene.start('BootScene');
-      });
+    // 클릭 시 돌아가기
+    this.input.once('pointerdown', () => {
+      this.scene.start('StartScene');
     });
 
-    // 6. iframe에서 postMessage로 돌아오는 경우도 처리
-    window.addEventListener('message', (event) => {
-      this.cameras.main.fadeOut(500, 0, 0, 0);
-      this.cameras.main.once('camerafadeoutcomplete', () => {
-        this.scene.start('BootScene');
-      });
+    this.add.text(centerX, this.scale.height - 40, '[CLICK or BACKSPACE TO RETURN]', {
+      fontFamily: 'ThaleahFat',
+      fontSize: '36px',
+      color: '#66ccff'
+    }).setOrigin(0.5);
+
+    // ✅ Backspace 키 이벤트 등록
+    this.input.keyboard.on('keydown-BACKSPACE', () => {
+      this.scene.start('StartScene');
     });
   }
 }

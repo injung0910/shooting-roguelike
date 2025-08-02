@@ -149,7 +149,7 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
     if (this.pattern2Timer) return;
 
     this.pattern2Timer = this.scene.time.addEvent({
-      delay: 5000,
+      delay: 8000,
       callback: () => {
         this.play('boss01_anim'); // 공격 애니메이션
         this.once('animationcomplete', () => {
@@ -368,7 +368,7 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
 
     this.scene.time.addEvent({
       delay: fireDelay,
-      repeat: 3, // 총 4발 (0~3)
+      repeat: 7, // 총 4발 (0~3)
       callback: () => {
 
         // 좌측 그룹 (x: 10~300)
@@ -475,6 +475,9 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
     // 1. BGM 중지
     this.scene.game.audioManager.stopBGM();
 
+    // 점수
+    this.scene.player.gameStatusManager.addScore(5000);
+
     // 2. 보스 미사일, 총알 제거
     if (this.bossBulletManager?.bullets) {
       this.bossBulletManager.bullets.children.each(bullet => {
@@ -572,6 +575,19 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
               yoyo: false,
             });
           });
+
+          const finalScore = this.scene.player.gameStatusManager.score.toString().padStart(6, '0');
+
+          const scoreText = this.scene.add.text(
+            this.scene.scale.width / 2,
+            this.scene.scale.height / 2 - 100,
+            `SCORE : ${finalScore}`,
+            {
+              fontFamily: 'ThaleahFat',
+              fontSize: '42px',
+              fill: '#ffffff',
+            }
+          ).setOrigin(0.5).setDepth(30);
 
           // 4. 씬 전환 or 정지
           this.scene.time.delayedCall(7000, () => {

@@ -118,38 +118,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.bulletManager.destroyAura();
 
-    // 무적 상태 및 시각 효과
-    //this.body.checkCollision.none = true;
-
-    this.body.checkCollision.up = false;
-    this.body.checkCollision.down = false;
-    this.body.checkCollision.left = false;
-    this.body.checkCollision.right = false;
-
-
-    // 🔸 깜빡이는 효과 시작
-    let blink = true;
-    const blinkTimer = this.scene.time.addEvent({
-      delay: 150,
-      repeat: 9, // 총 10번 반복 (약 1.5초)
-      callback: () => {
-        blink = !blink;
-        this.setAlpha(blink ? 0.3 : 1);
-      }
-    });
-
-    // 2초 후 정상 복귀
-    this.scene.time.delayedCall(3000, () => {
-      this.setAlpha(1);
-      this.clearTint();
-      //this.body.checkCollision.none = false;
-      this.body.checkCollision.up = true;
-      this.body.checkCollision.down = true;
-      this.body.checkCollision.left = true;
-      this.body.checkCollision.right = true;
-      this.isInvincible = false; // 📌 무적 해제
-      blinkTimer.remove(); // 타이머 정지
-    });
+    this.respawn();
 
     this.scene.enemyManager.spawnEnemiesFromPlayerDeath();
 
@@ -181,37 +150,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.bulletManager.destroyAura();
 
-    // 무적 상태 및 시각 효과
-    //this.body.checkCollision.none = true;
-
-    this.body.checkCollision.up = false;
-    this.body.checkCollision.down = false;
-    this.body.checkCollision.left = false;
-    this.body.checkCollision.right = false;
-
-    // 🔸 깜빡이는 효과 시작
-    let blink = true;
-    const blinkTimer = this.scene.time.addEvent({
-      delay: 150,
-      repeat: 9, // 총 10번 반복 (약 1.5초)
-      callback: () => {
-        blink = !blink;
-        this.setAlpha(blink ? 0.3 : 1);
-      }
-    });
-
-    // 2초 후 정상 복귀
-    this.scene.time.delayedCall(3000, () => {
-      this.setAlpha(1);
-      this.clearTint();
-      //this.body.checkCollision.none = false;
-      this.body.checkCollision.up = true;
-      this.body.checkCollision.down = true;
-      this.body.checkCollision.left = true;
-      this.body.checkCollision.right = true;
-      this.isInvincible = false; // 📌 무적 해제
-      blinkTimer.remove(); // 타이머 정지
-    });
+    this.respawn();
 
     this.scene.enemyManager.spawnEnemiesFromPlayerDeath();
   }
@@ -222,7 +161,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     // 중복 방지: 0.1초 안에 다시 호출되지 않도록
     if (this.bombCooldown) return;
     this.bombCooldown = true;
-    this.scene.time.delayedCall(150, () => {
+    this.scene.time.delayedCall(1000, () => {
       this.bombCooldown = false;
     });
 
@@ -254,7 +193,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     const centerY = this.scene.scale.height / 2;
 
     // 이펙트
-    this.scene.game.effectManager.explosion4(centerX, centerY);    
+    this.scene.game.effectManager.explosion4(centerX, centerY);
 
     this.bombFlash = this.scene.add.rectangle(0, 0, this.scene.scale.width, this.scene.scale.height, 0xffffff)
       .setOrigin(0)
@@ -294,7 +233,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     const centerY = this.scene.scale.height / 2;
 
     // 이펙트
-    this.scene.game.effectManager.thunder4(centerX, centerY);    
+    this.scene.game.effectManager.thunder4(centerX, centerY);
 
     this.bombFlash = this.scene.add.rectangle(0, 0, this.scene.scale.width, this.scene.scale.height, 0xffffff)
       .setOrigin(0)
@@ -326,9 +265,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
         const x = Phaser.Math.Between(50, this.scene.scale.width - 50); // 화면 좌우 여백 50
         const y = this.scene.scale.height + 50; // 화면 아래쪽 바깥
-    
+
         // 이펙트
-        this.scene.game.effectManager.fireCircle2(x, y);    
+        this.scene.game.effectManager.fireCircle2(x, y);
       });
     }
 
@@ -359,6 +298,49 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         }
       },
       repeat: Math.floor(bombDuration / interval) - 1 // 총 몇 번 반복할지
+    });
+  }
+
+  respawn() {
+    this.body.enable = false;
+    this.setAlpha(0); // 완전 투명하게
+
+    this.scene.time.delayedCall(1000, () => {
+      const cameraBottom = this.scene.cameras.main.scrollY + this.scene.scale.height;
+
+      // 🔽 더 아래쪽에서 등장하도록 위치 조정
+      this.setPosition(this.scene.scale.width / 2, cameraBottom + 200);
+
+      this.scene.tweens.add({
+        targets: this,
+        y: cameraBottom - 100,   // 등장 위치 (카메라 안쪽)
+        alpha: { from: 0, to: 1 }, // 부드럽게 나타남
+        duration: 1500,
+        ease: 'Sine.easeOut',
+        onStart: () => {
+          this.setVisible(true);
+        },
+        onComplete: () => {
+          this.body.enable = true;
+
+          // 깜빡임 무적 시작
+          let blink = true;
+          const blinkTimer = this.scene.time.addEvent({
+            delay: 150,
+            repeat: 9,
+            callback: () => {
+              blink = !blink;
+              this.setAlpha(blink ? 0.3 : 1);
+            }
+          });
+
+          this.scene.time.delayedCall(1500, () => {
+            this.isInvincible = false;
+            this.setAlpha(1);
+            blinkTimer.remove();
+          });
+        }
+      });
     });
   }
 

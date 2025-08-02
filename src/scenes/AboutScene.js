@@ -26,13 +26,19 @@ export default class AboutScene extends Phaser.Scene {
       '',
       'Pixel Art:',
       'Assets from SHMUP Bundle by Dylest (LivingTheIndie)',
+      '',
+      'Etc:',
       'Leonardo AI-generated (commercial license)',
       '',
       'Framework: Phaser 3',
+      'Developed by injung0910',
       'GitHub: injung0910/shooting-roguelike',
       '',
-      'If you are an asset creator and wish to clarify usage,',
-      'please contact us.',
+      'If you are an asset creator and have',
+      'any questions or concerns',
+      'about how your work is used in this game,',
+      'please don’t hesitate to contact me,',
+      'the developer, at injung5722@gmail.com',
       '',
       'Special Thanks:',
       'My family – for their endless love and support'
@@ -40,8 +46,8 @@ export default class AboutScene extends Phaser.Scene {
 
     lines.forEach((line, index) => {
       this.add.text(centerX, startY + (gap * (index + 2)), line, {
-        fontFamily: 'Arial',
-        fontSize: '14px',
+        fontFamily: 'ThaleahFat',
+        fontSize: '25px',
         color: '#dddddd',
         align: 'center',
         wordWrap: { width: 540 }

@@ -5,7 +5,7 @@ export default class BootScene extends Phaser.Scene {
 
   preload() {
     // 필요한 이미지나 사운드도 여기서 미리 로드 가능
-    this.load.image('start-bg', '/img/start-bg.jpg');
+    this.load.image('start-bg', 'img/start-bg.jpg');
   }
 
   async create() {

@@ -468,9 +468,8 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
   }
 
   onBossDefeated() {
-    this.setActive(false);
-    this.setVisible(false);
-    this.disableBody(true, true);
+    this.scene.inputEnabled = false;
+    this.scene.player.body.enable = false;
 
     // 1. BGM 중지
     this.scene.game.audioManager.stopBGM();
@@ -479,42 +478,7 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
     this.scene.player.gameStatusManager.addScore(5000);
 
     // 2. 보스 미사일, 총알 제거
-    if (this.bossBulletManager?.bullets) {
-      this.bossBulletManager.bullets.children.each(bullet => {
-        if (bullet.active) 
-          bullet.destroy();
-      });
-    }
-
-    if (this.missiles) {
-      this.missiles.children.each(missile => {
-        if (missile.active) 
-          missile.destroy();
-      });
-    }
-
-    // 3. 레이저 제거
-    if (this.laser) {
-      this.laser.destroy();
-      this.laser = null;
-    }
-
-    // 4. 패턴 타이머 제거
-    this.pattern1Timer?.remove();
-    this.pattern2Timer?.remove();
-    this.pattern3Timer?.remove();
-    this.moveTimer?.remove();
-
-    // 5. 미니봇 제거
-    if (this.scene.minibotGroup) {
-      this.scene.minibotGroup.children.each(bot => {
-        if (bot.destroyBot) {
-          bot.destroyBot(); // 내부 타이머 포함 제거
-        } else {
-          bot.destroy();
-        }
-      });
-    }
+    this.cleanUpBoss();
 
     // 1. 연속 폭발 이펙트
     const explosionPositions = [
@@ -534,7 +498,28 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
 
     // 2. 폭발이 끝나고 텍스트 등장
     this.scene.time.delayedCall(3000, () => {
-      
+
+    this.scene.player.setVelocity(0); // 혹시 물리 속도 쓴다면 중단
+    
+    const key = this.scene.player.bulletManager.powerLevel >= 4
+      ? `${this.scene.player.playerData.ship.key}_powerup`
+      : this.scene.player.playerData.ship.key;
+
+    this.scene.player.anims.play(`${key}_idle`); // 유휴 상태 애니메이션 강제 전환      
+
+    // 화면 중앙으로
+    this.scene.tweens.add({
+      targets: this.scene.player,
+      x: 300,
+      y: 700,
+      duration: 5000,
+      ease: 'Power2'
+    });
+
+      this.setActive(false);
+      this.setVisible(false);
+      this.disableBody(true, true);
+
       this.scene.game.audioManager.playBGM('bgm_clear');
 
       const clearText = this.scene.add.text(
@@ -563,7 +548,7 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
               'Thank you for playing!',
               {
                 fontFamily: 'ThaleahFat',
-                fontSize: '42px',
+                fontSize: '54px',
                 fill: '#ffffff',
               }
             ).setOrigin(0.5).setDepth(30);
@@ -584,19 +569,36 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
             `SCORE : ${finalScore}`,
             {
               fontFamily: 'ThaleahFat',
-              fontSize: '42px',
+              fontSize: '54px',
               fill: '#ffffff',
             }
           ).setOrigin(0.5).setDepth(30);
 
           // 4. 씬 전환 or 정지
           this.scene.time.delayedCall(7000, () => {
+            this.scene.inputEnabled = true;
+            this.scene.player.body.enable = true;
             this.scene.scene.start('BootScene');
           });
         }
       });
     });
   }
+
+  cleanUpBoss() {
+    this.bossBulletManager?.bullets?.clear(true, true);
+    this.missiles?.clear(true, true);
+    this.chargingEffec?.destroy();
+    this.laser?.destroy();
+    this.laser = null;
+
+    this.pattern1Timer?.remove();
+    this.pattern2Timer?.remove();
+    this.pattern3Timer?.remove();
+    this.moveTimer?.remove();
+
+    this.scene.minibotGroup?.clear(true, true);
+  }  
 
   update() {
     // 추후 이동 및 패턴 정의 가능

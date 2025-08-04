@@ -6,7 +6,7 @@ import MineEnemyManager from '../objects/MineEnemyManager.js';
 import Boss1 from '../bosses/Boss1.js'; // 경로 확인
 
 // Stage1.js 상단
-const DEBUG_BOSS_ONLY = false;
+const DEBUG_BOSS_ONLY = true;
 
 export default class Stage1 extends Phaser.Scene {
   constructor(scene) {
@@ -50,7 +50,12 @@ export default class Stage1 extends Phaser.Scene {
     // 서포트
     this.supportBulletGroup = this.physics.add.group();
 
+    // 보스전 테스트
     if (DEBUG_BOSS_ONLY) {
+
+      //this.player.gameStatusManager.lives = 5;
+      //this.player.gameStatusManager.bombs = 5;
+      this.player.bulletManager.powerLevel = 5;
 
       const bgKeys = ['stage1_30']; // 🔹 테스트용: 이 배열에 필요한 배경만 추가
 
@@ -414,17 +419,18 @@ export default class Stage1 extends Phaser.Scene {
     });
 
     this.player.setVelocity(0); // 혹시 물리 속도 쓴다면 중단
-
+    
     const key = this.player.bulletManager.powerLevel >= 4
       ? `${this.player.playerData.ship.key}_powerup`
       : this.player.playerData.ship.key;
-      
+
     this.player.anims.play(`${key}_idle`); // 유휴 상태 애니메이션 강제 전환
 
     // 화면 중앙으로
     this.tweens.add({
       targets: this.player,
       x: 300,
+      y: 700,
       duration: 5000,
       ease: 'Power2',
       onComplete: () => {

@@ -271,10 +271,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.scene.game.audioManager.playSFX('sfx_cryphix_bomb');
 
-    this.scene.enemyManager.bombDamage(this.gameStatusManager.bombDamage); // 적과 총알
-    this.scene.groundEnemyManager.bombDamage(this.gameStatusManager.bombDamage); // 지상 적
+    this.scene.enemyManager.bombDamage(this.gameStatusManager.cryphixBombDamage); // 적과 총알
+    this.scene.groundEnemyManager.bombDamage(this.gameStatusManager.cryphixBombDamage); // 지상 적
     if (this.scene.boss) {
-      this.scene.boss.bombDamage(this.gameStatusManager.bombDamage); // boss
+      this.scene.boss.bombDamage(this.gameStatusManager.cryphixBombDamage); // boss
     }
   }
 

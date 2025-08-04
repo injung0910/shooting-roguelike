@@ -9,9 +9,8 @@ export default class EffectManager {
         this.scene = scene;
         this.effects = scene.add.group({
             classType: Phaser.GameObjects.Sprite,
-            maxSize: 50,
             runChildUpdate: false,
-            maxSize: 50, // 무제한 또는 충분히 큰 값
+            maxSize: 200, // 무제한 또는 충분히 큰 값
         });
     }
 

@@ -45,7 +45,8 @@ export default class SupportUnit extends Phaser.Physics.Arcade.Sprite {
       bullet.setVisible(true);
       bullet.body.enable = true;
       bullet.setVelocityY(-300);
-
+      bullet.setBodySize(6, 24).setOffset(2, 4); // 중심부만 판정
+      
       bullet.play('missile4_anim'); // 애니메이션 재생
     }
 
@@ -59,11 +60,11 @@ export default class SupportUnit extends Phaser.Physics.Arcade.Sprite {
     this.y = Phaser.Math.Linear(this.y, playerY + 25, 0.1);
 
     // 자동 발사
-    const now = this.scene.time.now;
-    if (now > this.lastFired + this.fireRate) {
-      this.fire();
-      this.lastFired = now;
-    }
+    //const now = this.scene.time.now;
+    //if (now > this.lastFired + this.fireRate) {
+    //  this.fire();
+    //  this.lastFired = now;
+    //}
 
     // 총알 정리 (카메라 밖이면 제거)
     const camera = this.scene.cameras.main;

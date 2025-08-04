@@ -105,6 +105,12 @@ export default class BulletManager {
       this.spawnBullet(x + cfg.offsetX, y, bulletKey, cfg.angle);
     });
 
+    if(this.supportUnits){
+      this.supportUnits.forEach(unit => {
+        unit.fire();
+      });
+    }
+
     this.scene.game.audioManager.playSFX('sfx_' + bulletKey);
     this.lastFired = time;
   }
@@ -125,7 +131,7 @@ export default class BulletManager {
 
   getDamageByBulletKey(key) {
     switch (key) {
-      case 'bullets3': return 8;
+      case 'bullets3': return 5;
       case 'bullets5': return 10;
       case 'bullets1': return 5;
       default: return 5;

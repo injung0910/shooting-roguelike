@@ -57,7 +57,6 @@ export default class GameStatusManager {
   }
   
   loseLife() {
-    console.log('lostlife');
     this.lives--;
     // 아이콘 수가 폭탄 수보다 많으면 숨기기
     this.lifeIcons.forEach((icon, index) => {

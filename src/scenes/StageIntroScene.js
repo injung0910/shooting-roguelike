@@ -21,40 +21,25 @@ export default class StageIntroScene extends Phaser.Scene {
     this.add.rectangle(0, 0, this.scale.width, this.scale.height, 0x000000).setOrigin(0);
 
     // 🔼 Move (↑ ↓ ← →)
-    this.add.text(centerX - 100, centerY + 70, '↑ ↓ ← → : ', {
+    this.add.text(centerX - 100, centerY + 70, '↑ ↓ ← → : Move', {
       fontFamily: 'ThaleahFat',
       fontSize: '32px',
-      color: '#ffffff'
-    });
-    this.add.text(centerX + 40, centerY + 70, 'Move', {
-      fontFamily: 'ThaleahFat',      
-      fontSize: '24px',
       color: '#ffffff'
     });
 
     // 🔫 Shot (Space)
-    this.add.text(centerX - 100, centerY + 100, 'Space    : ', {
+    this.add.text(centerX - 100, centerY + 100, 'Space    : Shot', {
       fontFamily: 'ThaleahFat',      
       fontSize: '32px',
-      color: '#ffffff'
-    });
-    this.add.text(centerX + 40, centerY + 105, 'Shot', {
-      fontFamily: 'ThaleahFat',      
-      fontSize: '24px',
       color: '#ffffff'
     });
 
     // 💣 Bomb (Shift)
-    this.add.text(centerX - 100, centerY + 130, 'Shift     : ', {
+    this.add.text(centerX - 100, centerY + 130, 'Shift     : Bomb', {
       fontFamily: 'ThaleahFat',
       fontSize: '32px',
       color: '#ffffff'
     });
-    this.add.text(centerX + 40, centerY + 135, 'Bomb', {
-      fontFamily: 'ThaleahFat',
-      fontSize: '24px',
-      color: '#ffffff'
-    });    
 
     let stage;
 

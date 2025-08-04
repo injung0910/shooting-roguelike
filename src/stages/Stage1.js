@@ -20,7 +20,7 @@ export default class Stage1 extends Phaser.Scene {
   create() {
 
     this.game.effectManager.setScene(this);
-    
+
     this.inputEnabled = true;
 
     // 고정 배경 3종
@@ -99,7 +99,7 @@ export default class Stage1 extends Phaser.Scene {
       { key: 'stage1_06', type: 'bug3', x: 50, delay: 0 },
       { key: 'stage1_06', type: 'bug2', x: 100, delay: 0 },
       { key: 'stage1_06', type: 'bug3', x: 150, delay: 0 },
-      { key: 'stage1_06', type: 'bug3', x: 450, delay: 0 },      
+      { key: 'stage1_06', type: 'bug3', x: 450, delay: 0 },
       { key: 'stage1_06', type: 'bug2', x: 500, delay: 0 },
       { key: 'stage1_06', type: 'bug3', x: 550, delay: 0 },
 
@@ -155,7 +155,7 @@ export default class Stage1 extends Phaser.Scene {
       { key: 'stage1_06', delay: 13500, duration: 2000, xMin: 200, xMax: 400, text: 'ENEMY APPROACHING' },
       { key: 'stage1_08', delay: 19500, duration: 2000, xMin: 200, xMax: 400, text: 'ENEMY APPROACHING' },
       { key: 'stage1_08', delay: 24500, duration: 2000, xMin: 200, xMax: 400, text: 'ENEMY APPROACHING' },
-      { key: 'stage1_25', delay: 95000, duration: 2000, xMin: 0,   xMax: 600, text: 'ASTEROID APPROACHING' }
+      { key: 'stage1_25', delay: 95000, duration: 2000, xMin: 0, xMax: 600, text: 'ASTEROID APPROACHING' }
     ]
     // 2초 후에 배경 이름에 sample_01이 포함된 경우, x: 200~400 사이에 경고 표시
     this.enemyManager.showEnemyWarning(warningData);
@@ -302,7 +302,7 @@ export default class Stage1 extends Phaser.Scene {
       { key: 'stage1_13', x: 300, y: 800, type: 'passive' },
       { key: 'stage1_13', x: 400, y: 650, type: 'passive' },
       { key: 'stage1_13', x: 500, y: 800, type: 'passive' },
-    
+
       { key: 'stage1_14', x: 300, y: 200, type: 'passive' },
       //{ key: 'stage1_14', x: 400, y: 50, type: 'passive' },
       { key: 'stage1_14', x: 500, y: 200, type: 'passive' },
@@ -313,7 +313,7 @@ export default class Stage1 extends Phaser.Scene {
 
       { key: 'stage1_14', x: 300, y: 800, type: 'passive' },
       { key: 'stage1_14', x: 400, y: 650, type: 'passive' },
-      { key: 'stage1_14', x: 500, y: 800, type: 'passive' },      
+      { key: 'stage1_14', x: 500, y: 800, type: 'passive' },
 
       { key: 'stage1_15', x: 100, y: 200, type: 'suicide' },
       { key: 'stage1_15', x: 200, y: 50, type: 'suicide' },
@@ -326,7 +326,7 @@ export default class Stage1 extends Phaser.Scene {
       //{ key: 'stage1_15', x: 100, y: 800, type: 'suicide' },
       { key: 'stage1_15', x: 200, y: 650, type: 'suicide' },
       //{ key: 'stage1_15', x: 300, y: 800, type: 'suicide' },
-    
+
       { key: 'stage1_16', x: 100, y: 200, type: 'suicide' },
       { key: 'stage1_16', x: 200, y: 50, type: 'suicide' },
       { key: 'stage1_16', x: 300, y: 200, type: 'suicide' },
@@ -376,7 +376,7 @@ export default class Stage1 extends Phaser.Scene {
       { key: 'stage1_17', x: 200, y: 100, type: 'suicide' },
       { key: 'stage1_17', x: 300, y: 200, type: 'suicide' },
       { key: 'stage1_17', x: 400, y: 100, type: 'suicide' },
-      { key: 'stage1_17', x: 500, y: 200, type: 'suicide' },           
+      { key: 'stage1_17', x: 500, y: 200, type: 'suicide' },
 
     ];
 
@@ -413,12 +413,23 @@ export default class Stage1 extends Phaser.Scene {
       repeat: 5,
     });
 
+    this.player.setVelocity(0); // 혹시 물리 속도 쓴다면 중단
+
+    const key = this.player.bulletManager.powerLevel >= 4
+      ? `${this.player.playerData.ship.key}_powerup`
+      : this.player.playerData.ship.key;
+      
+    this.player.anims.play(`${key}_idle`); // 유휴 상태 애니메이션 강제 전환
+
     // 화면 중앙으로
     this.tweens.add({
       targets: this.player,
-      x: 300, // 화면 중앙
-      duration: 2000, // 2초 동안 이동
+      x: 300,
+      duration: 5000,
       ease: 'Power2',
+      onComplete: () => {
+        this.inputEnabled = true; // ✅ 조작 다시 활성화
+      }
     });
 
     // 🔁 1초마다 경고음 반복 (5초 동안)
@@ -525,8 +536,6 @@ export default class Stage1 extends Phaser.Scene {
       }
 
       this.game.audioManager.playBGM('bgm_boss01'); // 보스 음악 재생
-
-      this.inputEnabled = true; // ✅ 조작 다시 활성화
 
       // 보스전 시작
       this.boss.executePattern();

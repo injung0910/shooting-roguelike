@@ -17,7 +17,7 @@ const SHIP_STATS = {
     damage: 10,
     speed: 250,
     fireRate: 350,
-    hitbox: { width: 46.08, height: 24, offsetX: 24, offsetY: 43.2 }
+    hitbox: { width: 36.08, height: 24, offsetX: 30, offsetY: 43.2 }
   },
   Hawk: {
     key: 'plane6',
@@ -188,6 +188,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   falconBomb() {
+    this.body.enable = false;
+    this.setAlpha(0); // 완전 투명하게
 
     const centerX = this.scene.scale.width / 2;
     const centerY = this.scene.scale.height / 2;
@@ -225,6 +227,25 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       },
       repeat: Math.floor(bombDuration / interval) - 1 // 총 몇 번 반복할지
     });
+
+    this.body.enable = true;
+
+    // 깜빡임 무적 시작
+    let blink = true;
+    const blinkTimer = this.scene.time.addEvent({
+      delay: 150,
+      repeat: 9,
+      callback: () => {
+        blink = !blink;
+        this.setAlpha(blink ? 0.3 : 1);
+      }
+    });
+
+    this.scene.time.delayedCall(1500, () => {
+      this.isInvincible = false;
+      this.setAlpha(1);
+      blinkTimer.remove();
+    });    
   }
 
   cryphixBomb() {
@@ -258,6 +279,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   hawkBomb() {
+    this.body.enable = false;
+    this.setAlpha(0); // 완전 투명하게
 
     for (let i = 0; i < 20; i++) {
       this.scene.time.delayedCall(i * 100, () => {
@@ -298,6 +321,25 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         }
       },
       repeat: Math.floor(bombDuration / interval) - 1 // 총 몇 번 반복할지
+    });
+
+    this.body.enable = true;
+
+    // 깜빡임 무적 시작
+    let blink = true;
+    const blinkTimer = this.scene.time.addEvent({
+      delay: 150,
+      repeat: 9,
+      callback: () => {
+        blink = !blink;
+        this.setAlpha(blink ? 0.3 : 1);
+      }
+    });
+
+    this.scene.time.delayedCall(1500, () => {
+      this.isInvincible = false;
+      this.setAlpha(1);
+      blinkTimer.remove();
     });
   }
 

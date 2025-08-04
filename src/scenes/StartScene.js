@@ -66,6 +66,12 @@ export default class StartScene extends Phaser.Scene {
       color: '#999999'
     }).setOrigin(0.5);
 
+    this.add.text(550, this.scale.height - 30, 'v1.0.1', {
+      fontFamily: 'Arial',
+      fontSize: '14px',
+      color: '#999999'
+    }).setScrollFactor(0);    
+
     // 키 입력 처리
     this.input.keyboard.on('keydown-UP', () => {
       if (!this.inputEnabled) return;

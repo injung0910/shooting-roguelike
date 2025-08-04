@@ -188,8 +188,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   falconBomb() {
-    this.body.enable = false;
-    this.setAlpha(0); // 완전 투명하게
+    this.isInvincible = true;
 
     const centerX = this.scene.scale.width / 2;
     const centerY = this.scene.scale.height / 2;
@@ -228,27 +227,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       repeat: Math.floor(bombDuration / interval) - 1 // 총 몇 번 반복할지
     });
 
-    this.body.enable = true;
-
-    // 깜빡임 무적 시작
-    let blink = true;
-    const blinkTimer = this.scene.time.addEvent({
-      delay: 150,
-      repeat: 9,
-      callback: () => {
-        blink = !blink;
-        this.setAlpha(blink ? 0.3 : 1);
-      }
-    });
-
-    this.scene.time.delayedCall(1500, () => {
+    this.scene.time.delayedCall(2000, () => {
       this.isInvincible = false;
-      this.setAlpha(1);
-      blinkTimer.remove();
     });    
   }
 
   cryphixBomb() {
+    this.isInvincible = true;
 
     const centerX = this.scene.scale.width / 2;
     const centerY = this.scene.scale.height / 2;
@@ -276,11 +261,14 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     if (this.scene.boss) {
       this.scene.boss.bombDamage(this.gameStatusManager.cryphixBombDamage); // boss
     }
+
+    this.scene.time.delayedCall(1000, () => {
+      this.isInvincible = false;
+    });    
   }
 
   hawkBomb() {
-    this.body.enable = false;
-    this.setAlpha(0); // 완전 투명하게
+    this.isInvincible = true;
 
     for (let i = 0; i < 20; i++) {
       this.scene.time.delayedCall(i * 100, () => {
@@ -323,23 +311,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       repeat: Math.floor(bombDuration / interval) - 1 // 총 몇 번 반복할지
     });
 
-    this.body.enable = true;
-
-    // 깜빡임 무적 시작
-    let blink = true;
-    const blinkTimer = this.scene.time.addEvent({
-      delay: 150,
-      repeat: 9,
-      callback: () => {
-        blink = !blink;
-        this.setAlpha(blink ? 0.3 : 1);
-      }
-    });
-
-    this.scene.time.delayedCall(1500, () => {
+    this.scene.time.delayedCall(2000, () => {
       this.isInvincible = false;
-      this.setAlpha(1);
-      blinkTimer.remove();
     });
   }
 

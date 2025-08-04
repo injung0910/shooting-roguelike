@@ -5,8 +5,8 @@ export default class GameStatusManager {
     this.player = player;
 
     this.score = 0;
-    this.lives = 10;
-    this.bombs = 15;
+    this.lives = 3;
+    this.bombs = 2;
 
     this.bombDamage = 50;
     
@@ -77,7 +77,7 @@ export default class GameStatusManager {
       this.lifeIcons.push(icon);
     }
 
-    this.bombs = 5;
+    this.bombs = 2;
     this.updateBombUI();
 
     if (this.lives < 0) {

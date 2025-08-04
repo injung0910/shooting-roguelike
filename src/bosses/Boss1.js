@@ -57,7 +57,7 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
     this.scene.game.effectManager.flashRed(this);
 
     if (this.hp <= 0) {
-      this.onBossDefeated();
+        this.onBossDefeated();
     }
   }
 
@@ -117,7 +117,10 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
   }
 
   executePattern() {
-    this.pattern1();
+    if (this.hp > 1000 && !this.phase3Triggered) {
+      this.pattern1();
+    }
+    
     this.pattern2();
     
     if (this.hp <= 6000) {
@@ -422,14 +425,22 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
   }
 
   spawnMiniRobots() {
-    const offsetX = 180;
-    const offsetY = 150;
+    if (this.pattern1Timer) {
+      this.pattern1Timer.remove();
+      this.pattern1Timer = null;
+    }
 
-    const botLeft = new BossMinibot(this.scene, this.x - offsetX, this.y + offsetY, 'left');
-    const botRight = new BossMinibot(this.scene, this.x + offsetX, this.y + offsetY, 'right');
+    const spawnX = this.x;
+    const spawnY = this.y + 10; // 보스 하단 중앙
 
-    this.scene.minibotGroup.add(botLeft);
-    this.scene.minibotGroup.add(botRight);
+    const bot1 = new BossMinibot(this.scene, spawnX, spawnY, 50);
+    const bot2 = new BossMinibot(this.scene, spawnX, spawnY, 150);
+    const bot3 = new BossMinibot(this.scene, spawnX, spawnY, 250);
+    const bot4 = new BossMinibot(this.scene, spawnX, spawnY, -50);
+    const bot5 = new BossMinibot(this.scene, spawnX, spawnY, -150);
+    const bot6 = new BossMinibot(this.scene, spawnX, spawnY, -250);
+
+    this.scene.minibotGroup.addMultiple([bot1, bot2, bot3, bot4, bot5, bot6]);
   }
 
   moveToCenterAndStartPhase3() {
@@ -468,6 +479,9 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
   }
 
   onBossDefeated() {
+    if (this.defeated) return; // 이미 처리했으면 중복 방지
+    this.defeated = true;
+
     this.scene.inputEnabled = false;
     this.scene.player.body.enable = false;
 
@@ -477,8 +491,17 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
     // 점수
     this.scene.player.gameStatusManager.addScore(5000);
 
+    this.bossDefeated = true;
+
     // 2. 보스 미사일, 총알 제거
-    this.cleanUpBoss();
+    this.cleanupTimer = this.scene.time.addEvent({
+      delay: 50, // 0초마다
+      callback: () => {
+        this.cleanUpBoss();
+      },
+      callbackScope: this,
+      loop: true,
+    });
 
     // 1. 연속 폭발 이펙트
     const explosionPositions = [
@@ -487,38 +510,44 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
       { x: this.x,     y: this.y + 40 },
       { x: this.x + 30, y: this.y + 80 },
       { x: this.x - 40, y: this.y + 10 },
+      { x: this.x - 50, y: this.y - 50 },
+      { x: this.x + 60, y: this.y - 30 },
+      { x: this.x,     y: this.y + 40 },
+      { x: this.x + 30, y: this.y + 80 },
+      { x: this.x - 40, y: this.y + 10 }
     ];
 
     explosionPositions.forEach((pos, index) => {
       this.scene.time.delayedCall(index * 400, () => {
         // 이펙트
         this.scene.game.effectManager.largeExplosion(pos.x, pos.y);
+        // 사운드
+        this.scene.game.audioManager.playSFX('sfx_mid1_explosion');
       });
     });
 
     // 2. 폭발이 끝나고 텍스트 등장
     this.scene.time.delayedCall(3000, () => {
-
-    this.scene.player.setVelocity(0); // 혹시 물리 속도 쓴다면 중단
-    
-    const key = this.scene.player.bulletManager.powerLevel >= 4
-      ? `${this.scene.player.playerData.ship.key}_powerup`
-      : this.scene.player.playerData.ship.key;
-
-    this.scene.player.anims.play(`${key}_idle`); // 유휴 상태 애니메이션 강제 전환      
-
-    // 화면 중앙으로
-    this.scene.tweens.add({
-      targets: this.scene.player,
-      x: 300,
-      y: 700,
-      duration: 5000,
-      ease: 'Power2'
-    });
-
       this.setActive(false);
       this.setVisible(false);
       this.disableBody(true, true);
+
+      this.scene.player.setVelocity(0); // 혹시 물리 속도 쓴다면 중단
+      
+      const key = this.scene.player.bulletManager.powerLevel >= 4
+        ? `${this.scene.player.playerData.ship.key}_powerup`
+        : this.scene.player.playerData.ship.key;
+
+      this.scene.player.anims.play(`${key}_idle`); // 유휴 상태 애니메이션 강제 전환      
+
+      // 화면 중앙으로
+      this.scene.tweens.add({
+        targets: this.scene.player,
+        x: 300,
+        y: 700,
+        duration: 5000,
+        ease: 'Power2'
+      });
 
       this.scene.game.audioManager.playBGM('bgm_clear');
 
@@ -578,6 +607,8 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
           this.scene.time.delayedCall(7000, () => {
             this.scene.inputEnabled = true;
             this.scene.player.body.enable = true;
+            this.bossDefeated = false;
+            this.cleanupTimer?.remove();
             this.scene.scene.start('BootScene');
           });
         }
@@ -585,20 +616,62 @@ export default class Boss1 extends Phaser.Physics.Arcade.Sprite {
     });
   }
 
+
   cleanUpBoss() {
-    this.bossBulletManager?.bullets?.clear(true, true);
-    this.missiles?.clear(true, true);
-    this.chargingEffec?.destroy();
-    this.laser?.destroy();
-    this.laser = null;
+    // 미사일 제거
+    if (this.bossBulletManager?.bullets) {
+      this.bossBulletManager.bullets.children.each(bullet => {
+        if (bullet.active) bullet.destroy();
+      });
+    }
 
-    this.pattern1Timer?.remove();
-    this.pattern2Timer?.remove();
-    this.pattern3Timer?.remove();
-    this.moveTimer?.remove();
+    if (this.missiles) {
+      this.missiles.children.each(missile => {
+        if (missile.active) missile.destroy();
+      });
+    }
 
-    this.scene.minibotGroup?.clear(true, true);
-  }  
+    if (this.chargingEffec) {
+      this.chargingEffec.destroy();
+      this.chargingEffec = null;
+    }
+
+    // 레이저 제거
+    if (this.laser) {
+      this.laser.destroy();
+      this.laser = null;
+    }
+
+    // 미니봇 제거
+    if (this.scene.minibotGroup) {
+      this.scene.minibotGroup.children.each(bot => {
+        if (bot.destroyBot) {
+          bot.destroyBot();
+        } else {
+          bot.destroy();
+        }
+      });
+    }
+
+    // 타이머는 한 번만 제거
+    if (this.pattern1Timer) {
+      this.pattern1Timer.remove();
+      this.pattern1Timer = null;
+    }
+    if (this.pattern2Timer) {
+      this.pattern2Timer.remove();
+      this.pattern2Timer = null;
+    }
+    if (this.pattern3Timer) {
+      this.pattern3Timer.remove();
+      this.pattern3Timer = null;
+    }
+    if (this.moveTimer) {
+      this.moveTimer.remove();
+      this.moveTimer = null;
+    }
+  }
+  
 
   update() {
     // 추후 이동 및 패턴 정의 가능

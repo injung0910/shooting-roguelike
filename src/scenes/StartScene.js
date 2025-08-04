@@ -66,7 +66,7 @@ export default class StartScene extends Phaser.Scene {
       color: '#999999'
     }).setOrigin(0.5);
 
-    this.add.text(550, this.scale.height - 30, 'v1.0.1', {
+    this.add.text(550, this.scale.height - 30, 'v1.0.2', {
       fontFamily: 'Arial',
       fontSize: '14px',
       color: '#999999'

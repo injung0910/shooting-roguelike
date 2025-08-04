@@ -407,19 +407,22 @@ export default class EnemyManager {
       }
 
       // 점수
-      if (enemy.texture.key.startsWith("emperor1")) {
-        this.scene.player.gameStatusManager.addScore(1000);
-      } else if (enemy.texture.key.startsWith('emperor3')) {
-        this.scene.player.gameStatusManager.addScore(500);
-      } else if (enemy.texture.key.startsWith('emperor4')) {
-        this.scene.player.gameStatusManager.addScore(300);
-      } else if (enemy.texture.key.startsWith('bug')) {
-        this.scene.player.gameStatusManager.addScore(100);
-      } else if (enemy.texture.key.startsWith('danger')) {
-        this.scene.player.gameStatusManager.addScore(100);
-      } else {
-        this.scene.player.gameStatusManager.addScore(10);
+      if (enemy.active) {
+        if (enemy.texture.key.startsWith("emperor1")) {
+          this.scene.player.gameStatusManager.addScore(1000);
+        } else if (enemy.texture.key.startsWith('emperor3')) {
+          this.scene.player.gameStatusManager.addScore(500);
+        } else if (enemy.texture.key.startsWith('emperor4')) {
+          this.scene.player.gameStatusManager.addScore(300);
+        } else if (enemy.texture.key.startsWith('bug')) {
+          this.scene.player.gameStatusManager.addScore(100);
+        } else if (enemy.texture.key.startsWith('danger')) {
+          this.scene.player.gameStatusManager.addScore(100);
+        } else {
+          this.scene.player.gameStatusManager.addScore(10);
+        }
       }
+
 
       // 아이템
       if (enemy.texture.key.startsWith('bug2')) {
@@ -486,18 +489,20 @@ export default class EnemyManager {
             }
 
             // 점수
-            if (enemy.texture.key.startsWith("emperor1")) {
-              this.scene.player.gameStatusManager.addScore(1000);
-            } else if (enemy.texture.key.startsWith('emperor3')) {
-              this.scene.player.gameStatusManager.addScore(500);
-            } else if (enemy.texture.key.startsWith('emperor4')) {
-              this.scene.player.gameStatusManager.addScore(300);
-            } else if (enemy.texture.key.startsWith('bug')) {
-              this.scene.player.gameStatusManager.addScore(100);
-            } else if (enemy.texture.key.startsWith('danger')) {
-              this.scene.player.gameStatusManager.addScore(100);
-            } else {
-              this.scene.player.gameStatusManager.addScore(10);
+            if (enemy.active) {
+              if (enemy.texture.key.startsWith("emperor1")) {
+                this.scene.player.gameStatusManager.addScore(1000);
+              } else if (enemy.texture.key.startsWith('emperor3')) {
+                this.scene.player.gameStatusManager.addScore(500);
+              } else if (enemy.texture.key.startsWith('emperor4')) {
+                this.scene.player.gameStatusManager.addScore(300);
+              } else if (enemy.texture.key.startsWith('bug')) {
+                this.scene.player.gameStatusManager.addScore(100);
+              } else if (enemy.texture.key.startsWith('danger')) {
+                this.scene.player.gameStatusManager.addScore(100);
+              } else {
+                this.scene.player.gameStatusManager.addScore(10);
+              }
             }
 
             // 아이템
@@ -549,18 +554,20 @@ export default class EnemyManager {
       }
 
       // 점수
-      if (enemy.texture.key.startsWith("emperor1")) {
-        this.scene.player.gameStatusManager.addScore(1000);
-      } else if (enemy.texture.key.startsWith('emperor3')) {
-        this.scene.player.gameStatusManager.addScore(500);
-      } else if (enemy.texture.key.startsWith('emperor4')) {
-        this.scene.player.gameStatusManager.addScore(300);
-      } else if (enemy.texture.key.startsWith('bug')) {
-        this.scene.player.gameStatusManager.addScore(100);
-      } else if (enemy.texture.key.startsWith('danger')) {
-        this.scene.player.gameStatusManager.addScore(100);
-      } else {
-        this.scene.player.gameStatusManager.addScore(10);
+      if (enemy.active) {
+        if (enemy.texture.key.startsWith("emperor1")) {
+          this.scene.player.gameStatusManager.addScore(1000);
+        } else if (enemy.texture.key.startsWith('emperor3')) {
+          this.scene.player.gameStatusManager.addScore(500);
+        } else if (enemy.texture.key.startsWith('emperor4')) {
+          this.scene.player.gameStatusManager.addScore(300);
+        } else if (enemy.texture.key.startsWith('bug')) {
+          this.scene.player.gameStatusManager.addScore(100);
+        } else if (enemy.texture.key.startsWith('danger')) {
+          this.scene.player.gameStatusManager.addScore(100);
+        } else {
+          this.scene.player.gameStatusManager.addScore(10);
+        }
       }
 
       // 아이템

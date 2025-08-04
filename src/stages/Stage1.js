@@ -6,7 +6,7 @@ import MineEnemyManager from '../objects/MineEnemyManager.js';
 import Boss1 from '../bosses/Boss1.js'; // 경로 확인
 
 // Stage1.js 상단
-const DEBUG_BOSS_ONLY = true;
+const DEBUG_BOSS_ONLY = false;
 
 export default class Stage1 extends Phaser.Scene {
   constructor(scene) {
@@ -521,7 +521,9 @@ export default class Stage1 extends Phaser.Scene {
       player.takeHitFromEnemy();
     }, null, this);
 
-    this.minibotGroup = this.physics.add.group();
+    this.minibotGroup = this.physics.add.group({
+      runChildUpdate: true
+    });
 
     this.physics.add.overlap(
       this.player.bulletManager.bullets,

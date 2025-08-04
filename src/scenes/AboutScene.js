@@ -25,7 +25,7 @@ export default class AboutScene extends Phaser.Scene {
       'SFX/FX by Kronbits (Purchased via itch.io)',
       '',
       'Pixel Art:',
-      'Assets from SHMUP Bundle by Dylest (LivingTheIndie)',
+      'Assets from SHMUP Bundle by Dylestorm (LivingTheIndie)',
       '',
       'Etc:',
       'Leonardo AI-generated (commercial license)',
